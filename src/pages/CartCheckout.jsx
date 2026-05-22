@@ -21,8 +21,6 @@ dayjs.extend(utc);
 dayjs.extend(timezone);
 dayjs.tz.setDefault('Asia/Taipei');
 
-const nowIsoString = new Date().toISOString();
-
 function CartCheckout() {
   const navigate = useNavigate();
 
@@ -131,7 +129,7 @@ function CartCheckout() {
     }
     setIsSubmitting(true); //UX優化
     message.loading({ content: '安全連線中，正在處理訂閱...', key: 'checkout' });
-    
+
     try {
       const createdSubscriptions = [];
       const userId = user?.id;
@@ -149,6 +147,8 @@ function CartCheckout() {
       // 抓取郵遞區號
       const { city: city, district: district } = formData;
       const zipCodeStr = taiwanData['台灣']?.[city]?.[district]?.postalCode || '';
+
+      const nowIsoString = new Date().toISOString();
 
       // 儲存新卡
       if (shouldSaveNewCard) {
