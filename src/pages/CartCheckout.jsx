@@ -131,7 +131,6 @@ function CartCheckout() {
     message.loading({ content: '安全連線中，正在處理訂閱...', key: 'checkout' });
 
     try {
-      const createdSubscriptions = [];
       const userId = user?.id;
       const todayStr = dayjs().format('YYYY-MM-DD');
       const currentSubTotal = subTotal;
@@ -287,29 +286,17 @@ function CartCheckout() {
         results.push(result);
       }
 
-      // 將結果存入 createdSubscriptions 供導頁使用
-      createdSubscriptions.push(...results);
-
       // --- 4. 成功後導頁 ---
       const subIds = results.map((sub) => sub.id).join(',');
-      message.success({
-        content: '訂閱成功！感謝您的支持。',
-        key: 'checkout',
-        duration: 2,
-        onClose: async () => {
-          // 清理購物車
-          try {
-            for (const item of cartItems) {
-              await api.delete(`/cart_items/${item.id}`);
-            }
-            if (cartMain?.id) await api.delete(`/carts/${cartMain.id}`);
-          } catch (e) {
-            console.warn('清理失敗', e);
-          }
-          // 清理完成後才導頁
-          navigate(`/cartFinish?sub_ids=${subIds}`, { replace: true });
-        },
-      });
+
+      // 清理購物車
+      for (const item of cartItems) {
+        await api.delete(`/cart_items/${item.id}`);
+      }
+      if (cartMain?.id) await api.delete(`/carts/${cartMain.id}`);
+
+      navigate(`/cartFinish?sub_ids=${subIds}`, { replace: true, state: { showSuccess: true } });
+
     } catch (error) {
       console.error('結帳失敗:', error);
       message.error({ content: '處理失敗，請稍後再試。', key: 'checkout', duration: 3 });

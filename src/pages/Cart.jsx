@@ -228,6 +228,7 @@ function Cart() {
 
     // 套用優惠代碼
     const handleApplyCoupon = async () => {
+      if (!couponCode.trim()) return;
         try {
             const res = await api.get("/coupons");
             const coupons = res.data;
@@ -513,7 +514,7 @@ function Cart() {
                         value={couponCode}
                         onChange={(e) => setCouponCode(e.target.value)}
                         onKeyDown={(e) => {
-                          if (e.key === "Enter") {
+                          if (e.key === 'Enter') {
                             handleApplyCoupon();
                           }
                         }}
