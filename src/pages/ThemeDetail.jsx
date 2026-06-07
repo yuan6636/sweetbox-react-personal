@@ -1,91 +1,304 @@
-import { Swiper, SwiperSlide } from "swiper/react"
-import { Thumbs, Autoplay, FreeMode } from 'swiper/modules'
-import 'swiper/css'
-import 'swiper/css/navigation'
-import 'swiper/css/pagination'
-import 'swiper/css/free-mode'
-import 'swiper/css/thumbs'
-import { useEffect, useState } from "react"
-import api from "../api";
-import SideMenuFloat from "../components/SideMenuFloat"
-import Pagination from "../components/Pagination";
-import { useParams } from "react-router-dom"
-import { NavLink } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
-import { Icon } from "@iconify/react";
-import dayjs from "dayjs";
-import utc from "dayjs/plugin/utc";
-import timezone from "dayjs/plugin/timezone";
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Thumbs, Autoplay, FreeMode } from 'swiper/modules';
+import 'swiper/css';
+import 'swiper/css/navigation';
+import 'swiper/css/pagination';
+import 'swiper/css/free-mode';
+import 'swiper/css/thumbs';
+import { useEffect, useState, Fragment } from 'react';
+import { useParams, NavLink, useNavigate } from 'react-router-dom';
+import { Icon } from '@iconify/react';
+import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
+import timezone from 'dayjs/plugin/timezone';
+
+import api from '../api';
+import SideMenuFloat from '../components/SideMenuFloat';
+import Pagination from '../components/Pagination';
+import Dropdown from '../components/Dropdown';
+import ReviewItem from '../components/theme-detail/ReviewItem';
 
 // 台灣時間
 dayjs.extend(utc);
 dayjs.extend(timezone);
-dayjs.tz.setDefault("Asia/Taipei");
+dayjs.tz.setDefault('Asia/Taipei');
 
+const themes = [
+  { id: 1, label: '精選甜點' },
+  { id: 2, label: '季節限定' },
+  { id: 3, label: '在地甜點' },
+  { id: 4, label: '異國風味' },
+  { id: 5, label: '無負擔甜點' },
+  { id: 6, label: '素食甜點' },
+];
+
+const themeImages = [1, 2, 3, 4].map((num) => ({
+  large: `./images/Theme_Detail/Feature/pic_card_large(${num}).jpg`,
+  small: `./images/Theme_Detail/Feature/pic_card_mobile(${num}).jpg`,
+  alt: `甜點盒主題展示圖${num}`,
+}));
+
+// 食用建議
+const usageTips = [
+  { icon: 'Icon_openbook', alt: 'openbook icon', text: '開箱後，請先確認甜點品項與保存方式' },
+  { icon: 'Icon_tea-cup', alt: 'tea-cup icon', text: '搭配一杯茶或咖啡，更能襯托出甜點的風味' },
+  { icon: 'Icon_curtain', alt: 'curtain icon', text: '常溫甜點請置於陰涼乾燥處保存' },
+  { icon: 'Icon_eat', alt: 'eat icon', text: '開封後建議盡快食用，以確保最佳風味' },
+];
+
+// 甜點特色
+const featureCards = [
+  {
+    icon: 'Icon_popular',
+    alt: '熱門話題甜點',
+    title: '熱門話題甜點',
+    description: '壓扁可頌、脆皮泡芙、爆紅 8 字蛋捲等近期甜點圈的明星商品',
+  },
+  {
+    icon: 'Icon_brand',
+    alt: '品牌聯名限定',
+    title: '品牌聯名限定',
+    description: '甜點品牌與飲品、文創等聯名合作款，期間限定風味搶先嚐',
+  },
+  {
+    icon: 'Icon_classic',
+    alt: '經典人氣烘焙',
+    title: '經典人氣烘焙',
+    description: '布朗尼、磅蛋糕、餅乾、蛋捲等口感豐富、常溫好保存的精緻選擇',
+  },
+];
+
+// 第一盒甜
+const firstSweetBox = [
+  {
+    id: 1,
+    name: '奶油夾心餅',
+    enName: 'Butterly Cookies',
+    desc: '鬆脆餅乾夾入濃郁奶油餡，層次豐富。酥香與滑順並存，入口充滿溫潤奶香。',
+    img: {
+      mobile: './images/Theme_Detail/Feature/pic_cookie_mobile.jpg',
+      desktop: './images/Theme_Detail/Feature/pic_cookie_desktop.jpg',
+    },
+  },
+  {
+    id: 2,
+    name: '經典濃巧布朗尼',
+    enName: 'Choco & Mood',
+    desc: '嚴選比利時 70% 黑巧克力與法國奶油，加入核桃與海鹽，甜中帶苦，層次迷人。',
+    img: {
+      mobile: './images/Theme_Detail/Feature/pic_brownie_mobile.jpg',
+      desktop: './images/Theme_Detail/Feature/pic_brownie_desktop.jpg',
+    },
+  },
+  {
+    id: 3,
+    name: '經典椒鹽餅乾',
+    enName: 'Salt&Crust Bakery',
+    desc: '外層撒上細緻椒鹽，酥脆中帶有鹹香，簡單卻耐吃，讓人一口接一口的經典小食。',
+    img: {
+      mobile: './images/Theme_Detail/Feature/pic_pretzels_mobile.jpg',
+      desktop: './images/Theme_Detail/Feature/pic_pretzels_desktop.jpg',
+    },
+  },
+  {
+    id: 4,
+    name: '開心果牛軋糖',
+    enName: 'Pistachio Lane',
+    desc: '以綿軟牛軋糖揉入滿滿開心果仁。堅果香脆與甜蜜嚼感，讓人愈嚼愈香。',
+    img: {
+      mobile: './images/Theme_Detail/Feature/pic_candy_mobile.jpg',
+      desktop: './images/Theme_Detail/Feature/pic_candy_desktop.jpg',
+    },
+  },
+  {
+    id: 5,
+    name: '草莓雪球',
+    enName: 'Snowberry Patisserie',
+    desc: '滿佈糖粉的雪球外型，入口酥鬆輕盈。帶有淡雅草莓香氣，甜美而不膩。',
+    img: {
+      mobile: './images/Theme_Detail/Feature/pic_snowball_mobile.jpg',
+      desktop: './images/Theme_Detail/Feature/pic_snowball_desktop.jpg',
+    },
+  },
+  {
+    id: 6,
+    name: '醇厚奶香磅蛋糕',
+    enName: 'Heritage Pound Cake Co.',
+    desc: '傳統比例製作，口感綿密紮實。濃厚奶油香氣，經典耐吃不退流行。',
+    img: {
+      mobile: './images/Theme_Detail/Feature/pic_cake_mobile.jpg',
+      desktop: './images/Theme_Detail/Feature/pic_cake_desktop.jpg',
+    },
+  },
+  {
+    id: 7,
+    name: '經典手工蛋捲',
+    enName: 'Choco & Mood',
+    desc: '手工蛋捲，層層酥香，每一口都保留傳統蛋香，清雅迷人，簡單卻令人回味無窮。',
+    img: {
+      mobile: './images/Theme_Detail/Feature/pic_eggroll_mobile.jpg',
+      desktop: './images/Theme_Detail/Feature/pic_eggroll_desktop.jpg',
+    },
+  },
+  {
+    id: 8,
+    name: '焦糖綜合堅果塔',
+    enName: 'Caramel & Nut Atelier',
+    desc: '以焦糖拌炒多種堅果，填入香酥塔皮。層層堆疊的堅果香氣，口感豐富紮實。',
+    img: {
+      mobile: './images/Theme_Detail/Feature/pic_tart_mobile.jpg',
+      desktop: './images/Theme_Detail/Feature/pic_tart_desktop.jpg',
+    },
+  },
+  {
+    id: 9,
+    name: '花生麻糬',
+    enName: 'Mochi & Nut House',
+    desc: '軟Q麻糬包裹綿密花生餡，香濃順口。經典台式甜點，軟糯與堅果香完美交織。',
+    img: {
+      mobile: './images/Theme_Detail/Feature/pic_mochi_mobile.jpg',
+      desktop: './images/Theme_Detail/Feature/pic_mochi_desktop.jpg',
+    },
+  },
+];
+
+const ratingDistribution = [
+  { star: 5, count: 5050, percent: '80%' },
+  { star: 4, count: 700, percent: '12%' },
+  { star: 3, count: 150, percent: '5%' },
+  { star: 2, count: 30, percent: '2%' },
+  { star: 1, count: 7, percent: '1%' },
+];
+
+// 評論分享選單
+const desktopCategories = [
+  { label: '全部', count: 3452, value: '' },
+  { label: '精選甜點', count: 1280, value: 'select' },
+  { label: '異國風味', count: 742, value: 'global' },
+  { label: '季節限定', count: 598, value: 'seasonal' },
+  { label: '無負擔甜點', count: 410, value: 'guilt-free' },
+  { label: '在地甜點', count: 230, value: 'local' },
+  { label: '素食甜點', count: 192, value: 'veggie' },
+];
+
+const desktopSortOptions = [
+  { label: '評價由高至低', direction: '↓', value: 'desc' },
+  { label: '評價由低至高', direction: '↑', value: 'asc' },
+];
+
+const mobileCategories = [
+  { label: '全部主題', value: '' },
+  { label: '精選甜點', value: 'select' },
+  { label: '異國風味', value: 'global' },
+  { label: '季節限定', value: 'seasonal' },
+  { label: '無負擔甜點', value: 'guilt-free' },
+  { label: '在地甜點', value: 'local' },
+  { label: '素食甜點', value: 'veggie' },
+];
+
+const mobileSortOptions = [
+  { label: '預設排序', value: '' },
+  { label: '評價最高', value: 'desc' },
+  { label: '評價最低', value: 'asc' },
+];
+
+// 評論區
+const reviews = [
+  {
+    id: 1,
+    avatar: './images/Theme_Detail/Feature/custom-1.jpg',
+    name: '奶茶抹太厚',
+    date: '2025/9/27',
+    rating: 5,
+    products: '精選甜點盒 (12個月)、在地甜點盒(3個月)',
+    title: '終於不用再開甜點單選半天了',
+    body: `以前每天滑社群軟體收藏各種甜點照片，看到漂亮的蛋糕、餅乾、布丁就會想試試看，但真的要下單時卻又猶豫半天，最後常常什麼都沒買，收藏清單越來越長卻始終沒動作。有時候甚至會因為選項太多，反而覺得壓力很大，乾脆放棄不買🙈。\n後來開始訂「一盒甜」之後，真的完全解決了我的選擇障礙！每個月的主題都超用心💝，從包裝設計到甜點搭配都很有驚喜感✨。打開盒子的瞬間，就像在拆生日禮物一樣療癒，會忍不住拍照分享給朋友。\n而且最重要的是，吃了好幾個月下來，每次都覺得品質很穩定，完全沒有踩過雷，每個品項都好吃又有特色😍，常常讓我發現新的喜好。現在已經養成習慣，變成每月最期待的小確幸🥰！`,
+    images: [
+      './images/Theme_Detail/Feature/pic_review 01 (2).jpg',
+      './images/Theme_Detail/Feature/pic_review 01 (1).jpg',
+      './images/Theme_Detail/Feature/pic_review 01 (3).jpg',
+      './images/Theme_Detail/Feature/pic_review 01 (5).jpg',
+      './images/Theme_Detail/Feature/pic_review 01 (4).jpg',
+      './images/Theme_Detail/Feature/pic_review 01 (2).jpg',
+      './images/Theme_Detail/Feature/pic_review 01 (1).jpg',
+      './images/Theme_Detail/Feature/pic_review 01 (3).jpg',
+      './images/Theme_Detail/Feature/pic_review 01 (5).jpg',
+    ],
+    initialLikeCount: 3,
+  },
+  {
+    id: 2,
+    avatar: './images/Theme_Detail/Feature/custom-2.jpg',
+    name: '焦糖人生好焦慮',
+    date: '2025/9/20',
+    rating: 5,
+    products: '精選甜點盒 (6個月)、異國風味甜點盒(3個月)',
+    title: '我媽一開始說浪費錢，現在都比我還期待開箱',
+    body: '本來是我自己訂的，結果有次甜點分享給家人吃後，我媽居然主動問我「這個月什麼時候送來？」！甜點的品質很好，而且會搭配保存方式與建議食用方式，真的很貼心。',
+    images: [
+      './images/Theme_Detail/Feature/pic_review 02 (1).jpg',
+      './images/Theme_Detail/Feature/pic_review 02 (2).jpg',
+      './images/Theme_Detail/Feature/pic_review 02 (3).jpg',
+    ],
+    initialLikeCount: 0,
+  },
+  {
+    id: 3,
+    avatar: './images/Theme_Detail/Feature/custom-3.jpg',
+    name: '胖到掉渣女神',
+    date: '2025/9/13',
+    rating: 4,
+    products: '精選甜點盒 (3個月)、無負擔甜點盒(3個月)、季節限定甜點盒(12個月)',
+    title: '愛吃甜點也很省腦，一盒甜是我的快樂密碼',
+    body: '不是我在誇，一盒甜都懂甜點控在想什麼。不只每次內容都有驚喜，還能吃到那種限時聯名，有種 VIP 搶先嚐的爽感，連同事看到我午茶的甜點都問哪裡買！',
+    images: [],
+    initialLikeCount: 0,
+  },
+];
 
 function ThemeDetail() {
   const { id } = useParams();
-  const [thumbsSwiper, setThumbsSwiper] = useState(null)
-  const outline = "mdi:thumbs-up-outline"
-  const solid = "mdi:thumbs-up"
+  const [thumbsSwiper, setThumbsSwiper] = useState(null);
   const [themeData, setThemeData] = useState(null);
   const [activePlan, setActivePlan] = useState(null);
   const [quantity, setQuantity] = useState(1);
   const navigate = useNavigate();
-  const [likes, setLikes] = useState({
-    1: { count: 3, liked: false },
-    2: { count: 0, liked: false },
-    3: { count: 0, liked: false }
-  })
-  const userData = localStorage.getItem("user");
-  const userObj = JSON.parse(userData);
-  console.log(userObj);
-  const handleLikes = (id) => {
-    setLikes((prev) => {
-      const item = prev[id]
-      return {
-        ...prev,
-        [id]: {
-          count: item.liked ? item.count + 1 : item.count - 1,
-          liked: !item.liked
-        }
-      }
-    })
-  }
+  const [isExpanded, setIsExpanded] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState('');
+  const [sortOption, setSortOption] = useState('desc');
 
   const handleSubscribe = async () => {
     if (!activePlan || !themeData) return;
 
     try {
       // 取得使用者資料
-      const userData = localStorage.getItem("user");
+      const userData = localStorage.getItem('user');
       const userObj = JSON.parse(userData);
-      console.log("目前使用者:", userObj);
+
       if (!userObj) {
         navigate('/login');
         return;
-      } 
+      }
       // 先抓購物車
-      const res = await api.get("/carts");
-      let cart = res.data.find(c => c.userId === userObj.id);
+      const res = await api.get('/carts');
+      let cart = res.data.find((c) => c.userId === userObj.id);
 
       // 如果沒有購物車，建立一筆新的
       if (!cart) {
-
         cart = {
           userId: userObj.id,
           createdAt: new Date().toISOString(),
         };
-        console.log("建立新購物車:", cart);
-        const cartRes = await api.post("/carts", cart);
+
+        const cartRes = await api.post('/carts', cart);
         cart = cartRes.data;
       }
 
       // 取得 cart_items
-      const itemsRes = await api.get("/cart_items");
-      const cartItems = itemsRes.data.filter(item => item.cartId === cart.id);
+      const itemsRes = await api.get('/cart_items');
+      const cartItems = itemsRes.data.filter((item) => item.cartId === cart.id);
 
-      const existingItem = cartItems.find(item => item.planId === activePlan.id);
+      const existingItem = cartItems.find((item) => item.planId === activePlan.id);
 
       let updatedCart;
       if (existingItem) {
@@ -93,12 +306,12 @@ function ThemeDetail() {
           ...existingItem,
           quantity: existingItem.quantity + quantity,
         };
-        console.log("更新 cart_item:", updatedItem);
+
         await api.put(`/cart_items/${existingItem.id}`, updatedItem);
 
         updatedCart = {
           ...cart,
-          updatedAt: dayjs().format('YYYY-MM-DDTHH:mm:ss.SSSZ')
+          updatedAt: dayjs().format('YYYY-MM-DDTHH:mm:ss.SSSZ'),
         };
       } else {
         const newCartItem = {
@@ -106,66 +319,77 @@ function ThemeDetail() {
           planId: activePlan.id,
           quantity,
         };
-        console.log("新增 cart_item:", newCartItem);
-        await api.post("/cart_items", newCartItem);
+
+        await api.post('/cart_items', newCartItem);
 
         updatedCart = {
           ...cart,
-          updatedAt: dayjs().format('YYYY-MM-DDTHH:mm:ss.SSSZ')
+          updatedAt: dayjs().format('YYYY-MM-DDTHH:mm:ss.SSSZ'),
         };
       }
 
-      console.log("更新購物車:", updatedCart);
       await api.put(`/carts/${cart.id}`, updatedCart);
 
-      console.log("已加入購物車，送出的資料如下：");
-      console.table({
-        cartId: cart.id,
-        planId: activePlan.id,
-        quantity,
-        discountPrice: activePlan.discountPrice,
-        total: activePlan.discountPrice * quantity,
-      });
-
-      navigate("/cart");
+      navigate('/cart');
     } catch (err) {
-      console.log("錯誤:", err);
+      console.error('錯誤:', err);
     }
   };
 
-
   useEffect(() => {
-    Promise.all([api.get("/themes"), api.get("/plans")])
-      .then(([themesRes, plansRes]) => {
-        const theme = themesRes.data.find(item => item.id === Number(id));
-        const relatedPlans = plansRes.data.filter(plan => plan.themeId === Number(id));
+    const getThemeData = async () => {
+      try {
+        const [themesRes, plansRes] = await Promise.all([api.get('/themes'), api.get('/plans')]);
+        const theme = themesRes.data.find((item) => item.id === Number(id));
+        const relatedPlans = plansRes.data.filter((plan) => plan.themeId === Number(id));
 
-        const combined = {
+        const combinedThemeData = {
           ...theme,
-          plans: relatedPlans
+          plans: relatedPlans,
         };
-
-        // 列出 log
-        console.log("Theme:", theme);
-        console.log("Related Plans:", relatedPlans);
-        console.log("Combined:", combined);
-
-        setThemeData(combined);
-      })
-      .catch(err => console.log(err));
+        setThemeData(combinedThemeData);
+      } catch (error) {
+        console.error('取得主題失敗：', error?.message);
+      }
+    };
+    getThemeData();
   }, [id]);
 
+  // 渲染評價星星
+  const renderStars = (rating, size = 24) => {
+    return Array.from({ length: 5 }, (_, index) => index + 1).map((number) => (
+      <Icon
+        key={number}
+        icon={Math.round(rating) >= number ? 'mingcute:star-fill' : 'mingcute:star-line'}
+        width={size}
+        height={size}
+        className="text-semantic-rating"
+      />
+    ));
+  };
 
+  const handleCategoryChange = (category) => {
+    setSelectedCategory(category);
+  };
 
+  const handleSortChange = (option) => {
+    setSortOption(option);
+  };
 
   return (
     <>
       <main className="main overflow-hidden">
         {/* section1 主題menu + 訂閱方案 */}
         <section className="position-relative">
-          <img className="pie-img d-none d-lg-block z-n1" src="./images/Theme_Detail/Feature/Pattern01.svg" alt="背景插圖" />
+          <img
+            className="pie-img d-none d-lg-block z-n1"
+            src="./images/Theme_Detail/Feature/Pattern01.svg"
+            alt="背景插圖"
+          />
           {/* mobile：fixed menu-bg-color */}
-          <div className="position-fixed d-lg-none w-100 z-3 bg-neutral-200" style={{ height: '130px', top: 0 }}
+          <div
+            className="position-fixed d-lg-none w-100 z-3 bg-neutral-200"
+            style={{ height: '130px', top: 0 }}
           ></div>
           {/*mobile 滿版swiper */}
           <div className="mt-19 d-lg-none">
@@ -175,34 +399,14 @@ function ThemeDetail() {
               autoplay={{ delay: 1000 }}
               loop
             >
-              <SwiperSlide>
-                <picture>
-                  <source srcSet="./images/Theme_Detail/Feature/pic_card_mobile(1).jpg"
-                    media="(max-width: 768px)" />
-                  <img src="./images/Theme_Detail/Feature/pic_card_large(1).jpg" alt="精選甜點展示圖1" />
-                </picture>
-              </SwiperSlide>
-              <SwiperSlide>
-                <picture>
-                  <source srcSet="./images/Theme_Detail/Feature/pic_card_mobile(2).jpg"
-                    media="(max-width: 768px)" />
-                  <img src="./images/Theme_Detail/Feature/pic_card_large(2).jpg" alt="精選甜點展示圖2" />
-                </picture>
-              </SwiperSlide>
-              <SwiperSlide>
-                <picture>
-                  <source srcSet="./images/Theme_Detail/Feature/pic_card_mobile(3).jpg"
-                    media="(max-width: 768px)" />
-                  <img src="./images/Theme_Detail/Feature/pic_card_large(3).jpg" alt="精選甜點展示圖3" />
-                </picture>
-              </SwiperSlide>
-              <SwiperSlide>
-                <picture>
-                  <source srcSet="./images/Theme_Detail/Feature/pic_card_mobile(4).jpg"
-                    media="(max-width: 768px)" />
-                  <img src="./images/Theme_Detail/Feature/pic_card_large(4).jpg" alt="精選甜點展示圖4" />
-                </picture>
-              </SwiperSlide>
+              {themeImages.map((image, index) => (
+                <SwiperSlide key={index}>
+                  <picture>
+                    <source srcSet={image.small} media="(max-width: 768px)" />
+                    <img src={image.large} alt={image.alt} />
+                  </picture>
+                </SwiperSlide>
+              ))}
             </Swiper>
             <div className="swiper-button-next"></div>
             <div className="swiper-button-prev"></div>
@@ -210,104 +414,53 @@ function ThemeDetail() {
           </div>
           {/* 內容：主題menu + 訂閱方案 */}
           <div className="container py-lg-11">
-            {/* 桌機 side-menu-float */}{/* scroll up才顯示  */}
+            {/* 桌機 side-menu-float */}
+            {/* scroll up才顯示  */}
             <SideMenuFloat />
             <div className="row">
               {/* 左區塊：Menu + Swiper */}
               <div className="col-xl-8 col-lg-7">
                 <div className="d-flex">
-                  {/*  menu */}{/* 固定寬度120px flex-shrink-0  */}
+                  {/*  menu */}
+                  {/* 固定寬度120px flex-shrink-0  */}
                   <nav className="side-menu-area me-lg-6 flex-shrink-0">
                     <h5 className=" d-none d-lg-block fw-bold fs-lg-7 text-nowrap ls-1 py-lg-5 ps-2">
-                      主題一覽</h5>
+                      主題一覽
+                    </h5>
                     <ul className="nav flex-lg-column side-menu gap-2 py-2 py-lg-0">
-                      <li className="nav-item">
-                        <NavLink
-                          to={`/themeDetail/1`}
-                          className={({ isActive }) =>
-                            "nav-link d-flex align-items-center" + (isActive ? " active" : "")
-                          }
-                        >
-                          精選甜點
-                        </NavLink>
-                      </li>
-                      <li className="nav-item">
-                        <NavLink
-                          to={`/themeDetail/2`}
-                          className={({ isActive }) =>
-                            "nav-link d-flex align-items-center" + (isActive ? " active" : "")
-                          }
-                        >
-                          季節限定
-                        </NavLink>
-                      </li>
-                      <li className="nav-item">
-                        <NavLink
-                          to={`/themeDetail/3`}
-                          className={({ isActive }) =>
-                            "nav-link d-flex align-items-center" + (isActive ? " active" : "")
-                          }
-                        >
-                          在地甜點
-                        </NavLink>
-                      </li>
-                      <li className="nav-item">
-                        <NavLink
-                          to={`/themeDetail/4`}
-                          className={({ isActive }) =>
-                            "nav-link d-flex align-items-center" + (isActive ? " active" : "")
-                          }
-                        >
-                          異國風味
-                        </NavLink>
-                      </li>
-                      <li className="nav-item">
-                        <NavLink
-                          to={`/themeDetail/5`}
-                          className={({ isActive }) =>
-                            "nav-link d-flex align-items-center" + (isActive ? " active" : "")
-                          }
-                        >
-                          無負擔甜點
-                        </NavLink>
-                      </li>
-                      <li className="nav-item">
-                        <NavLink
-                          to={`/themeDetail/6`}
-                          className={({ isActive }) =>
-                            "nav-link d-flex align-items-center" + (isActive ? " active" : "")
-                          }
-                        >
-                          素食甜點
-                        </NavLink>
-                      </li>
+                      {themes.map((theme) => {
+                        const { id, label } = theme;
+                        return (
+                          <li key={id} className="nav-item">
+                            <NavLink
+                              to={`/themeDetail/${id}`}
+                              className={({ isActive }) =>
+                                'nav-link d-flex align-items-center' + (isActive ? ' active' : '')
+                              }
+                            >
+                              {label}
+                            </NavLink>
+                          </li>
+                        );
+                      })}
                     </ul>
-
                   </nav>
                   {/* 中間 Swiper */}
                   <div className="theme-detail-pics d-lg-block d-none flex-grow-1">
                     {/* 大圖 */}
                     <Swiper
                       className="swiperThemeDetail"
-                      // modules={[Autoplay, Thumbs]}
-                      // autoplay={{ delay: 2000 }}
-                      // thumbs={{ swiper: thumbsSwiper}}
                       modules={[Thumbs, FreeMode]}
-                      thumbs={{ swiper: thumbsSwiper && !thumbsSwiper.destroyed ? thumbsSwiper : null }}
-                      loop={true}
+                      thumbs={{
+                        swiper: thumbsSwiper && !thumbsSwiper.destroyed ? thumbsSwiper : null,
+                      }}
+                      loop
                     >
-                      <SwiperSlide>
-                        <img src="./images/Theme_Detail/Feature/pic_card_large(1).jpg" />
-                      </SwiperSlide>
-                      <SwiperSlide>
-                        <img src="./images/Theme_Detail/Feature/pic_card_large(2).jpg" />
-                      </SwiperSlide>
-                      <SwiperSlide>
-                        <img src="./images/Theme_Detail/Feature/pic_card_large(3).jpg" />
-                      </SwiperSlide>
-                      <SwiperSlide>
-                        <img src="./images/Theme_Detail/Feature/pic_card_large(4).jpg" />
-                      </SwiperSlide>
+                      {themeImages.map((image, index) => (
+                        <SwiperSlide key={index}>
+                          <img src={image.large} alt={image.alt} />
+                        </SwiperSlide>
+                      ))}
                     </Swiper>
                     {/* 小圖 */}
                     <Swiper
@@ -319,20 +472,12 @@ function ThemeDetail() {
                       slidesPerView={4}
                       freeMode={true}
                       watchSlidesProgress={true}
-                    // onSwiper={setThumbsSwiper}
                     >
-                      <SwiperSlide>
-                        <img src="./images/Theme_Detail/Feature/pic_card_small(1).jpg" />
-                      </SwiperSlide>
-                      <SwiperSlide>
-                        <img src="./images/Theme_Detail/Feature/pic_card_small(2).jpg" />
-                      </SwiperSlide>
-                      <SwiperSlide>
-                        <img src="./images/Theme_Detail/Feature/pic_card_small(3).jpg" />
-                      </SwiperSlide>
-                      <SwiperSlide>
-                        <img src="./images/Theme_Detail/Feature/pic_card_small(4).jpg" />
-                      </SwiperSlide>
+                      {themeImages.map((image, index) => (
+                        <SwiperSlide key={index}>
+                          <img src={image.large} alt={image.alt} />
+                        </SwiperSlide>
+                      ))}
                     </Swiper>
                   </div>
                 </div>
@@ -342,9 +487,7 @@ function ThemeDetail() {
               <div className="col-xl-4 col-lg-5 plan-opts mb-17 mb-lg-11 pt-6 pt-lg-4 px-lg-5">
                 <div className="mb-9 mb-lg-5">
                   <div className="theme-topic">
-                    <h1 className="mb-5 fs-3 fs-lg-2 fw-bold ls-1">
-                      {`${themeData?.title}盒`}
-                    </h1>
+                    <h1 className="mb-5 fs-3 fs-lg-2 fw-bold ls-1">{`${themeData?.title}盒`}</h1>
                     <h2 className="mb-3 fs-7 ls-1 fw-bold">{`${themeData?.subtitle}`}</h2>
                     <p>{`${themeData?.description}`}</p>
                   </div>
@@ -359,17 +502,13 @@ function ThemeDetail() {
                         return (
                           <li key={plan.id} className="mb-3">
                             <button
-                              className={`card-plan ${activePlan?.id === plan.id ? "active" : ""}`}
+                              className={`card-plan ${activePlan?.id === plan.id ? 'active' : ''}`}
                               type="button"
                               onClick={() => setActivePlan(plan)}
                             >
                               <div className="subtitle">
                                 <p>
-                                  {idx === 0
-                                    ? "初嚐首選"
-                                    : idx === 1
-                                      ? "人氣推薦"
-                                      : "鑑賞家專屬"}
+                                  {idx === 0 ? '初嚐首選' : idx === 1 ? '人氣推薦' : '鑑賞家專屬'}
                                 </p>
                                 <p className="text-cta-200">節省 ${savedAmount}</p>
                               </div>
@@ -393,12 +532,10 @@ function ThemeDetail() {
                         className="btn-icon-lg"
                         type="button"
                         aria-label="Decrease"
-                        onClick={() => setQuantity(prev => Math.max(prev - 1, 1))}
+                        onClick={() => setQuantity((prev) => Math.max(prev - 1, 1))}
                         disabled={quantity <= 1}
                       >
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-                          <path fill="currentColor" d="M18 12.998H6a1 1 0 0 1 0-2h12a1 1 0 0 1 0 2" />
-                        </svg>
+                        <Icon className="sub" icon="ic:round-minus" width="24" height="24" />
                       </button>
 
                       {/* spinner 顯示數量 */}
@@ -417,14 +554,9 @@ function ThemeDetail() {
                         className="btn-icon-lg"
                         type="button"
                         aria-label="Increase"
-                        onClick={() => setQuantity(prev => prev + 1)}
+                        onClick={() => setQuantity((prev) => prev + 1)}
                       >
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-                          <path
-                            fill="currentColor"
-                            d="M18 12.998h-5v5a1 1 0 0 1-2 0v-5H6a1 1 0 0 1 0-2h5v-5a1 1 0 0 1 2 0v5h5a1 1 0 0 1 0 2"
-                          />
-                        </svg>
+                        <Icon className="sub" icon="ic:round-plus" width="24" height="24" />
                       </button>
                     </div>
 
@@ -433,11 +565,13 @@ function ThemeDetail() {
                       <div className="pb-4">
                         {/* 節省金額 */}
                         <p className="mb-1 fs-9 text-cta-200">
-                          {activePlan ? `節省 $${(activePlan.originalPrice - activePlan.discountPrice) * quantity}` : ""}
+                          {activePlan
+                            ? `節省 $${(activePlan.originalPrice - activePlan.discountPrice) * quantity}`
+                            : ''}
                         </p>
                         {/* 總金額 */}
                         <p className="fs-4 fw-bold ls-1">
-                          {activePlan ? `NT$ ${activePlan.discountPrice * quantity}` : ""}
+                          {activePlan ? `NT$ ${activePlan.discountPrice * quantity}` : ''}
                         </p>
                       </div>
                       <div className="pt-3">
@@ -447,35 +581,26 @@ function ThemeDetail() {
                           onClick={handleSubscribe}
                         >
                           立刻訂閱
-                          <svg className="ms-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                            <path fill="currentColor" d="M15 7.586L22.414 15H2v-2h15.586l-4-4z" />
-                          </svg>
+                          <Icon className="ms-2" icon="tdesign:swap-right" width="24" height="24" />
                         </button>
                       </div>
                     </div>
-
                   </div>
                 </div>
                 {/* 食用建議advice */}
                 <div className="advice px-3 px-lg-0">
                   <h6 className="ls-1 fw-bold fs-7 mb-5">食用建議</h6>
                   <ul>
-                    <li className="fs-8 mb-2 d-flex align-items-center">
-                      <img className="me-3" src="./images/Theme_Detail/Feature/Icon_openbook.svg" alt="openbook icon" />
-                      <p>開箱後，請先確認甜點品項與保存方式</p>
-                    </li>
-                    <li className="fs-8 mb-2 d-flex align-items-center">
-                      <img className="me-3" src="./images/Theme_Detail/Feature/Icon_tea-cup.svg" alt="tea-cup icon" />
-                      <p>搭配一杯茶或咖啡，更能襯托出甜點的風味</p>
-                    </li>
-                    <li className="fs-8 mb-2 d-flex align-items-center">
-                      <img className="me-3" src="./images/Theme_Detail/Feature/Icon_curtain.svg" alt="curtain icon" />
-                      <p>常溫甜點請置於陰涼乾燥處保存</p>
-                    </li>
-                    <li className="fs-8 mb-2 d-flex align-items-center">
-                      <img className="me-3" src="./images/Theme_Detail/Feature/Icon_eat.svg" alt="eat icon" />
-                      <p>開封後建議盡快食用，以確保最佳風味</p>
-                    </li>
+                    {usageTips.map((tip) => (
+                      <li key={tip.icon} className="fs-8 mb-2 d-flex align-items-center">
+                        <img
+                          className="me-3"
+                          src={`./images/Theme_Detail/Feature/${tip.icon}.svg`}
+                          alt={tip.alt}
+                        />
+                        <p>{tip.text}</p>
+                      </li>
+                    ))}
                   </ul>
                 </div>
               </div>
@@ -491,54 +616,37 @@ function ThemeDetail() {
               </p>
               <div className="mb-6 mb-lg-9">
                 <picture>
-                  <source media="(max-width: 992px)" srcSet="
+                  <source
+                    media="(max-width: 992px)"
+                    srcSet="
               ./images/Theme_Detail/Feature/Title_section02_mobile.svg
-            " />
-                  <img src="./images/Theme_Detail/Feature/Title_section02.svg" alt="精選甜點盒裡有甚麼" />
+            "
+                  />
+                  <img
+                    src="./images/Theme_Detail/Feature/Title_section02.svg"
+                    alt="精選甜點盒裡有甚麼"
+                  />
                 </picture>
               </div>
               <p className="text-neutral-800">
-                每盒精選甜點含 8-14
-                款話題甜點，精挑細選最新人氣與聯名熱品，甜點控嚐鮮首選！
+                每盒精選甜點含 8-14 款話題甜點，精挑細選最新人氣與聯名熱品，甜點控嚐鮮首選！
               </p>
             </div>
-            <div className="row gx-8">
-              {/* feature-1 */}
-              <div className="col-12 col-lg-4 mb-6 mb-lg-0">
-                <div className="detail-feature-card">
+            <div className="d-flex flex-lg-row flex-column gap-lg-8 gap-6">
+              {/* features */}
+              {featureCards.map((feature) => (
+                <div key={feature.icon} className="detail-feature-card">
                   <div className="detail-feature-card-padding">
-                    <img src="./images/Theme_Detail/Feature/Icon_popular.svg" alt="熱門話題甜點" className="mb-3" />
-                    <p className="text-primary-600 fw-bold fs-5 mb-3">熱門話題甜點</p>
-                    <p className="text-neutral-800 fs-lg-8">
-                      壓扁可頌、脆皮泡芙、爆紅 8 字蛋捲等<br />近期甜點圈的明星商品
-                    </p>
+                    <img
+                      src={`./images/Theme_Detail/Feature/${feature.icon}.svg`}
+                      alt={feature.alt}
+                      className="mb-3"
+                    />
+                    <p className="text-primary-600 fw-bold fs-5 mb-3">{feature.title}</p>
+                    <p className="text-neutral-800 fs-lg-8">{feature.description}</p>
                   </div>
                 </div>
-              </div>
-              {/* feature-2 */}
-              <div className="col-12 col-lg-4 mb-6 mb-lg-0">
-                <div className="detail-feature-card">
-                  <div className="detail-feature-card-padding">
-                    <img src="./images/Theme_Detail/Feature/Icon_brand.svg" alt="熱門話題甜點" className="mb-3" />
-                    <p className="text-primary-600 fw-bold fs-5 mb-3">品牌聯名限定</p>
-                    <p className="text-neutral-800 fs-lg-8">
-                      甜點品牌與飲品、文創等聯名合作款，期間限定風味搶先嚐
-                    </p>
-                  </div>
-                </div>
-              </div>
-              {/* feature-3 */}
-              <div className="col-12 col-lg-4">
-                <div className="detail-feature-card">
-                  <div className="detail-feature-card-padding">
-                    <img src="./images/Theme_Detail/Feature/Icon_classic.svg" alt="熱門話題甜點" className="mb-3" />
-                    <p className="text-primary-600 fw-bold fs-5 mb-3">經典人氣烘焙</p>
-                    <p className="text-neutral-800 fs-lg-8">
-                      布朗尼、磅蛋糕、餅乾、蛋捲等口感豐富、常溫好保存的精緻選擇
-                    </p>
-                  </div>
-                </div>
-              </div>
+              ))}
             </div>
           </div>
         </section>
@@ -552,914 +660,232 @@ function ThemeDetail() {
               </p>
               <div className="mb-6 mb-lg-9">
                 <picture>
-                  <source media="(max-width: 992px)" srcSet="
-              ./images/Theme_Detail/Feature/Title_section03_mobile.svg
-            " />
+                  <source
+                    media="(max-width: 992px)"
+                    srcSet="./images/Theme_Detail/Feature/Title_section03_mobile.svg"
+                  />
                   <img src="./images/Theme_Detail/Feature/Title_section03.svg" alt="你的第一盒甜" />
                 </picture>
               </div>
-              <p className="text-neutral-800">
-                首次訂閱一盒甜即可獲得迎賓禮盒，內含精選、季節、在地三大主題的 9
-                款人氣甜點，一次體驗多種甜點驚喜。<span className="d-none d-lg-inline">點選甜點卡片，查看更多風味介紹與保存方式。</span>
+              <p className="text-neutral-800 first-sweet-box-desc">
+                首次訂閱一盒甜，即可獲得迎賓禮盒，內含精選、季節、在地三大主題共 9
+                款人氣甜點，一次體驗多種甜點驚喜。
+                <span className="d-none d-lg-inline">
+                  點選甜點卡片，查看更多風味介紹與保存方式。
+                </span>
               </p>
             </div>
             {/* 第一盒甜內容卡片 */}
-            <div className="row gy-6">
-              {/* 1 */}
-              <div className="col-12 col-lg-4">
-                <div className="first-sweet-box-content">
-                  <picture>
-                    <source media="(max-width: 992px)" srcSet="./images/Theme_Detail/Feature/pic_cookie_mobile.jpg"
-                      className="rounded-5" />
-                    <img src="./images/Theme_Detail/Feature/pic_cookie_desktop.jpg" alt="餅乾"
-                      className="rounded-6 mb-4 mb-lg-0 w-100" />
-                  </picture>
-                  <div className="d-block d-lg-none">
-                    <div className="d-flex justify-content-between align-center mb-3 fw-bold">
-                      <p className="fs-6">奶油夾心餅</p>
-                      <p>Butterly Cookies</p>
+            <div className="row row-gap-6 d-none d-lg-flex">
+              {/* 桌面版 */}
+              {firstSweetBox.map((item) => (
+                <div key={item.id} className={`col-lg-4 ${item.className ?? 'position-relative'}`}>
+                  <div className="first-sweet-box-content">
+                    <img
+                      src={item.img.desktop}
+                      alt={item.name}
+                      className="rounded-6 mb-4 mb-lg-0 w-100 d-none d-lg-block"
+                    />
+                    {/* 黑色屏幕 */}
+                    <div className="overlay d-none d-lg-flex">
+                      <h3 className="fw-bold fs-2 mb-3">{item.name}</h3>
+                      <p className="fw-bold fs-5 mb-9">{item.enName}</p>
+                      <p>{item.desc}</p>
                     </div>
-                    <p>
-                      鬆脆餅乾夾入濃郁奶油餡，層次豐富。酥香與滑順並存，入口充滿溫潤奶香。
-                    </p>
-                  </div>
-                  {/* 黑色屏幕 */}
-                  <div className="overlay d-none d-lg-flex">
-                    <h3 className="fw-bold fs-2 mb-3">奶油夾心餅</h3>
-                    <p className="fw-bold fs-5 mb-9">Butterly Cookies</p>
-                    <p>
-                      鬆脆餅乾夾入濃郁奶油餡，層次豐富。<br />
-                      酥香與滑順並存，入口充滿溫潤奶香。
-                    </p>
                   </div>
                 </div>
-              </div>
-              {/* 2 */}
-              <div className="col-12 col-lg-4">
-                <div className="first-sweet-box-content">
-                  <picture>
-                    <source media="(max-width: 992px)" srcSet="
-                ./images/Theme_Detail/Feature/pic_brownie_mobile.jpg
-              " className="rounded-5" />
-                    <img src="./images/Theme_Detail/Feature/pic_brownie_desktop.jpg" alt="餅乾"
-                      className="rounded-6 mb-4 mb-lg-0 w-100" />
-                  </picture>
-                  <div className="d-block d-lg-none">
+              ))}
+            </div>
+            {/* 手機版 */}
+            <div className="d-flex flex-column gap-6 d-lg-none position-relative">
+              {firstSweetBox.slice(0, 4).map((item) => (
+                <div key={item.id}>
+                  <img
+                    src={item.img.mobile}
+                    alt={item.name}
+                    className="rounded-6 mb-4 mb-lg-0 w-100"
+                  />
+                  <div>
                     <div className="d-flex d-lg-none justify-content-between align-center mb-3 fw-bold">
-                      <p className="fs-6">經典濃巧布朗尼</p>
-                      <p>Choco & Mood</p>
+                      <p className="fs-6">{item.name}</p>
+                      <p>{item.enName}</p>
                     </div>
-                    <p>
-                      嚴選比利時 70%
-                      黑巧克力與法國奶油，加入核桃與海鹽，甜中帶苦，層次迷人。
-                    </p>
-                  </div>
-                  {/* 黑色屏幕 */}
-                  <div className="overlay d-none d-lg-flex">
-                    <h3 className="fw-bold fs-2 mb-3">經典濃巧布朗尼</h3>
-                    <p className="fw-bold fs-5 mb-9">Choco & Mood</p>
-                    <p>
-                      嚴選比利時 70%
-                      黑巧克力與法國奶油，加入核桃與海鹽，甜中帶苦，層次迷人。
-                    </p>
+                    <p>{item.desc}</p>
                   </div>
                 </div>
-              </div>
-              {/* 3 */}
-              <div className="col-12 col-lg-4">
-                <div className="first-sweet-box-content">
-                  <picture>
-                    <source media="(max-width: 992px)" srcSet="
-                ./images/Theme_Detail/Feature/pic_pretzels_mobile.jpg
-              " className="rounded-5" />
-                    <img src="./images/Theme_Detail/Feature/pic_pretzels_desktop.jpg" alt="餅乾"
-                      className="rounded-6 mb-4 mb-lg-0 w-100" />
-                  </picture>
-                  <div className="d-block d-lg-none">
-                    <div className="d-flex d-lg-none justify-content-between align-center mb-3 fw-bold">
-                      <p className="fs-6">經典椒鹽餅乾</p>
-                      <p>Salt&Crust Bakery</p>
+              ))}
+              {/* 收合的甜點區塊 */}
+              <div className="collapse d-lg-none" id="moreCards">
+                <div className="d-flex flex-column gap-6">
+                  {firstSweetBox.slice(4).map((item) => (
+                    <div key={item.id}>
+                      <img
+                        src={item.img.mobile}
+                        alt={item.name}
+                        className="rounded-6 mb-4 mb-lg-0 w-100"
+                      />
+                      <div>
+                        <div className="d-flex d-lg-none justify-content-between align-center mb-3 fw-bold">
+                          <p className="fs-6">{item.name}</p>
+                          <p>{item.enName}</p>
+                        </div>
+                        <p>{item.desc}</p>
+                      </div>
                     </div>
-                    <p>
-                      外層撒上細緻椒鹽，酥脆中帶有鹹香，簡單卻耐吃，讓人一口接一口的經典小食。
-                    </p>
-                  </div>
-                  {/* 黑色屏幕 */}
-                  <div className="overlay d-none d-lg-flex">
-                    <h3 className="fw-bold fs-2 mb-3">經典椒鹽餅乾</h3>
-                    <p className="fw-bold fs-5 mb-9">Salt & Crust Bakery</p>
-                    <p>
-                      外層撒上細緻椒鹽，酥脆中帶有鹹香，簡單卻耐吃，讓人一口接一口的經典小食。
-                    </p>
-                  </div>
+                  ))}
                 </div>
               </div>
-              {/* 4 */}
-              <div className="col-12 col-lg-4 position-relative">
-                <div className="first-sweet-box-content card-mask">
-                  <picture>
-                    <source media="(max-width: 992px)" srcSet="./images/Theme_Detail/Feature/pic_candy_mobile.jpg"
-                      className="rounded-5" />
-                    <img src="./images/Theme_Detail/Feature/pic_candy_desktop.jpg" alt="餅乾"
-                      className="rounded-6 mb-4 mb-lg-0 w-100" />
-                  </picture>
-                  <div className="d-block d-lg-none">
-                    <div className="d-flex d-lg-none justify-content-between align-center mb-3 fw-bold">
-                      <p className="fs-6">開心果牛軋糖</p>
-                      <p>Pistachio Lane</p>
-                    </div>
-                    <div className="collapse d-lg-block" id="moreCards">
-                      <p>
-                        以綿軟牛軋糖揉入滿滿開心果仁。堅果香脆與甜蜜嚼感，讓人愈嚼愈香。
-                      </p>
-                    </div>
-                  </div>
-                  {/* 黑色屏幕 */}
-                  <div className="overlay d-none d-lg-flex">
-                    <h3 className="fw-bold fs-2 mb-3">開心果牛軋糖</h3>
-                    <p className="fw-bold fs-5 mb-9">Pistachio Lane</p>
-                    <p>
-                      以綿軟牛軋糖揉入滿滿開心果仁。 堅果香脆與甜蜜嚼感，讓人愈嚼愈香。
-                    </p>
-                  </div>
-                </div>
-              </div>
-              {/* 5 */}
-              {/* 桌面版 */}
-              <div className="col-12 col-lg-4 d-none d-lg-block">
-                <div className="first-sweet-box-content">
-                  <img src="./images/Theme_Detail/Feature/pic_snowball_desktop.jpg" alt="餅乾"
-                    className="rounded-6 mb-4 mb-lg-0 w-100" />
-                  {/* 黑色屏幕 */}
-                  <div className="overlay">
-                    <h3 className="fw-bold fs-2 mb-3">草莓雪球</h3>
-                    <p className="fw-bold fs-5 mb-9">Snowberry Patisserie</p>
-                    <p>
-                      滿佈糖粉的雪球外型，入口酥鬆輕盈。 帶有淡雅草莓香氣，甜美而不膩。
-                    </p>
-                  </div>
-                </div>
-              </div>
-              {/* 手機版 */}
-              <div className="col-12 collapse d-lg-none" id="moreCards">
-                <img src="./images/Theme_Detail/Feature/pic_snowball_mobile.jpg" alt="餅乾"
-                  className="rounded-6 mb-4 mb-lg-0 w-100" />
-                <div>
-                  <div className="d-flex d-lg-none justify-content-between align-center mb-3 fw-bold">
-                    <p className="fs-6">草莓雪球</p>
-                    <p>Snowberry Patisserie</p>
-                  </div>
-                  <p>
-                    滿佈糖粉的雪球外型，入口酥鬆輕盈。帶有淡雅草莓香氣，甜美而不膩。
-                  </p>
-                </div>
-              </div>
-              {/* 6 */}
-              {/* 桌面版 */}
-              <div className="col-12 col-lg-4 d-none d-lg-block">
-                <div className="first-sweet-box-content">
-                  <img src="./images/Theme_Detail/Feature/pic_cake_desktop.jpg" alt="餅乾"
-                    className="rounded-6 mb-4 mb-lg-0 w-100" />
-                  {/* 黑色屏幕 */}
-                  <div className="overlay">
-                    <h3 className="fw-bold fs-2 mb-3">醇厚奶香磅蛋糕</h3>
-                    <p className="fw-bold fs-5 mb-9">Heritage Pound Cake Co.</p>
-                    <p>傳統比例製作，口感綿密紮實。濃厚奶油香氣，經典耐吃不退流行。</p>
-                  </div>
-                </div>
-              </div>
-              {/* 手機版 */}
-              <div className="col-12 collapse d-lg-none" id="moreCards">
-                <img src="./images/Theme_Detail/Feature/pic_cake_mobile.jpg" alt="餅乾"
-                  className="rounded-6 mb-4 mb-lg-0 w-100" />
-                <div>
-                  <div className="d-flex d-lg-none justify-content-between align-center mb-3 fw-bold">
-                    <p className="fs-6">醇厚奶香磅蛋糕</p>
-                    <p>Heritage Pound Cake Co.</p>
-                  </div>
-                  <p>傳統比例製作，口感綿密紮實。濃厚奶油香氣，經典耐吃不退流行。</p>
-                </div>
-              </div>
-              {/* 7 */}
-              {/* 桌面版 */}
-              <div className="col-12 col-lg-4 d-none d-lg-block">
-                <div className="first-sweet-box-content">
-                  <img src="./images/Theme_Detail/Feature/pic_eggroll_desktop.jpg" alt="餅乾"
-                    className="rounded-6 mb-4 mb-lg-0 w-100" />
-                  {/* 黑色屏幕 */}
-                  <div className="overlay">
-                    <h3 className="fw-bold fs-2 mb-3">經典手工蛋捲</h3>
-                    <p className="fw-bold fs-5 mb-9">Choco & Mood</p>
-                    <p>
-                      手工蛋捲，層層酥香，每一口都保留傳統蛋香，清雅迷人，簡單卻令人回味無窮。
-                    </p>
-                  </div>
-                </div>
-              </div>
-              {/* 手機版 */}
-              <div className="col-12 collapse d-lg-none" id="moreCards">
-                <img src="./images/Theme_Detail/Feature/pic_eggroll_mobile.jpg" alt="餅乾"
-                  className="rounded-6 mb-4 mb-lg-0 w-100" />
-                <div>
-                  <div className="d-flex d-lg-none justify-content-between align-center mb-3 fw-bold">
-                    <p className="fs-6">經典手工蛋捲</p>
-                    <p>Choco & Mood</p>
-                  </div>
-                  <p>
-                    手工蛋捲，層層酥香，每一口都保留傳統蛋香，清雅迷人，簡單卻令人回味無窮。
-                  </p>
-                </div>
-              </div>
-              {/* 8 */}
-              {/* 桌面版 */}
-              <div className="col-12 col-lg-4 d-none d-lg-block">
-                <div className="first-sweet-box-content">
-                  <img src="./images/Theme_Detail/Feature/pic_tart_desktop.jpg" alt="餅乾"
-                    className="rounded-6 mb-4 mb-lg-0 w-100" />
-                  {/* 黑色屏幕 */}
-                  <div className="overlay">
-                    <h3 className="fw-bold fs-2 mb-3">焦糖綜合堅果塔</h3>
-                    <p className="fw-bold fs-5 mb-9">Caramel & Nut Atelier</p>
-                    <p>
-                      以焦糖拌炒多種堅果，填入香酥塔皮。層層堆疊的堅果香氣，口感豐富紮實。
-                    </p>
-                  </div>
-                </div>
-              </div>
-              {/* 手機版 */}
-              <div className="col-12 collapse d-lg-none" id="moreCards">
-                <img src="./images/Theme_Detail/Feature/pic_tart_mobile.jpg" alt="麻糬"
-                  className="rounded-6 mb-4 mb-lg-0 w-100" />
-                <div>
-                  <div className="d-flex d-lg-none justify-content-between align-center mb-3 fw-bold">
-                    <p className="fs-6">焦糖綜合堅果塔</p>
-                    <p>Caramel & Nut Atelier</p>
-                  </div>
-                  <p>
-                    以焦糖拌炒多種堅果，填入香酥塔皮。層層堆疊的堅果香氣，口感豐富紮實。
-                  </p>
-                </div>
-              </div>
-              {/* 9 */}
-              {/* 桌面版 */}
-              <div className="col-12 col-lg-4 d-none d-lg-block">
-                <div className="first-sweet-box-content">
-                  <img src="./images/Theme_Detail/Feature/pic_mochi_desktop.jpg" alt="餅乾"
-                    className="rounded-6 mb-4 mb-lg-0" />
-                  {/* 黑色屏幕 */}
-                  <div className="overlay">
-                    <h3 className="fw-bold fs-2 mb-3">花生麻糬</h3>
-                    <p className="fw-bold fs-5 mb-9">Mochi & Nut House</p>
-                    <p>
-                      軟Q麻糬包裹綿密花生餡，香濃順口。
-                      經典台式甜點，軟糯與堅果香完美交織。
-                    </p>
-                  </div>
-                </div>
-              </div>
-              {/* 手機版 */}
-              <div className="col-12 collapse d-lg-none" id="moreCards">
-                <img src="./images/Theme_Detail/Feature/pic_mochi_mobile.jpg" alt="麻糬"
-                  className="rounded-6 mb-4 mb-lg-0 w-100" />
-                <div>
-                  <div className="d-flex d-lg-none justify-content-between align-center mb-3 fw-bold">
-                    <p className="fs-6">花生麻糬</p>
-                    <p>Mochi & Nut House</p>
-                  </div>
-                  <p>
-                    軟Q麻糬包裹綿密花生餡，香濃順口。經典台式甜點，軟糯與堅果香完美交織。
-                  </p>
-                </div>
+
+              {/* 收合按鈕 */}
+              <div
+                className={`text-center d-block d-lg-none ${isExpanded ? '' : 'position-absolute bottom-0 start-0 end-0 card-mask'}`}
+              >
+                <button
+                  className="btn-outline-primary moreCards w-100"
+                  type="button"
+                  data-bs-toggle="collapse"
+                  data-bs-target="#moreCards"
+                  aria-expanded="false"
+                  aria-controls="moreCards"
+                  onClick={() => setIsExpanded(!isExpanded)}
+                >
+                  {isExpanded ? '收合內容' : '展開全部'}
+                </button>
               </div>
             </div>
-            {/* 收和按鈕 */}
-            <div className="text-center mt-4 d-block d-lg-none">
-              <button className="btn-outline-primary moreCards" type="button" data-bs-toggle="collapse"
-                data-bs-target="#moreCards" aria-expanded="false" aria-controls="moreCards">
-                <span className="when-collapsed">展開全部</span>
-                <span className="when-not-collapsed">收合內容</span>
-              </button>
-            </div>
-            <img className="d-none d-lg-block backgroundPattern z-n1"
-              src="./images/Theme_Detail/Feature/BackgroundPattern.svg" alt="" />
-            <img src="./images/Theme_Detail/Feature/BackgroundPattern_mobile_collapse.svg" alt=""
-              className="d-block d-lg-none collapse z-n1 backgroundPattern" />
-            <img src="./images/Theme_Detail/Feature/BackgroundPattern_mobile_expand.svg" alt=""
-              className="d-block d-lg-none expanded z-n1 backgroundPattern" />
           </div>
-          {/* <img
-    className="d-none d-lg-block z-n1 backgroundPattern"
-    src="./images/Theme_Detail/Feature/BackgroundPattern.svg"
-    alt=""
-  />
-  <img
-    src="./images/Theme_Detail/Feature/BackgroundPattern_mobile_collapse.svg"
-    alt=""
-    className="d-block d-lg-none collapse z-n1 backgroundPattern"
-  />
-  <img
-    src="./images/Theme_Detail/Feature/BackgroundPattern_mobile_expand.svg"
-    alt=""
-    className="d-block d-lg-none expanded z-n1 backgroundPattern"
-  /> */}
         </section>
         {/* section4 好評分享 */}
-        <section className="py-lg-11 py-17 bg-neutral-400 position-relative">
-          <img className="d-lg-block d-none position-absolute cake end-0"
-            src="./images/Theme_Detail/Feature/Pattern02.svg" alt="Pattern02" width="212" height="332" />
-          <img className="d-lg-block d-none position-absolute brand start-0"
-            src="./images/Theme_Detail/Feature/Pattern03.svg" alt="Pattern03" width="252" height="288" />
-          <img className="d-lg-block d-none position-absolute end-0 bottom-0"
-            src="./images/Theme_Detail/Feature/Pattern04.svg" alt="Pattern04" width="468" height="268" />
+        <section className="py-lg-11 py-17 bg-neutral-400 position-relative review-section">
           <div className="container">
+            {/* 標題 */}
             <div className="text-center mb-lg-14 mb-15">
-              <p className="en-font text-primary-600 fs-7 fs-lg-6 ls-1 fw-bold mb-lg-6 mb-3">sweet words</p>
+              <p className="en-font text-primary-600 fs-7 fs-lg-6 ls-1 fw-bold mb-lg-6 mb-3">
+                sweet words
+              </p>
               <picture>
-                <source media="(max-width: 992px)"
-                  srcSet="./images/Theme_Detail/Feature/Title_section04_mobile.svg" />
-                <img src="./images/Theme_Detail/Feature/Title_section04.svg" alt="Title_section04" />
+                <source
+                  media="(max-width: 992px)"
+                  srcSet="./images/Theme_Detail/Feature/Title_section04_mobile.svg"
+                />
+                <img
+                  src="./images/Theme_Detail/Feature/Title_section04.svg"
+                  alt="Title_section04"
+                />
               </picture>
             </div>
-            <div
-              className="bg-neutral-250 p-6 py-lg-8 px-lg-16 d-flex justify-content-center align-items-start flex-column flex-lg-row rounded-8 mb-lg-14 mb-15">
+            {/* 主題評分區 */}
+            <div className="bg-neutral-250 p-6 py-lg-8 px-lg-16 d-flex justify-content-center flex-column flex-lg-row rounded-8 mb-lg-14 mb-15">
+              {/* 評分區左側 */}
               <div className="rate-left p-0 py-lg-5 text-center mb-5 mb-lg-0">
                 <div className="d-flex flex-row flex-lg-column align-items-center justify-content-start">
-                  <p className="noto_sans text-neutral-800 fs-lg-1 fs-4 fw-bold ls-1 lh-sm mb-lg-5 mb-0 me-3 me-lg-0">4.8
+                  <p className="noto_sans text-neutral-800 fs-lg-1 fs-4 fw-bold ls-1 lh-sm mb-lg-5 mb-0 me-3 me-lg-0">
+                    4.8
                   </p>
                   <div className="rate d-flex justify-content-center gap-1 mb-lg-3 mb-0 me-3 me-lg-0">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path
-                        d="M14.0249 3.47063L15.7101 6.70313C15.8355 6.94108 16.0154 7.14595 16.2352 7.30095C16.455 7.45596 16.7084 7.55668 16.9746 7.59488L20.5341 8.08238C22.4376 8.34488 23.1756 10.6916 21.7679 11.9966L19.3304 14.2459C19.1229 14.437 18.9671 14.6775 18.8776 14.945C18.788 15.2125 18.7676 15.4983 18.8181 15.7759L19.4129 19.0744C19.7436 20.9119 17.8319 22.3444 16.1541 21.5044L12.7521 19.8169C12.518 19.7022 12.2606 19.6425 11.9999 19.6425C11.7391 19.6425 11.4818 19.7022 11.2476 19.8169L7.84563 21.5044C6.16713 22.3369 4.25613 20.9119 4.58688 19.0744L5.18163 15.7751C5.28663 15.2126 5.09163 14.6351 4.67013 14.2451L2.23188 11.9966C0.82413 10.6991 1.56213 8.34412 3.46563 8.08162L7.02513 7.59413C7.29214 7.55831 7.54655 7.45853 7.76671 7.30327C7.98686 7.14801 8.16626 6.94187 8.28963 6.70237L9.97563 3.47063C10.8336 1.84312 13.1736 1.84312 14.0241 3.47063"
-                        fill="#FFC107" />
-                    </svg>
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path
-                        d="M14.0249 3.47063L15.7101 6.70313C15.8355 6.94108 16.0154 7.14595 16.2352 7.30095C16.455 7.45596 16.7084 7.55668 16.9746 7.59488L20.5341 8.08238C22.4376 8.34488 23.1756 10.6916 21.7679 11.9966L19.3304 14.2459C19.1229 14.437 18.9671 14.6775 18.8776 14.945C18.788 15.2125 18.7676 15.4983 18.8181 15.7759L19.4129 19.0744C19.7436 20.9119 17.8319 22.3444 16.1541 21.5044L12.7521 19.8169C12.518 19.7022 12.2606 19.6425 11.9999 19.6425C11.7391 19.6425 11.4818 19.7022 11.2476 19.8169L7.84563 21.5044C6.16713 22.3369 4.25613 20.9119 4.58688 19.0744L5.18163 15.7751C5.28663 15.2126 5.09163 14.6351 4.67013 14.2451L2.23188 11.9966C0.82413 10.6991 1.56213 8.34412 3.46563 8.08162L7.02513 7.59413C7.29214 7.55831 7.54655 7.45853 7.76671 7.30327C7.98686 7.14801 8.16626 6.94187 8.28963 6.70237L9.97563 3.47063C10.8336 1.84312 13.1736 1.84312 14.0241 3.47063"
-                        fill="#FFC107" />
-                    </svg>
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path
-                        d="M14.0249 3.47063L15.7101 6.70313C15.8355 6.94108 16.0154 7.14595 16.2352 7.30095C16.455 7.45596 16.7084 7.55668 16.9746 7.59488L20.5341 8.08238C22.4376 8.34488 23.1756 10.6916 21.7679 11.9966L19.3304 14.2459C19.1229 14.437 18.9671 14.6775 18.8776 14.945C18.788 15.2125 18.7676 15.4983 18.8181 15.7759L19.4129 19.0744C19.7436 20.9119 17.8319 22.3444 16.1541 21.5044L12.7521 19.8169C12.518 19.7022 12.2606 19.6425 11.9999 19.6425C11.7391 19.6425 11.4818 19.7022 11.2476 19.8169L7.84563 21.5044C6.16713 22.3369 4.25613 20.9119 4.58688 19.0744L5.18163 15.7751C5.28663 15.2126 5.09163 14.6351 4.67013 14.2451L2.23188 11.9966C0.82413 10.6991 1.56213 8.34412 3.46563 8.08162L7.02513 7.59413C7.29214 7.55831 7.54655 7.45853 7.76671 7.30327C7.98686 7.14801 8.16626 6.94187 8.28963 6.70237L9.97563 3.47063C10.8336 1.84312 13.1736 1.84312 14.0241 3.47063"
-                        fill="#FFC107" />
-                    </svg>
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path
-                        d="M14.0249 3.47063L15.7101 6.70313C15.8355 6.94108 16.0154 7.14595 16.2352 7.30095C16.455 7.45596 16.7084 7.55668 16.9746 7.59488L20.5341 8.08238C22.4376 8.34488 23.1756 10.6916 21.7679 11.9966L19.3304 14.2459C19.1229 14.437 18.9671 14.6775 18.8776 14.945C18.788 15.2125 18.7676 15.4983 18.8181 15.7759L19.4129 19.0744C19.7436 20.9119 17.8319 22.3444 16.1541 21.5044L12.7521 19.8169C12.518 19.7022 12.2606 19.6425 11.9999 19.6425C11.7391 19.6425 11.4818 19.7022 11.2476 19.8169L7.84563 21.5044C6.16713 22.3369 4.25613 20.9119 4.58688 19.0744L5.18163 15.7751C5.28663 15.2126 5.09163 14.6351 4.67013 14.2451L2.23188 11.9966C0.82413 10.6991 1.56213 8.34412 3.46563 8.08162L7.02513 7.59413C7.29214 7.55831 7.54655 7.45853 7.76671 7.30327C7.98686 7.14801 8.16626 6.94187 8.28963 6.70237L9.97563 3.47063C10.8336 1.84312 13.1736 1.84312 14.0241 3.47063"
-                        fill="#FFC107" />
-                    </svg>
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path
-                        d="M14.0249 3.47063L15.7101 6.70313C15.8355 6.94108 16.0154 7.14595 16.2352 7.30095C16.455 7.45596 16.7084 7.55668 16.9746 7.59488L20.5341 8.08238C22.4376 8.34488 23.1756 10.6916 21.7679 11.9966L19.3304 14.2459C19.1229 14.437 18.9671 14.6775 18.8776 14.945C18.788 15.2125 18.7676 15.4983 18.8181 15.7759L19.4129 19.0744C19.7436 20.9119 17.8319 22.3444 16.1541 21.5044L12.7521 19.8169C12.518 19.7022 12.2606 19.6425 11.9999 19.6425C11.7391 19.6425 11.4818 19.7022 11.2476 19.8169L7.84563 21.5044C6.16713 22.3369 4.25613 20.9119 4.58688 19.0744L5.18163 15.7751C5.28663 15.2126 5.09163 14.6351 4.67013 14.2451L2.23188 11.9966C0.82413 10.6991 1.56213 8.34412 3.46563 8.08162L7.02513 7.59413C7.29214 7.55831 7.54655 7.45853 7.76671 7.30327C7.98686 7.14801 8.16626 6.94187 8.28963 6.70237L9.97563 3.47063C10.8336 1.84312 13.1736 1.84312 14.0241 3.47063"
-                        fill="#FFC107" />
-                    </svg>
+                    {renderStars(4.8, 24)}
                   </div>
                   <p className="text-neutral-600 fs-lg-6 fs-9">5,937 則評價</p>
                 </div>
               </div>
-              <div className="border-start mx-6 border-2 border-neutral-400 d-lg-block d-none" style={{ height: '160px' }}></div>
+              {/* 分隔線 */}
+              <div className="rating-divider d-lg-block d-none"></div>
+              {/* 評分區右側 */}
               <div className="p-0 py-lg-5 px-lg-9 d-flex flex-column gap-3 flex-grow-1">
-                <div className="d-flex align-items-center">
-                  <p className="text-neutral-800 fs-lg-6 fs-8 lh-sm ls-1 fw-bold noto_sans me-lg-2 me-1">5</p>
-                  <div className="star me-lg-6 me-2 d-flex align-items-center">
-                    <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path
-                        d="M10.6874 1.89219L12.0918 4.58594C12.1962 4.78423 12.3462 4.95496 12.5293 5.08413C12.7125 5.2133 12.9237 5.29723 13.1455 5.32906L16.1118 5.73531C17.698 5.95406 18.313 7.90969 17.1399 8.99719L15.1086 10.8716C14.9357 11.0308 14.8059 11.2313 14.7313 11.4542C14.6567 11.6771 14.6396 11.9153 14.6818 12.1466L15.1774 14.8953C15.453 16.4266 13.8599 17.6203 12.4618 16.9203L9.62678 15.5141C9.43163 15.4185 9.2172 15.3688 8.9999 15.3688C8.7826 15.3688 8.56817 15.4185 8.37302 15.5141L5.53803 16.9203C4.13928 17.6141 2.54678 16.4266 2.8224 14.8953L3.31803 12.1459C3.40553 11.6772 3.24303 11.1959 2.89178 10.8709L0.8599 8.99719C-0.313225 7.91594 0.301775 5.95344 1.88802 5.73469L4.85427 5.32844C5.07678 5.2986 5.28879 5.21544 5.47225 5.08606C5.65572 4.95668 5.80522 4.78489 5.90803 4.58531L7.31302 1.89219C8.02802 0.535937 9.97802 0.535937 10.6868 1.89219"
-                        fill="#FFC107" />
-                    </svg>
+                {ratingDistribution.map((item) => (
+                  <div key={item.star} className="d-flex align-items-center gap-lg-6 gap-2">
+                    {/* 星星數 */}
+                    <div className="d-flex align-items-center gap-1">
+                      <span className="text-neutral-800 fs-lg-6 fs-8 lh-sm ls-1 fw-bold noto_sans">
+                        {item.star}
+                      </span>
+                      <Icon icon="mage:star-fill" className="text-semantic-rating star" />
+                    </div>
+                    {/* 進度條 */}
+                    <div className="progress flex-grow-1">
+                      <div
+                        className="progress-bar"
+                        role="progressbar"
+                        style={{ width: item.percent }}
+                      ></div>
+                    </div>
+                    {/* 評論總數 */}
+                    <p className="text-neutral-600 fs-8 text-nowrap rating-counts">{`${item.count} 則 (${item.percent})`}</p>
                   </div>
-
-                  <div className="progress me-lg-6 me-2">
-                    <div className="progress-bar" role="progressbar" style={{ width: '80%' }}></div>
-                  </div>
-                  <p className="text-neutral-600 fs-8 text-nowrap">5050 則 (80%)</p>
-                </div>
-                <div className="d-flex align-items-center">
-                  <p className="text-neutral-800 fs-lg-6 fs-8 lh-sm ls-1 fw-bold noto_sans me-lg-2 me-1">4</p>
-                  <div className="star me-lg-6 me-2 d-flex align-items-center">
-                    <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path
-                        d="M10.6874 1.89219L12.0918 4.58594C12.1962 4.78423 12.3462 4.95496 12.5293 5.08413C12.7125 5.2133 12.9237 5.29723 13.1455 5.32906L16.1118 5.73531C17.698 5.95406 18.313 7.90969 17.1399 8.99719L15.1086 10.8716C14.9357 11.0308 14.8059 11.2313 14.7313 11.4542C14.6567 11.6771 14.6396 11.9153 14.6818 12.1466L15.1774 14.8953C15.453 16.4266 13.8599 17.6203 12.4618 16.9203L9.62678 15.5141C9.43163 15.4185 9.2172 15.3688 8.9999 15.3688C8.7826 15.3688 8.56817 15.4185 8.37302 15.5141L5.53803 16.9203C4.13928 17.6141 2.54678 16.4266 2.8224 14.8953L3.31803 12.1459C3.40553 11.6772 3.24303 11.1959 2.89178 10.8709L0.8599 8.99719C-0.313225 7.91594 0.301775 5.95344 1.88802 5.73469L4.85427 5.32844C5.07678 5.2986 5.28879 5.21544 5.47225 5.08606C5.65572 4.95668 5.80522 4.78489 5.90803 4.58531L7.31302 1.89219C8.02802 0.535937 9.97802 0.535937 10.6868 1.89219"
-                        fill="#FFC107" />
-                    </svg>
-                  </div>
-
-                  <div className="progress me-lg-6 me-2">
-                    <div className="progress-bar" role="progressbar" style={{ width: '12%' }}></div>
-                  </div>
-                  <p className="text-neutral-600 fs-8 text-nowrap">700 則 (12%)</p>
-                </div>
-                <div className="d-flex align-items-center">
-                  <p className="text-neutral-800 fs-lg-6 fs-8 lh-sm ls-1 fw-bold noto_sans me-lg-2 me-1">3</p>
-                  <div className="star me-lg-6 me-2 d-flex align-items-center">
-                    <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path
-                        d="M10.6874 1.89219L12.0918 4.58594C12.1962 4.78423 12.3462 4.95496 12.5293 5.08413C12.7125 5.2133 12.9237 5.29723 13.1455 5.32906L16.1118 5.73531C17.698 5.95406 18.313 7.90969 17.1399 8.99719L15.1086 10.8716C14.9357 11.0308 14.8059 11.2313 14.7313 11.4542C14.6567 11.6771 14.6396 11.9153 14.6818 12.1466L15.1774 14.8953C15.453 16.4266 13.8599 17.6203 12.4618 16.9203L9.62678 15.5141C9.43163 15.4185 9.2172 15.3688 8.9999 15.3688C8.7826 15.3688 8.56817 15.4185 8.37302 15.5141L5.53803 16.9203C4.13928 17.6141 2.54678 16.4266 2.8224 14.8953L3.31803 12.1459C3.40553 11.6772 3.24303 11.1959 2.89178 10.8709L0.8599 8.99719C-0.313225 7.91594 0.301775 5.95344 1.88802 5.73469L4.85427 5.32844C5.07678 5.2986 5.28879 5.21544 5.47225 5.08606C5.65572 4.95668 5.80522 4.78489 5.90803 4.58531L7.31302 1.89219C8.02802 0.535937 9.97802 0.535937 10.6868 1.89219"
-                        fill="#FFC107" />
-                    </svg>
-                  </div>
-
-                  <div className="progress me-lg-6 me-2">
-                    <div className="progress-bar" role="progressbar" style={{ width: '5%' }}></div>
-                  </div>
-                  <p className="text-neutral-600 fs-8 text-nowrap">150 則 (5%)</p>
-                </div>
-                <div className="d-flex align-items-center">
-                  <p className="text-neutral-800 fs-lg-6 fs-8 lh-sm ls-1 fw-bold noto_sans me-lg-2 me-1">2</p>
-                  <div className="star me-lg-6 me-2 d-flex align-items-center">
-                    <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path
-                        d="M10.6874 1.89219L12.0918 4.58594C12.1962 4.78423 12.3462 4.95496 12.5293 5.08413C12.7125 5.2133 12.9237 5.29723 13.1455 5.32906L16.1118 5.73531C17.698 5.95406 18.313 7.90969 17.1399 8.99719L15.1086 10.8716C14.9357 11.0308 14.8059 11.2313 14.7313 11.4542C14.6567 11.6771 14.6396 11.9153 14.6818 12.1466L15.1774 14.8953C15.453 16.4266 13.8599 17.6203 12.4618 16.9203L9.62678 15.5141C9.43163 15.4185 9.2172 15.3688 8.9999 15.3688C8.7826 15.3688 8.56817 15.4185 8.37302 15.5141L5.53803 16.9203C4.13928 17.6141 2.54678 16.4266 2.8224 14.8953L3.31803 12.1459C3.40553 11.6772 3.24303 11.1959 2.89178 10.8709L0.8599 8.99719C-0.313225 7.91594 0.301775 5.95344 1.88802 5.73469L4.85427 5.32844C5.07678 5.2986 5.28879 5.21544 5.47225 5.08606C5.65572 4.95668 5.80522 4.78489 5.90803 4.58531L7.31302 1.89219C8.02802 0.535937 9.97802 0.535937 10.6868 1.89219"
-                        fill="#FFC107" />
-                    </svg>
-                  </div>
-
-                  <div className="progress me-lg-6 me-2">
-                    <div className="progress-bar" role="progressbar" style={{ width: '2%' }}></div>
-                  </div>
-                  <p className="text-neutral-600 fs-8 text-nowrap">30 則 (2%)</p>
-                </div>
-                <div className="d-flex align-items-center">
-                  <p className="text-neutral-800 fs-lg-6 fs-8 lh-sm ls-1 fw-bold noto_sans me-lg-2 me-1">1</p>
-                  <div className="star me-lg-6 me-2 d-flex align-items-center">
-                    <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path
-                        d="M10.6874 1.89219L12.0918 4.58594C12.1962 4.78423 12.3462 4.95496 12.5293 5.08413C12.7125 5.2133 12.9237 5.29723 13.1455 5.32906L16.1118 5.73531C17.698 5.95406 18.313 7.90969 17.1399 8.99719L15.1086 10.8716C14.9357 11.0308 14.8059 11.2313 14.7313 11.4542C14.6567 11.6771 14.6396 11.9153 14.6818 12.1466L15.1774 14.8953C15.453 16.4266 13.8599 17.6203 12.4618 16.9203L9.62678 15.5141C9.43163 15.4185 9.2172 15.3688 8.9999 15.3688C8.7826 15.3688 8.56817 15.4185 8.37302 15.5141L5.53803 16.9203C4.13928 17.6141 2.54678 16.4266 2.8224 14.8953L3.31803 12.1459C3.40553 11.6772 3.24303 11.1959 2.89178 10.8709L0.8599 8.99719C-0.313225 7.91594 0.301775 5.95344 1.88802 5.73469L4.85427 5.32844C5.07678 5.2986 5.28879 5.21544 5.47225 5.08606C5.65572 4.95668 5.80522 4.78489 5.90803 4.58531L7.31302 1.89219C8.02802 0.535937 9.97802 0.535937 10.6868 1.89219"
-                        fill="#FFC107" />
-                    </svg>
-                  </div>
-
-                  <div className="progress me-lg-6 me-2">
-                    <div className="progress-bar" role="progressbar" style={{ width: '1%' }}></div>
-                  </div>
-                  <p className="text-neutral-600 fs-8 text-nowrap">7 則 (1%)</p>
-                </div>
+                ))}
               </div>
             </div>
-            <div className="d-none d-lg-flex justify-content-between align-items-center mb-14">
-              <div className="d-flex gap-2">
-                <button type="button" className="btn btn-tag active">全部 (3,452)</button>
-                <button type="button" className="btn btn-tag">精選甜點 (1,280)</button>
-                <button type="button" className="btn btn-tag">異國風味 (742)</button>
-                <button type="button" className="btn btn-tag">季節限定 (598)</button>
-                <button type="button" className="btn btn-tag">無負擔甜點 (410)</button>
-                <button type="button" className="btn btn-tag">在地甜點 (230)</button>
-                <button type="button" className="btn btn-tag">素食甜點 (192)</button>
-              </div>
-              <div className="d-flex">
-                <button type="button" className="btn-text active p-3 fs-8">評價由高至低 ↓</button>
-                <button type="button" className="btn-text p-3 fs-8">評價由低至高 ↑</button>
-              </div>
-            </div>
-            <div className="d-flex d-lg-none justify-content-end">
-              <div className="dropdown me-2">
-                <button className="btn border-0 d-flex align-items-center p-3" type="button" id="dropdownMenu"
-                  data-bs-toggle="dropdown" aria-expanded="false">
-                  全部主題
-                  <svg className="ms-2" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                    <path fillRule="evenodd" clipRule="evenodd"
-                      d="M7.29279 9.29357C7.48031 9.1061 7.73462 9.00078 7.99979 9.00078C8.26495 9.00078 8.51926 9.1061 8.70679 9.29357L11.9998 12.5866L15.2928 9.29357C15.385 9.19806 15.4954 9.12188 15.6174 9.06947C15.7394 9.01706 15.8706 8.98947 16.0034 8.98832C16.1362 8.98717 16.2678 9.01247 16.3907 9.06275C16.5136 9.11303 16.6253 9.18728 16.7192 9.28118C16.8131 9.37507 16.8873 9.48672 16.9376 9.60962C16.9879 9.73251 17.0132 9.86419 17.012 9.99697C17.0109 10.1298 16.9833 10.261 16.9309 10.383C16.8785 10.505 16.8023 10.6153 16.7068 10.7076L12.7068 14.7076C12.5193 14.895 12.265 15.0004 11.9998 15.0004C11.7346 15.0004 11.4803 14.895 11.2928 14.7076L7.29279 10.7076C7.10532 10.52 7 10.2657 7 10.0006C7 9.73541 7.10532 9.4811 7.29279 9.29357Z" />
-                  </svg>
-                </button>
-                <ul className="dropdown-menu m-0 custom-dropdown shadow-sm" aria-labelledby="dropdownMenu">
-                  <li><button className="dropdown-item active" type="button">全部主題</button></li>
-                  <li><button className="dropdown-item" type="button">精選甜點</button></li>
-                  <li><button className="dropdown-item" type="button">異國風味</button></li>
-                  <li><button className="dropdown-item" type="button">季節限定</button></li>
-                  <li><button className="dropdown-item" type="button">無負擔甜點</button></li>
-                  <li><button className="dropdown-item" type="button">在地甜點</button></li>
-                  <li><button className="dropdown-item" type="button">素食甜點</button></li>
-                </ul>
-              </div>
-              <div className="dropdown">
-                <button className="btn border-0 d-flex align-items-center p-3" type="button" id="dropdownMenu"
-                  data-bs-toggle="dropdown" aria-expanded="false">
-                  預設排序
-                  <svg className="ms-2" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                    <path fillRule="evenodd" clipRule="evenodd"
-                      d="M7.29279 9.29357C7.48031 9.1061 7.73462 9.00078 7.99979 9.00078C8.26495 9.00078 8.51926 9.1061 8.70679 9.29357L11.9998 12.5866L15.2928 9.29357C15.385 9.19806 15.4954 9.12188 15.6174 9.06947C15.7394 9.01706 15.8706 8.98947 16.0034 8.98832C16.1362 8.98717 16.2678 9.01247 16.3907 9.06275C16.5136 9.11303 16.6253 9.18728 16.7192 9.28118C16.8131 9.37507 16.8873 9.48672 16.9376 9.60962C16.9879 9.73251 17.0132 9.86419 17.012 9.99697C17.0109 10.1298 16.9833 10.261 16.9309 10.383C16.8785 10.505 16.8023 10.6153 16.7068 10.7076L12.7068 14.7076C12.5193 14.895 12.265 15.0004 11.9998 15.0004C11.7346 15.0004 11.4803 14.895 11.2928 14.7076L7.29279 10.7076C7.10532 10.52 7 10.2657 7 10.0006C7 9.73541 7.10532 9.4811 7.29279 9.29357Z" />
-                  </svg>
-                </button>
-                <ul className="dropdown-menu m-0 custom-dropdown shadow-sm" aria-labelledby="dropdownMenu">
-                  <li><button className="dropdown-item active" type="button">預設排序</button></li>
-                  <li><button className="dropdown-item" type="button">評價最高</button></li>
-                  <li><button className="dropdown-item" type="button">評價最低</button></li>
-                </ul>
-              </div>
-            </div>
-            <div className="d-flex flex-column mb-lg-17 mb-15 position-relative z-1">
-              <div className="d-flex flex-lg-row flex-column px-lg-0 px-3">
-                <div className="ms-lg-5 ms-0 d-flex align-items-start py-3 me-6" style={{ minWidth: '200px' }}>
-                  <div className="me-lg-4 me-3" style={{ width: '48px', height: '48px' }}>
-                    <img className="rounded-pill" src="./images/Theme_Detail/Feature/custom-1.jpg" alt="custom-1"
-                      width="48" height="48" />
-                  </div>
-                  <div className="d-flex flex-column">
-                    <div className="d-flex flex-wrap flex-lg-column align-items-lg-start align-items-center mb-2 mb-lg-0">
-                      <p className="mb-lg-1 mb-0 me-2">奶茶抹太厚</p>
-                      <div className="d-flex align-items-center">
-                        <svg className="me-1" width="14" height="14" viewBox="0 0 14 14" fill="none"
-                          xmlns="http://www.w3.org/2000/svg" >
-                          <path
-                            d="M7.00131 12.8337C7.76749 12.8346 8.52631 12.6842 9.23416 12.3909C9.94202 12.0977 10.585 11.6675 11.1261 11.1251C11.6685 10.584 12.0987 9.94104 12.3919 9.23319C12.6851 8.52533 12.8356 7.76651 12.8346 7.00033C12.8356 6.23415 12.6851 5.47533 12.3919 4.76747C12.0987 4.05962 11.6685 3.41667 11.1261 2.87558C10.585 2.33313 9.94202 1.90294 9.23416 1.60972C8.52631 1.31651 7.76749 1.16605 7.00131 1.167C6.23512 1.16605 5.47631 1.31651 4.76845 1.60972C4.06059 1.90294 3.41765 2.33313 2.87656 2.87558C2.3341 3.41667 1.90391 4.05962 1.6107 4.76747C1.31748 5.47533 1.16703 6.23415 1.16797 7.00033C1.16703 7.76651 1.31748 8.52533 1.6107 9.23319C1.90391 9.94104 2.3341 10.584 2.87656 11.1251C3.41765 11.6675 4.06059 12.0977 4.76845 12.3909C5.47631 12.6842 6.23512 12.8346 7.00131 12.8337Z"
-                            stroke="#28A745" strokeWidth="1.16667" strokeLinejoin="round" />
-                          <path d="M4.66797 7.00098L6.41797 8.75098L9.91797 5.25098" stroke="#28A745"
-                            strokeWidth="1.16667" strokeLinecap="round" strokeLinejoin="round" />
-                        </svg>
-                        <p className="text-neutral-700 fs-9">已驗證買家</p>
-                      </div>
-                    </div>
-                    <div className="d-lg-none d-flex flex-wrap gap-2 align-items-center">
-                      <div className="d-flex align-items-center gap-1">
-                        <div>
-                          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path
-                              d="M8.34992 1.21414L9.47342 3.36914C9.55699 3.52778 9.67695 3.66436 9.82348 3.76769C9.97001 3.87103 10.1389 3.93818 10.3164 3.96364L12.6894 4.28864C13.9584 4.46364 14.4504 6.02814 13.5119 6.89814L11.8869 8.39764C11.7486 8.52506 11.6447 8.6854 11.585 8.86374C11.5253 9.04208 11.5117 9.23262 11.5454 9.41764L11.9419 11.6166C12.1624 12.8416 10.8879 13.7966 9.76942 13.2366L7.50142 12.1116C7.3453 12.0352 7.17376 11.9954 6.99992 11.9954C6.82608 11.9954 6.65454 12.0352 6.49842 12.1116L4.23042 13.2366C3.11142 13.7916 1.83742 12.8416 2.05792 11.6166L2.45442 9.41714C2.52442 9.04214 2.39442 8.65714 2.11342 8.39714L0.48792 6.89814C-0.45058 6.03314 0.0414199 4.46314 1.31042 4.28814L3.68342 3.96314C3.86143 3.93927 4.03103 3.87275 4.1778 3.76924C4.32458 3.66573 4.44417 3.5283 4.52642 3.36864L5.65042 1.21414C6.22242 0.129141 7.78242 0.129141 8.34942 1.21414"
-                              fill="#FFC107" />
-                          </svg>
-                        </div>
-                        <div>
-                          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path
-                              d="M8.34992 1.21414L9.47342 3.36914C9.55699 3.52778 9.67695 3.66436 9.82348 3.76769C9.97001 3.87103 10.1389 3.93818 10.3164 3.96364L12.6894 4.28864C13.9584 4.46364 14.4504 6.02814 13.5119 6.89814L11.8869 8.39764C11.7486 8.52506 11.6447 8.6854 11.585 8.86374C11.5253 9.04208 11.5117 9.23262 11.5454 9.41764L11.9419 11.6166C12.1624 12.8416 10.8879 13.7966 9.76942 13.2366L7.50142 12.1116C7.3453 12.0352 7.17376 11.9954 6.99992 11.9954C6.82608 11.9954 6.65454 12.0352 6.49842 12.1116L4.23042 13.2366C3.11142 13.7916 1.83742 12.8416 2.05792 11.6166L2.45442 9.41714C2.52442 9.04214 2.39442 8.65714 2.11342 8.39714L0.48792 6.89814C-0.45058 6.03314 0.0414199 4.46314 1.31042 4.28814L3.68342 3.96314C3.86143 3.93927 4.03103 3.87275 4.1778 3.76924C4.32458 3.66573 4.44417 3.5283 4.52642 3.36864L5.65042 1.21414C6.22242 0.129141 7.78242 0.129141 8.34942 1.21414"
-                              fill="#FFC107" />
-                          </svg>
-                        </div>
-                        <div>
-                          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path
-                              d="M8.34992 1.21414L9.47342 3.36914C9.55699 3.52778 9.67695 3.66436 9.82348 3.76769C9.97001 3.87103 10.1389 3.93818 10.3164 3.96364L12.6894 4.28864C13.9584 4.46364 14.4504 6.02814 13.5119 6.89814L11.8869 8.39764C11.7486 8.52506 11.6447 8.6854 11.585 8.86374C11.5253 9.04208 11.5117 9.23262 11.5454 9.41764L11.9419 11.6166C12.1624 12.8416 10.8879 13.7966 9.76942 13.2366L7.50142 12.1116C7.3453 12.0352 7.17376 11.9954 6.99992 11.9954C6.82608 11.9954 6.65454 12.0352 6.49842 12.1116L4.23042 13.2366C3.11142 13.7916 1.83742 12.8416 2.05792 11.6166L2.45442 9.41714C2.52442 9.04214 2.39442 8.65714 2.11342 8.39714L0.48792 6.89814C-0.45058 6.03314 0.0414199 4.46314 1.31042 4.28814L3.68342 3.96314C3.86143 3.93927 4.03103 3.87275 4.1778 3.76924C4.32458 3.66573 4.44417 3.5283 4.52642 3.36864L5.65042 1.21414C6.22242 0.129141 7.78242 0.129141 8.34942 1.21414"
-                              fill="#FFC107" />
-                          </svg>
-                        </div>
-                        <div>
-                          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path
-                              d="M8.34992 1.21414L9.47342 3.36914C9.55699 3.52778 9.67695 3.66436 9.82348 3.76769C9.97001 3.87103 10.1389 3.93818 10.3164 3.96364L12.6894 4.28864C13.9584 4.46364 14.4504 6.02814 13.5119 6.89814L11.8869 8.39764C11.7486 8.52506 11.6447 8.6854 11.585 8.86374C11.5253 9.04208 11.5117 9.23262 11.5454 9.41764L11.9419 11.6166C12.1624 12.8416 10.8879 13.7966 9.76942 13.2366L7.50142 12.1116C7.3453 12.0352 7.17376 11.9954 6.99992 11.9954C6.82608 11.9954 6.65454 12.0352 6.49842 12.1116L4.23042 13.2366C3.11142 13.7916 1.83742 12.8416 2.05792 11.6166L2.45442 9.41714C2.52442 9.04214 2.39442 8.65714 2.11342 8.39714L0.48792 6.89814C-0.45058 6.03314 0.0414199 4.46314 1.31042 4.28814L3.68342 3.96314C3.86143 3.93927 4.03103 3.87275 4.1778 3.76924C4.32458 3.66573 4.44417 3.5283 4.52642 3.36864L5.65042 1.21414C6.22242 0.129141 7.78242 0.129141 8.34942 1.21414"
-                              fill="#FFC107" />
-                          </svg>
-                        </div>
-                        <div>
-                          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path
-                              d="M8.34992 1.21414L9.47342 3.36914C9.55699 3.52778 9.67695 3.66436 9.82348 3.76769C9.97001 3.87103 10.1389 3.93818 10.3164 3.96364L12.6894 4.28864C13.9584 4.46364 14.4504 6.02814 13.5119 6.89814L11.8869 8.39764C11.7486 8.52506 11.6447 8.6854 11.585 8.86374C11.5253 9.04208 11.5117 9.23262 11.5454 9.41764L11.9419 11.6166C12.1624 12.8416 10.8879 13.7966 9.76942 13.2366L7.50142 12.1116C7.3453 12.0352 7.17376 11.9954 6.99992 11.9954C6.82608 11.9954 6.65454 12.0352 6.49842 12.1116L4.23042 13.2366C3.11142 13.7916 1.83742 12.8416 2.05792 11.6166L2.45442 9.41714C2.52442 9.04214 2.39442 8.65714 2.11342 8.39714L0.48792 6.89814C-0.45058 6.03314 0.0414199 4.46314 1.31042 4.28814L3.68342 3.96314C3.86143 3.93927 4.03103 3.87275 4.1778 3.76924C4.32458 3.66573 4.44417 3.5283 4.52642 3.36864L5.65042 1.21414C6.22242 0.129141 7.78242 0.129141 8.34942 1.21414"
-                              fill="#FFC107" />
-                          </svg>
-                        </div>
-                      </div>
-                      <div className="d-flex align-items-center">
-                        <p className="fs-8 noto_sans text-neutral-600">2025/9/27</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div className="py-3 me-lg-6 me-0" style={{ maxWidth: '808px' }}>
-                  <div className="d-lg-flex d-none align-items-center mb-4">
-                    <div className="me-4">
-                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path
-                          d="M14.0249 3.47063L15.7101 6.70313C15.8355 6.94108 16.0154 7.14595 16.2352 7.30095C16.455 7.45596 16.7084 7.55668 16.9746 7.59488L20.5341 8.08238C22.4376 8.34488 23.1756 10.6916 21.7679 11.9966L19.3304 14.2459C19.1229 14.437 18.9671 14.6775 18.8776 14.945C18.788 15.2125 18.7676 15.4983 18.8181 15.7759L19.4129 19.0744C19.7436 20.9119 17.8319 22.3444 16.1541 21.5044L12.7521 19.8169C12.518 19.7022 12.2606 19.6425 11.9999 19.6425C11.7391 19.6425 11.4818 19.7022 11.2476 19.8169L7.84563 21.5044C6.16713 22.3369 4.25613 20.9119 4.58688 19.0744L5.18163 15.7751C5.28663 15.2126 5.09163 14.6351 4.67013 14.2451L2.23188 11.9966C0.82413 10.6991 1.56213 8.34412 3.46563 8.08162L7.02513 7.59413C7.29214 7.55831 7.54655 7.45853 7.76671 7.30327C7.98686 7.14801 8.16626 6.94187 8.28963 6.70237L9.97563 3.47063C10.8336 1.84312 13.1736 1.84312 14.0241 3.47063"
-                          fill="#FFC107" />
-                      </svg>
-                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path
-                          d="M14.0249 3.47063L15.7101 6.70313C15.8355 6.94108 16.0154 7.14595 16.2352 7.30095C16.455 7.45596 16.7084 7.55668 16.9746 7.59488L20.5341 8.08238C22.4376 8.34488 23.1756 10.6916 21.7679 11.9966L19.3304 14.2459C19.1229 14.437 18.9671 14.6775 18.8776 14.945C18.788 15.2125 18.7676 15.4983 18.8181 15.7759L19.4129 19.0744C19.7436 20.9119 17.8319 22.3444 16.1541 21.5044L12.7521 19.8169C12.518 19.7022 12.2606 19.6425 11.9999 19.6425C11.7391 19.6425 11.4818 19.7022 11.2476 19.8169L7.84563 21.5044C6.16713 22.3369 4.25613 20.9119 4.58688 19.0744L5.18163 15.7751C5.28663 15.2126 5.09163 14.6351 4.67013 14.2451L2.23188 11.9966C0.82413 10.6991 1.56213 8.34412 3.46563 8.08162L7.02513 7.59413C7.29214 7.55831 7.54655 7.45853 7.76671 7.30327C7.98686 7.14801 8.16626 6.94187 8.28963 6.70237L9.97563 3.47063C10.8336 1.84312 13.1736 1.84312 14.0241 3.47063"
-                          fill="#FFC107" />
-                      </svg>
-                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path
-                          d="M14.0249 3.47063L15.7101 6.70313C15.8355 6.94108 16.0154 7.14595 16.2352 7.30095C16.455 7.45596 16.7084 7.55668 16.9746 7.59488L20.5341 8.08238C22.4376 8.34488 23.1756 10.6916 21.7679 11.9966L19.3304 14.2459C19.1229 14.437 18.9671 14.6775 18.8776 14.945C18.788 15.2125 18.7676 15.4983 18.8181 15.7759L19.4129 19.0744C19.7436 20.9119 17.8319 22.3444 16.1541 21.5044L12.7521 19.8169C12.518 19.7022 12.2606 19.6425 11.9999 19.6425C11.7391 19.6425 11.4818 19.7022 11.2476 19.8169L7.84563 21.5044C6.16713 22.3369 4.25613 20.9119 4.58688 19.0744L5.18163 15.7751C5.28663 15.2126 5.09163 14.6351 4.67013 14.2451L2.23188 11.9966C0.82413 10.6991 1.56213 8.34412 3.46563 8.08162L7.02513 7.59413C7.29214 7.55831 7.54655 7.45853 7.76671 7.30327C7.98686 7.14801 8.16626 6.94187 8.28963 6.70237L9.97563 3.47063C10.8336 1.84312 13.1736 1.84312 14.0241 3.47063"
-                          fill="#FFC107" />
-                      </svg>
-                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path
-                          d="M14.0249 3.47063L15.7101 6.70313C15.8355 6.94108 16.0154 7.14595 16.2352 7.30095C16.455 7.45596 16.7084 7.55668 16.9746 7.59488L20.5341 8.08238C22.4376 8.34488 23.1756 10.6916 21.7679 11.9966L19.3304 14.2459C19.1229 14.437 18.9671 14.6775 18.8776 14.945C18.788 15.2125 18.7676 15.4983 18.8181 15.7759L19.4129 19.0744C19.7436 20.9119 17.8319 22.3444 16.1541 21.5044L12.7521 19.8169C12.518 19.7022 12.2606 19.6425 11.9999 19.6425C11.7391 19.6425 11.4818 19.7022 11.2476 19.8169L7.84563 21.5044C6.16713 22.3369 4.25613 20.9119 4.58688 19.0744L5.18163 15.7751C5.28663 15.2126 5.09163 14.6351 4.67013 14.2451L2.23188 11.9966C0.82413 10.6991 1.56213 8.34412 3.46563 8.08162L7.02513 7.59413C7.29214 7.55831 7.54655 7.45853 7.76671 7.30327C7.98686 7.14801 8.16626 6.94187 8.28963 6.70237L9.97563 3.47063C10.8336 1.84312 13.1736 1.84312 14.0241 3.47063"
-                          fill="#FFC107" />
-                      </svg>
-                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path
-                          d="M14.0249 3.47063L15.7101 6.70313C15.8355 6.94108 16.0154 7.14595 16.2352 7.30095C16.455 7.45596 16.7084 7.55668 16.9746 7.59488L20.5341 8.08238C22.4376 8.34488 23.1756 10.6916 21.7679 11.9966L19.3304 14.2459C19.1229 14.437 18.9671 14.6775 18.8776 14.945C18.788 15.2125 18.7676 15.4983 18.8181 15.7759L19.4129 19.0744C19.7436 20.9119 17.8319 22.3444 16.1541 21.5044L12.7521 19.8169C12.518 19.7022 12.2606 19.6425 11.9999 19.6425C11.7391 19.6425 11.4818 19.7022 11.2476 19.8169L7.84563 21.5044C6.16713 22.3369 4.25613 20.9119 4.58688 19.0744L5.18163 15.7751C5.28663 15.2126 5.09163 14.6351 4.67013 14.2451L2.23188 11.9966C0.82413 10.6991 1.56213 8.34412 3.46563 8.08162L7.02513 7.59413C7.29214 7.55831 7.54655 7.45853 7.76671 7.30327C7.98686 7.14801 8.16626 6.94187 8.28963 6.70237L9.97563 3.47063C10.8336 1.84312 13.1736 1.84312 14.0241 3.47063"
-                          fill="#FFC107" />
-                      </svg>
-                    </div>
-                    <p className="fs-8 noto_sans text-neutral-600">2025/9/27</p>
-                  </div>
-                  <div className="py-1 px-3 bg-neutral-250 rounded-pill mb-5">
-                    <p className="fs-8 text-neutral-700">購買產品：精選甜點盒 (12個月)、在地甜點盒(3個月)</p>
-                  </div>
-                  <div>
-                    <p className="fw-bold ls-1 mb-2 lh-sm">終於不用再開甜點單選半天了</p>
-                    <p id="textBox" className="text-truncate-box">
-                      以前每天滑社群軟體收藏各種甜點照片，看到漂亮的蛋糕、餅乾、布丁就會想試試看，但真的要下單時卻又猶豫半天，最後常常什麼都沒買，收藏清單越來越長卻始終沒動作。有時候甚至會因為選項太多，反而覺得壓力很大，乾脆放棄不買
-                      🙈。<br />後來開始訂「一盒甜」之後，真的完全解決了我的選擇障礙！每個月的主題都超用心
-                      💝，從包裝設計到甜點搭配都很有驚喜感
-                      ✨。打開盒子的瞬間，就像在拆生日禮物一樣療癒 ，會忍不住拍照分享給朋友。
-                      而且最重要的是，吃了好幾個月下來，每次都覺得品質很穩定，完全沒有踩過雷 ，每個品項都好吃又有特色 😍，常常讓我發現新的喜好。現在已經養成習慣，變成每月最期待的小確幸 🥰！</p>
-                    <div className="d-flex justify-content-end mb-lg-4 mb-6">
-                      <button id="toggleBtn" type="button" className="btn-icon-tailing d-flex align-items-center">
-                        查看全文
-                        <div className="d-flex justify-content-center align-items-center" style={{ width: '20px', height: '20px' }}>
-                          <svg id="toggleIcon" width="10" height="5" viewBox="0 0 10 5" fill="none"
-                            xmlns="http://www.w3.org/2000/svg">
-                            <path fillRule="evenodd" clipRule="evenodd"
-                              d="M1.077 0.244642C1.23327 0.0884159 1.44519 0.000652941 1.66616 0.000652941C1.88713 0.000652941 2.09906 0.0884159 2.25533 0.244642L4.9995 2.98881L7.74366 0.244642C7.82054 0.16505 7.91249 0.101564 8.01416 0.0578901C8.11583 0.0142159 8.22518 -0.00877265 8.33583 -0.00973416C8.44648 -0.0106957 8.55621 0.0103897 8.65862 0.0522904C8.76104 0.0941912 8.85408 0.156069 8.93233 0.234313C9.01057 0.312557 9.07245 0.4056 9.11435 0.508013C9.15625 0.610427 9.17733 0.72016 9.17637 0.830809C9.17541 0.941458 9.15242 1.05081 9.10875 1.15248C9.06507 1.25415 9.00159 1.3461 8.922 1.42297L5.58866 4.75631C5.43239 4.91253 5.22047 5.0003 4.9995 5.0003C4.77853 5.0003 4.5666 4.91253 4.41033 4.75631L1.077 1.42297C0.920771 1.2667 0.833008 1.05478 0.833008 0.833808C0.833008 0.612838 0.920771 0.400915 1.077 0.244642Z"
-                              fill="#5F7C9C" />
-                          </svg>
-                        </div>
+            {/* 評論類別與排序 - desktop */}
+            <div className="d-none d-lg-flex justify-content-between align-items-center mb-17">
+              <ul className="d-flex gap-2">
+                {desktopCategories.map((category) => (
+                  <li key={category.label}>
+                    <button
+                      type="button"
+                      className={`btn btn-tag ${selectedCategory === category.value ? 'active' : ''}`}
+                      onClick={() => handleCategoryChange(category.value)}
+                    >
+                      {category.label} ({category.count})
+                    </button>
+                  </li>
+                ))}
+              </ul>
+              <ul className="d-flex align-items-center">
+                {desktopSortOptions.map((option, index) => (
+                  <Fragment key={option.value}>
+                    {index !== 0 && <li className="sortOption-divider"></li>}
+                    <li>
+                      <button
+                        type="button"
+                        className={`btn-text ${sortOption === option.value ? 'active' : ''} p-3 fs-8`}
+                        onClick={() => handleSortChange(option.value)}
+                      >
+                        {option.label} {option.direction}
                       </button>
-                    </div>
-                    <div className="d-flex align-items-center gap-2 flex-wrap">
-                      <img className="rounded-5" src="./images/Theme_Detail/Feature/pic_review 01 (2).jpg"
-                        alt="pic_review-1" width="100" height="100" />
-                      <img className="rounded-5" src="./images/Theme_Detail/Feature/pic_review 01 (1).jpg"
-                        alt="pic_review-2" width="100" height="100" />
-                      <img className="rounded-5" src="./images/Theme_Detail/Feature/pic_review 01 (3).jpg"
-                        alt="pic_review-3" width="100" height="100" />
-                      <img className="rounded-5" src="./images/Theme_Detail/Feature/pic_review 01 (5).jpg"
-                        alt="pic_review-4" width="100" height="100" />
-                      <div className="position-relative d-inline-block rounded-5">
-                        {/* 原圖 */}
-                        <img src="./images/Theme_Detail/Feature/pic_review 01 (4).jpg"
-                          className="img-fluid rounded-5 w-100 h-100" alt="pic_review-5" />
-
-                        {/* 半透明黑色遮罩 + 文字置中 */}
-                        <div
-                          className="position-absolute top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center rounded-5"
-                          style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}>
-                          <span className="text-neutral-100 fw-bold fs-6 noto_sans">+4</span>
-                        </div>
-                      </div>
-
-                    </div>
-                  </div>
-                </div>
-                <div className="align-self-lg-start align-self-end flex-grow-1" style={{ width: '200px' }}>
-                  <div className="d-flex justify-content-end align-items-center p-3 me-lg-5 me-0 vote-box" onClick={() => handleLikes(1)}>
-                    <Icon className="icon-swap me-1" icon={`${likes[1]?.liked ? solid : outline}`} width="20" height="20">
-                    </Icon>
-                    <p className="fs-8 text-nowrap noto_sans" data-count="3">{likes[1]?.count === 3 ? "3 人認為此評論有幫助" : "4 人認為此評論有幫助"}</p>
-                  </div>
-                </div>
-              </div>
-              <hr className="border-neutral-500 border-1 my-lg-4 my-3" />
-              <div className="d-flex flex-lg-row flex-column px-lg-0 px-3">
-                <div className="ms-lg-5 ms-0 d-flex align-items-start py-3 me-6" style={{ minWidth: '200px' }}>
-                  <div className="me-lg-4 me-3" style={{ width: '48px', height: '48px' }}>
-                    <img className="rounded-pill" src="./images/Theme_Detail/Feature/custom-2.jpg" alt="custom-2"
-                      width="48" height="48" />
-                  </div>
-                  <div className="d-flex flex-column">
-                    <div className="d-flex flex-wrap flex-lg-column align-items-lg-start align-items-center mb-2 mb-lg-0">
-                      <p className="mb-lg-1 mb-0 me-2">焦糖人生好焦慮</p>
-                      <div className="d-flex align-items-center">
-                        <svg className="me-1" width="14" height="14" viewBox="0 0 14 14" fill="none"
-                          xmlns="http://www.w3.org/2000/svg">
-                          <path
-                            d="M7.00131 12.8337C7.76749 12.8346 8.52631 12.6842 9.23416 12.3909C9.94202 12.0977 10.585 11.6675 11.1261 11.1251C11.6685 10.584 12.0987 9.94104 12.3919 9.23319C12.6851 8.52533 12.8356 7.76651 12.8346 7.00033C12.8356 6.23415 12.6851 5.47533 12.3919 4.76747C12.0987 4.05962 11.6685 3.41667 11.1261 2.87558C10.585 2.33313 9.94202 1.90294 9.23416 1.60972C8.52631 1.31651 7.76749 1.16605 7.00131 1.167C6.23512 1.16605 5.47631 1.31651 4.76845 1.60972C4.06059 1.90294 3.41765 2.33313 2.87656 2.87558C2.3341 3.41667 1.90391 4.05962 1.6107 4.76747C1.31748 5.47533 1.16703 6.23415 1.16797 7.00033C1.16703 7.76651 1.31748 8.52533 1.6107 9.23319C1.90391 9.94104 2.3341 10.584 2.87656 11.1251C3.41765 11.6675 4.06059 12.0977 4.76845 12.3909C5.47631 12.6842 6.23512 12.8346 7.00131 12.8337Z"
-                            stroke="#28A745" strokeWidth="1.16667" strokeLinejoin="round" />
-                          <path d="M4.66797 7.00098L6.41797 8.75098L9.91797 5.25098" stroke="#28A745"
-                            strokeWidth="1.16667" strokeLinecap="round" strokeLinejoin="round" />
-                        </svg>
-                        <p className="text-neutral-700 fs-9">已驗證買家</p>
-                      </div>
-                    </div>
-                    <div className="d-lg-none d-flex flex-wrap gap-2 align-items-center">
-                      <div className="d-flex align-items-center gap-1">
-                        <div>
-                          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path
-                              d="M8.34992 1.21414L9.47342 3.36914C9.55699 3.52778 9.67695 3.66436 9.82348 3.76769C9.97001 3.87103 10.1389 3.93818 10.3164 3.96364L12.6894 4.28864C13.9584 4.46364 14.4504 6.02814 13.5119 6.89814L11.8869 8.39764C11.7486 8.52506 11.6447 8.6854 11.585 8.86374C11.5253 9.04208 11.5117 9.23262 11.5454 9.41764L11.9419 11.6166C12.1624 12.8416 10.8879 13.7966 9.76942 13.2366L7.50142 12.1116C7.3453 12.0352 7.17376 11.9954 6.99992 11.9954C6.82608 11.9954 6.65454 12.0352 6.49842 12.1116L4.23042 13.2366C3.11142 13.7916 1.83742 12.8416 2.05792 11.6166L2.45442 9.41714C2.52442 9.04214 2.39442 8.65714 2.11342 8.39714L0.48792 6.89814C-0.45058 6.03314 0.0414199 4.46314 1.31042 4.28814L3.68342 3.96314C3.86143 3.93927 4.03103 3.87275 4.1778 3.76924C4.32458 3.66573 4.44417 3.5283 4.52642 3.36864L5.65042 1.21414C6.22242 0.129141 7.78242 0.129141 8.34942 1.21414"
-                              fill="#FFC107" />
-                          </svg>
-                        </div>
-                        <div>
-                          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path
-                              d="M8.34992 1.21414L9.47342 3.36914C9.55699 3.52778 9.67695 3.66436 9.82348 3.76769C9.97001 3.87103 10.1389 3.93818 10.3164 3.96364L12.6894 4.28864C13.9584 4.46364 14.4504 6.02814 13.5119 6.89814L11.8869 8.39764C11.7486 8.52506 11.6447 8.6854 11.585 8.86374C11.5253 9.04208 11.5117 9.23262 11.5454 9.41764L11.9419 11.6166C12.1624 12.8416 10.8879 13.7966 9.76942 13.2366L7.50142 12.1116C7.3453 12.0352 7.17376 11.9954 6.99992 11.9954C6.82608 11.9954 6.65454 12.0352 6.49842 12.1116L4.23042 13.2366C3.11142 13.7916 1.83742 12.8416 2.05792 11.6166L2.45442 9.41714C2.52442 9.04214 2.39442 8.65714 2.11342 8.39714L0.48792 6.89814C-0.45058 6.03314 0.0414199 4.46314 1.31042 4.28814L3.68342 3.96314C3.86143 3.93927 4.03103 3.87275 4.1778 3.76924C4.32458 3.66573 4.44417 3.5283 4.52642 3.36864L5.65042 1.21414C6.22242 0.129141 7.78242 0.129141 8.34942 1.21414"
-                              fill="#FFC107" />
-                          </svg>
-                        </div>
-                        <div>
-                          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path
-                              d="M8.34992 1.21414L9.47342 3.36914C9.55699 3.52778 9.67695 3.66436 9.82348 3.76769C9.97001 3.87103 10.1389 3.93818 10.3164 3.96364L12.6894 4.28864C13.9584 4.46364 14.4504 6.02814 13.5119 6.89814L11.8869 8.39764C11.7486 8.52506 11.6447 8.6854 11.585 8.86374C11.5253 9.04208 11.5117 9.23262 11.5454 9.41764L11.9419 11.6166C12.1624 12.8416 10.8879 13.7966 9.76942 13.2366L7.50142 12.1116C7.3453 12.0352 7.17376 11.9954 6.99992 11.9954C6.82608 11.9954 6.65454 12.0352 6.49842 12.1116L4.23042 13.2366C3.11142 13.7916 1.83742 12.8416 2.05792 11.6166L2.45442 9.41714C2.52442 9.04214 2.39442 8.65714 2.11342 8.39714L0.48792 6.89814C-0.45058 6.03314 0.0414199 4.46314 1.31042 4.28814L3.68342 3.96314C3.86143 3.93927 4.03103 3.87275 4.1778 3.76924C4.32458 3.66573 4.44417 3.5283 4.52642 3.36864L5.65042 1.21414C6.22242 0.129141 7.78242 0.129141 8.34942 1.21414"
-                              fill="#FFC107" />
-                          </svg>
-                        </div>
-                        <div>
-                          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path
-                              d="M8.34992 1.21414L9.47342 3.36914C9.55699 3.52778 9.67695 3.66436 9.82348 3.76769C9.97001 3.87103 10.1389 3.93818 10.3164 3.96364L12.6894 4.28864C13.9584 4.46364 14.4504 6.02814 13.5119 6.89814L11.8869 8.39764C11.7486 8.52506 11.6447 8.6854 11.585 8.86374C11.5253 9.04208 11.5117 9.23262 11.5454 9.41764L11.9419 11.6166C12.1624 12.8416 10.8879 13.7966 9.76942 13.2366L7.50142 12.1116C7.3453 12.0352 7.17376 11.9954 6.99992 11.9954C6.82608 11.9954 6.65454 12.0352 6.49842 12.1116L4.23042 13.2366C3.11142 13.7916 1.83742 12.8416 2.05792 11.6166L2.45442 9.41714C2.52442 9.04214 2.39442 8.65714 2.11342 8.39714L0.48792 6.89814C-0.45058 6.03314 0.0414199 4.46314 1.31042 4.28814L3.68342 3.96314C3.86143 3.93927 4.03103 3.87275 4.1778 3.76924C4.32458 3.66573 4.44417 3.5283 4.52642 3.36864L5.65042 1.21414C6.22242 0.129141 7.78242 0.129141 8.34942 1.21414"
-                              fill="#FFC107" />
-                          </svg>
-                        </div>
-                        <div>
-                          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path
-                              d="M8.34992 1.21414L9.47342 3.36914C9.55699 3.52778 9.67695 3.66436 9.82348 3.76769C9.97001 3.87103 10.1389 3.93818 10.3164 3.96364L12.6894 4.28864C13.9584 4.46364 14.4504 6.02814 13.5119 6.89814L11.8869 8.39764C11.7486 8.52506 11.6447 8.6854 11.585 8.86374C11.5253 9.04208 11.5117 9.23262 11.5454 9.41764L11.9419 11.6166C12.1624 12.8416 10.8879 13.7966 9.76942 13.2366L7.50142 12.1116C7.3453 12.0352 7.17376 11.9954 6.99992 11.9954C6.82608 11.9954 6.65454 12.0352 6.49842 12.1116L4.23042 13.2366C3.11142 13.7916 1.83742 12.8416 2.05792 11.6166L2.45442 9.41714C2.52442 9.04214 2.39442 8.65714 2.11342 8.39714L0.48792 6.89814C-0.45058 6.03314 0.0414199 4.46314 1.31042 4.28814L3.68342 3.96314C3.86143 3.93927 4.03103 3.87275 4.1778 3.76924C4.32458 3.66573 4.44417 3.5283 4.52642 3.36864L5.65042 1.21414C6.22242 0.129141 7.78242 0.129141 8.34942 1.21414"
-                              fill="#FFC107" />
-                          </svg>
-                        </div>
-                      </div>
-                      <div className="d-flex align-items-center">
-                        <p className="fs-8 noto_sans text-neutral-600">2025/9/20</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div className="py-3 me-lg-6 me-0" style={{ maxWidth: '808px' }}>
-                  <div className="d-lg-flex d-none align-items-center mb-4">
-                    <div className="me-4">
-                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path
-                          d="M14.0249 3.47063L15.7101 6.70313C15.8355 6.94108 16.0154 7.14595 16.2352 7.30095C16.455 7.45596 16.7084 7.55668 16.9746 7.59488L20.5341 8.08238C22.4376 8.34488 23.1756 10.6916 21.7679 11.9966L19.3304 14.2459C19.1229 14.437 18.9671 14.6775 18.8776 14.945C18.788 15.2125 18.7676 15.4983 18.8181 15.7759L19.4129 19.0744C19.7436 20.9119 17.8319 22.3444 16.1541 21.5044L12.7521 19.8169C12.518 19.7022 12.2606 19.6425 11.9999 19.6425C11.7391 19.6425 11.4818 19.7022 11.2476 19.8169L7.84563 21.5044C6.16713 22.3369 4.25613 20.9119 4.58688 19.0744L5.18163 15.7751C5.28663 15.2126 5.09163 14.6351 4.67013 14.2451L2.23188 11.9966C0.82413 10.6991 1.56213 8.34412 3.46563 8.08162L7.02513 7.59413C7.29214 7.55831 7.54655 7.45853 7.76671 7.30327C7.98686 7.14801 8.16626 6.94187 8.28963 6.70237L9.97563 3.47063C10.8336 1.84312 13.1736 1.84312 14.0241 3.47063"
-                          fill="#FFC107" />
-                      </svg>
-                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path
-                          d="M14.0249 3.47063L15.7101 6.70313C15.8355 6.94108 16.0154 7.14595 16.2352 7.30095C16.455 7.45596 16.7084 7.55668 16.9746 7.59488L20.5341 8.08238C22.4376 8.34488 23.1756 10.6916 21.7679 11.9966L19.3304 14.2459C19.1229 14.437 18.9671 14.6775 18.8776 14.945C18.788 15.2125 18.7676 15.4983 18.8181 15.7759L19.4129 19.0744C19.7436 20.9119 17.8319 22.3444 16.1541 21.5044L12.7521 19.8169C12.518 19.7022 12.2606 19.6425 11.9999 19.6425C11.7391 19.6425 11.4818 19.7022 11.2476 19.8169L7.84563 21.5044C6.16713 22.3369 4.25613 20.9119 4.58688 19.0744L5.18163 15.7751C5.28663 15.2126 5.09163 14.6351 4.67013 14.2451L2.23188 11.9966C0.82413 10.6991 1.56213 8.34412 3.46563 8.08162L7.02513 7.59413C7.29214 7.55831 7.54655 7.45853 7.76671 7.30327C7.98686 7.14801 8.16626 6.94187 8.28963 6.70237L9.97563 3.47063C10.8336 1.84312 13.1736 1.84312 14.0241 3.47063"
-                          fill="#FFC107" />
-                      </svg>
-                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path
-                          d="M14.0249 3.47063L15.7101 6.70313C15.8355 6.94108 16.0154 7.14595 16.2352 7.30095C16.455 7.45596 16.7084 7.55668 16.9746 7.59488L20.5341 8.08238C22.4376 8.34488 23.1756 10.6916 21.7679 11.9966L19.3304 14.2459C19.1229 14.437 18.9671 14.6775 18.8776 14.945C18.788 15.2125 18.7676 15.4983 18.8181 15.7759L19.4129 19.0744C19.7436 20.9119 17.8319 22.3444 16.1541 21.5044L12.7521 19.8169C12.518 19.7022 12.2606 19.6425 11.9999 19.6425C11.7391 19.6425 11.4818 19.7022 11.2476 19.8169L7.84563 21.5044C6.16713 22.3369 4.25613 20.9119 4.58688 19.0744L5.18163 15.7751C5.28663 15.2126 5.09163 14.6351 4.67013 14.2451L2.23188 11.9966C0.82413 10.6991 1.56213 8.34412 3.46563 8.08162L7.02513 7.59413C7.29214 7.55831 7.54655 7.45853 7.76671 7.30327C7.98686 7.14801 8.16626 6.94187 8.28963 6.70237L9.97563 3.47063C10.8336 1.84312 13.1736 1.84312 14.0241 3.47063"
-                          fill="#FFC107" />
-                      </svg>
-                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path
-                          d="M14.0249 3.47063L15.7101 6.70313C15.8355 6.94108 16.0154 7.14595 16.2352 7.30095C16.455 7.45596 16.7084 7.55668 16.9746 7.59488L20.5341 8.08238C22.4376 8.34488 23.1756 10.6916 21.7679 11.9966L19.3304 14.2459C19.1229 14.437 18.9671 14.6775 18.8776 14.945C18.788 15.2125 18.7676 15.4983 18.8181 15.7759L19.4129 19.0744C19.7436 20.9119 17.8319 22.3444 16.1541 21.5044L12.7521 19.8169C12.518 19.7022 12.2606 19.6425 11.9999 19.6425C11.7391 19.6425 11.4818 19.7022 11.2476 19.8169L7.84563 21.5044C6.16713 22.3369 4.25613 20.9119 4.58688 19.0744L5.18163 15.7751C5.28663 15.2126 5.09163 14.6351 4.67013 14.2451L2.23188 11.9966C0.82413 10.6991 1.56213 8.34412 3.46563 8.08162L7.02513 7.59413C7.29214 7.55831 7.54655 7.45853 7.76671 7.30327C7.98686 7.14801 8.16626 6.94187 8.28963 6.70237L9.97563 3.47063C10.8336 1.84312 13.1736 1.84312 14.0241 3.47063"
-                          fill="#FFC107" />
-                      </svg>
-                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path
-                          d="M14.0249 3.47063L15.7101 6.70313C15.8355 6.94108 16.0154 7.14595 16.2352 7.30095C16.455 7.45596 16.7084 7.55668 16.9746 7.59488L20.5341 8.08238C22.4376 8.34488 23.1756 10.6916 21.7679 11.9966L19.3304 14.2459C19.1229 14.437 18.9671 14.6775 18.8776 14.945C18.788 15.2125 18.7676 15.4983 18.8181 15.7759L19.4129 19.0744C19.7436 20.9119 17.8319 22.3444 16.1541 21.5044L12.7521 19.8169C12.518 19.7022 12.2606 19.6425 11.9999 19.6425C11.7391 19.6425 11.4818 19.7022 11.2476 19.8169L7.84563 21.5044C6.16713 22.3369 4.25613 20.9119 4.58688 19.0744L5.18163 15.7751C5.28663 15.2126 5.09163 14.6351 4.67013 14.2451L2.23188 11.9966C0.82413 10.6991 1.56213 8.34412 3.46563 8.08162L7.02513 7.59413C7.29214 7.55831 7.54655 7.45853 7.76671 7.30327C7.98686 7.14801 8.16626 6.94187 8.28963 6.70237L9.97563 3.47063C10.8336 1.84312 13.1736 1.84312 14.0241 3.47063"
-                          fill="#FFC107" />
-                      </svg>
-                    </div>
-                    <p className="fs-8 noto_sans text-neutral-600">2025/9/20</p>
-                  </div>
-                  <div className="py-1 px-3 bg-neutral-250 rounded-pill mb-5">
-                    <p className="fs-8 text-neutral-700">購買產品：精選甜點盒 (6個月)、異國風味甜點盒(3個月)</p>
-                  </div>
-                  <div>
-                    <p className="fw-bold ls-1 mb-2 lh-sm">我媽一開始說浪費錢，現在都比我還期待開箱</p>
-                    <p id="textBox" className="text-truncate-box mb-lg-4 mb-6">
-                      本來是我自己訂的，結果有次甜點分享給家人吃後，我媽居然主動問我「這個月什麼時候送來？」！甜點的品質很好，而且會搭配保存方式與建議食用方式，真的很貼心。</p>
-                    <div className="d-flex align-items-center gap-2 flex-wrap">
-                      <img className="rounded-5" src="./images/Theme_Detail/Feature/pic_review 02 (1).jpg"
-                        alt="pic_review-6" width="100" height="100" />
-                      <img className="rounded-5" src="./images/Theme_Detail/Feature/pic_review 02 (2).jpg"
-                        alt="pic_review-7" width="100" height="100" />
-                      <img className="rounded-5" src="./images/Theme_Detail/Feature/pic_review 02 (3).jpg"
-                        alt="pic_review-8" width="100" height="100" />
-
-                    </div>
-                  </div>
-                </div>
-                <div className="align-self-lg-start align-self-end flex-grow-1" style={{ width: '200px' }}>
-                  <div className="d-flex justify-content-end align-items-center p-3 me-lg-5 me-0 vote-box" onClick={() => handleLikes(2)}>
-                    <Icon className="icon-swap me-1" icon={`${likes[2]?.liked ? solid : outline}`} width="20" height="20">
-                    </Icon>
-                    <p className="fs-8 text-nowrap noto_sans" data-count="0">{likes[2]?.count === 0 ? "此評論有幫助" : "1 人認為此評論有幫助"}</p>
-                  </div>
-
-                </div>
-              </div>
-              <hr className="border-neutral-500 border-1 my-lg-4 my-3" />
-              <div className="d-flex flex-lg-row flex-column px-lg-0 px-3">
-                <div className="ms-lg-5 ms-0 d-flex align-items-start py-3 me-6" style={{ minWidth: '200px' }}>
-                  <div className="me-lg-4 me-3" style={{ width: '48px', height: '48px' }}>
-                    <img className="rounded-pill" src="./images/Theme_Detail/Feature/custom-3.jpg" alt="custom-3"
-                      width="48" height="48" />
-                  </div>
-                  <div className="d-flex flex-column">
-                    <div className="d-flex flex-wrap flex-lg-column align-items-lg-start align-items-center mb-2 mb-lg-0">
-                      <p className="mb-lg-1 mb-0 me-2">胖到掉渣女神</p>
-                      <div className="d-flex align-items-center">
-                        <svg className="me-1" width="14" height="14" viewBox="0 0 14 14" fill="none"
-                          xmlns="http://www.w3.org/2000/svg">
-                          <path
-                            d="M7.00131 12.8337C7.76749 12.8346 8.52631 12.6842 9.23416 12.3909C9.94202 12.0977 10.585 11.6675 11.1261 11.1251C11.6685 10.584 12.0987 9.94104 12.3919 9.23319C12.6851 8.52533 12.8356 7.76651 12.8346 7.00033C12.8356 6.23415 12.6851 5.47533 12.3919 4.76747C12.0987 4.05962 11.6685 3.41667 11.1261 2.87558C10.585 2.33313 9.94202 1.90294 9.23416 1.60972C8.52631 1.31651 7.76749 1.16605 7.00131 1.167C6.23512 1.16605 5.47631 1.31651 4.76845 1.60972C4.06059 1.90294 3.41765 2.33313 2.87656 2.87558C2.3341 3.41667 1.90391 4.05962 1.6107 4.76747C1.31748 5.47533 1.16703 6.23415 1.16797 7.00033C1.16703 7.76651 1.31748 8.52533 1.6107 9.23319C1.90391 9.94104 2.3341 10.584 2.87656 11.1251C3.41765 11.6675 4.06059 12.0977 4.76845 12.3909C5.47631 12.6842 6.23512 12.8346 7.00131 12.8337Z"
-                            stroke="#28A745" strokeWidth="1.16667" strokeLinejoin="round" />
-                          <path d="M4.66797 7.00098L6.41797 8.75098L9.91797 5.25098" stroke="#28A745"
-                            strokeWidth="1.16667" strokeLinecap="round" strokeLinejoin="round" />
-                        </svg>
-                        <p className="text-neutral-700 fs-9">已驗證買家</p>
-                      </div>
-                    </div>
-                    <div className="d-lg-none d-flex flex-wrap gap-2 align-items-center">
-                      <div className="d-flex align-items-center gap-1">
-                        <div>
-                          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path
-                              d="M8.34992 1.21414L9.47342 3.36914C9.55699 3.52778 9.67695 3.66436 9.82348 3.76769C9.97001 3.87103 10.1389 3.93818 10.3164 3.96364L12.6894 4.28864C13.9584 4.46364 14.4504 6.02814 13.5119 6.89814L11.8869 8.39764C11.7486 8.52506 11.6447 8.6854 11.585 8.86374C11.5253 9.04208 11.5117 9.23262 11.5454 9.41764L11.9419 11.6166C12.1624 12.8416 10.8879 13.7966 9.76942 13.2366L7.50142 12.1116C7.3453 12.0352 7.17376 11.9954 6.99992 11.9954C6.82608 11.9954 6.65454 12.0352 6.49842 12.1116L4.23042 13.2366C3.11142 13.7916 1.83742 12.8416 2.05792 11.6166L2.45442 9.41714C2.52442 9.04214 2.39442 8.65714 2.11342 8.39714L0.48792 6.89814C-0.45058 6.03314 0.0414199 4.46314 1.31042 4.28814L3.68342 3.96314C3.86143 3.93927 4.03103 3.87275 4.1778 3.76924C4.32458 3.66573 4.44417 3.5283 4.52642 3.36864L5.65042 1.21414C6.22242 0.129141 7.78242 0.129141 8.34942 1.21414"
-                              fill="#FFC107" />
-                          </svg>
-                        </div>
-                        <div>
-                          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path
-                              d="M8.34992 1.21414L9.47342 3.36914C9.55699 3.52778 9.67695 3.66436 9.82348 3.76769C9.97001 3.87103 10.1389 3.93818 10.3164 3.96364L12.6894 4.28864C13.9584 4.46364 14.4504 6.02814 13.5119 6.89814L11.8869 8.39764C11.7486 8.52506 11.6447 8.6854 11.585 8.86374C11.5253 9.04208 11.5117 9.23262 11.5454 9.41764L11.9419 11.6166C12.1624 12.8416 10.8879 13.7966 9.76942 13.2366L7.50142 12.1116C7.3453 12.0352 7.17376 11.9954 6.99992 11.9954C6.82608 11.9954 6.65454 12.0352 6.49842 12.1116L4.23042 13.2366C3.11142 13.7916 1.83742 12.8416 2.05792 11.6166L2.45442 9.41714C2.52442 9.04214 2.39442 8.65714 2.11342 8.39714L0.48792 6.89814C-0.45058 6.03314 0.0414199 4.46314 1.31042 4.28814L3.68342 3.96314C3.86143 3.93927 4.03103 3.87275 4.1778 3.76924C4.32458 3.66573 4.44417 3.5283 4.52642 3.36864L5.65042 1.21414C6.22242 0.129141 7.78242 0.129141 8.34942 1.21414"
-                              fill="#FFC107" />
-                          </svg>
-                        </div>
-                        <div>
-                          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path
-                              d="M8.34992 1.21414L9.47342 3.36914C9.55699 3.52778 9.67695 3.66436 9.82348 3.76769C9.97001 3.87103 10.1389 3.93818 10.3164 3.96364L12.6894 4.28864C13.9584 4.46364 14.4504 6.02814 13.5119 6.89814L11.8869 8.39764C11.7486 8.52506 11.6447 8.6854 11.585 8.86374C11.5253 9.04208 11.5117 9.23262 11.5454 9.41764L11.9419 11.6166C12.1624 12.8416 10.8879 13.7966 9.76942 13.2366L7.50142 12.1116C7.3453 12.0352 7.17376 11.9954 6.99992 11.9954C6.82608 11.9954 6.65454 12.0352 6.49842 12.1116L4.23042 13.2366C3.11142 13.7916 1.83742 12.8416 2.05792 11.6166L2.45442 9.41714C2.52442 9.04214 2.39442 8.65714 2.11342 8.39714L0.48792 6.89814C-0.45058 6.03314 0.0414199 4.46314 1.31042 4.28814L3.68342 3.96314C3.86143 3.93927 4.03103 3.87275 4.1778 3.76924C4.32458 3.66573 4.44417 3.5283 4.52642 3.36864L5.65042 1.21414C6.22242 0.129141 7.78242 0.129141 8.34942 1.21414"
-                              fill="#FFC107" />
-                          </svg>
-                        </div>
-                        <div>
-                          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path
-                              d="M8.34992 1.21414L9.47342 3.36914C9.55699 3.52778 9.67695 3.66436 9.82348 3.76769C9.97001 3.87103 10.1389 3.93818 10.3164 3.96364L12.6894 4.28864C13.9584 4.46364 14.4504 6.02814 13.5119 6.89814L11.8869 8.39764C11.7486 8.52506 11.6447 8.6854 11.585 8.86374C11.5253 9.04208 11.5117 9.23262 11.5454 9.41764L11.9419 11.6166C12.1624 12.8416 10.8879 13.7966 9.76942 13.2366L7.50142 12.1116C7.3453 12.0352 7.17376 11.9954 6.99992 11.9954C6.82608 11.9954 6.65454 12.0352 6.49842 12.1116L4.23042 13.2366C3.11142 13.7916 1.83742 12.8416 2.05792 11.6166L2.45442 9.41714C2.52442 9.04214 2.39442 8.65714 2.11342 8.39714L0.48792 6.89814C-0.45058 6.03314 0.0414199 4.46314 1.31042 4.28814L3.68342 3.96314C3.86143 3.93927 4.03103 3.87275 4.1778 3.76924C4.32458 3.66573 4.44417 3.5283 4.52642 3.36864L5.65042 1.21414C6.22242 0.129141 7.78242 0.129141 8.34942 1.21414"
-                              fill="#FFC107" />
-                          </svg>
-                        </div>
-                        <div>
-                          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <mask id="path-1-inside-1_2217_3140" fill="white">
-                              <path
-                                d="M8.34992 1.21414L9.47342 3.36914C9.55699 3.52778 9.67695 3.66436 9.82348 3.76769C9.97001 3.87103 10.1389 3.93818 10.3164 3.96364L12.6894 4.28864C13.9584 4.46364 14.4504 6.02814 13.5119 6.89814L11.8869 8.39764C11.7486 8.52506 11.6447 8.6854 11.585 8.86374C11.5253 9.04208 11.5117 9.23262 11.5454 9.41764L11.9419 11.6166C12.1624 12.8416 10.8879 13.7966 9.76942 13.2366L7.50142 12.1116C7.3453 12.0352 7.17376 11.9954 6.99992 11.9954C6.82608 11.9954 6.65454 12.0352 6.49842 12.1116L4.23042 13.2366C3.11142 13.7916 1.83742 12.8416 2.05792 11.6166L2.45442 9.41714C2.52442 9.04214 2.39442 8.65714 2.11342 8.39714L0.48792 6.89814C-0.45058 6.03314 0.0414199 4.46314 1.31042 4.28814L3.68342 3.96314C3.86143 3.93927 4.03103 3.87275 4.1778 3.76924C4.32458 3.66573 4.44417 3.5283 4.52642 3.36864L5.65042 1.21414C6.22242 0.129141 7.78242 0.129141 8.34942 1.21414" />
-                            </mask>
-                            <path
-                              d="M9.47342 3.36914L8.58668 3.83144L8.58868 3.83522L9.47342 3.36914ZM10.3164 3.96364L10.1744 4.95353L10.1807 4.95439L10.3164 3.96364ZM12.6894 4.28864L12.826 3.29802L12.8251 3.29789L12.6894 4.28864ZM13.5119 6.89814L14.1901 7.63306L14.1918 7.6315L13.5119 6.89814ZM11.8869 8.39764L12.5644 9.13315L12.5651 9.13256L11.8869 8.39764ZM11.5454 9.41764L12.5296 9.24019L12.5292 9.23835L11.5454 9.41764ZM11.9419 11.6166L12.9261 11.4395L12.9261 11.4392L11.9419 11.6166ZM9.76942 13.2366L10.2171 12.3424L10.2138 12.3408L9.76942 13.2366ZM7.50142 12.1116L7.94579 11.2158L7.94133 11.2136L7.50142 12.1116ZM6.99992 11.9954V12.9954V11.9954ZM6.49842 12.1116L6.0585 11.2136L6.05405 11.2158L6.49842 12.1116ZM4.23042 13.2366L4.67475 14.1325L4.67479 14.1325L4.23042 13.2366ZM2.05792 11.6166L1.07378 11.4392L1.07374 11.4395L2.05792 11.6166ZM2.45442 9.41714L1.47138 9.23364L1.47028 9.23973L2.45442 9.41714ZM2.11342 8.39714L2.79257 7.66314L2.79134 7.66201L2.11342 8.39714ZM0.48792 6.89814L1.16584 6.16301L1.16565 6.16283L0.48792 6.89814ZM1.31042 4.28814L1.17473 3.29739L1.17381 3.29752L1.31042 4.28814ZM3.68342 3.96314L3.55049 2.97201L3.54773 2.97239L3.68342 3.96314ZM4.52642 3.36864L3.63981 2.9061L3.63744 2.9107L4.52642 3.36864ZM5.65042 1.21414L4.76581 0.747785L4.76382 0.751603L5.65042 1.21414ZM8.34992 1.21414L7.46319 1.67643L8.58669 3.83143L9.47342 3.36914L10.3601 2.90685L9.23665 0.751849L8.34992 1.21414ZM9.47342 3.36914L8.58868 3.83522C8.74587 4.13362 8.97153 4.39053 9.24716 4.58492L9.82348 3.76769L10.3998 2.95047C10.3824 2.93818 10.3681 2.92193 10.3582 2.90306L9.47342 3.36914ZM9.82348 3.76769L9.24716 4.58492C9.52279 4.77929 9.84055 4.90561 10.1744 4.95351L10.3164 3.96364L10.4584 2.97378C10.4373 2.97075 10.4172 2.96276 10.3998 2.95047L9.82348 3.76769ZM10.3164 3.96364L10.1807 4.95439L12.5537 5.27939L12.6894 4.28864L12.8251 3.29789L10.4521 2.97289L10.3164 3.96364ZM12.6894 4.28864L12.5528 5.27927C12.9854 5.33892 13.1521 5.86813 12.8321 6.16478L13.5119 6.89814L14.1918 7.6315C15.7488 6.18815 14.9315 3.58836 12.826 3.29802L12.6894 4.28864ZM13.5119 6.89814L12.8338 6.16322L11.2088 7.66272L11.8869 8.39764L12.5651 9.13256L14.1901 7.63306L13.5119 6.89814ZM11.8869 8.39764L11.2094 7.66213C10.947 7.90383 10.75 8.20797 10.6368 8.54625L11.585 8.86374L12.5333 9.18122C12.5395 9.16282 12.5502 9.14629 12.5644 9.13315L11.8869 8.39764ZM11.585 8.86374L10.6368 8.54625C10.5235 8.88454 10.4977 9.24597 10.5616 9.59693L11.5454 9.41764L12.5292 9.23835C12.5257 9.21927 12.5271 9.19962 12.5333 9.18122L11.585 8.86374ZM11.5454 9.41764L10.5613 9.59509L10.9578 11.7941L11.9419 11.6166L12.9261 11.4392L12.5295 9.24019L11.5454 9.41764ZM11.9419 11.6166L10.9577 11.7938C11.032 12.2061 10.6013 12.5348 10.2171 12.3425L9.76942 13.2366L9.32173 14.1308C11.1746 15.0585 13.2929 13.4772 12.9261 11.4395L11.9419 11.6166ZM9.76942 13.2366L10.2138 12.3408L7.94579 11.2158L7.50142 12.1116L7.05705 13.0075L9.32505 14.1325L9.76942 13.2366ZM7.50142 12.1116L7.94133 11.2136C7.64827 11.07 7.32626 10.9954 6.99992 10.9954V11.9954V12.9954C7.02127 12.9954 7.04233 13.0003 7.06151 13.0097L7.50142 12.1116ZM6.99992 11.9954V10.9954C6.67358 10.9954 6.35157 11.07 6.05851 11.2136L6.49842 12.1116L6.93833 13.0097C6.95751 13.0003 6.97857 12.9954 6.99992 12.9954V11.9954ZM6.49842 12.1116L6.05405 11.2158L3.78605 12.3408L4.23042 13.2366L4.67479 14.1325L6.94279 13.0075L6.49842 12.1116ZM4.23042 13.2366L3.78609 12.3408C3.39396 12.5353 2.96902 12.1998 3.0421 11.7938L2.05792 11.6166L1.07374 11.4395C0.705824 13.4834 2.82888 15.048 4.67475 14.1325L4.23042 13.2366ZM2.05792 11.6166L3.04206 11.794L3.43856 9.59455L2.45442 9.41714L1.47028 9.23973L1.07378 11.4392L2.05792 11.6166ZM2.45442 9.41714L3.43744 9.60064C3.57149 8.88249 3.32167 8.1527 2.79257 7.66314L2.11342 8.39714L1.43427 9.13114C1.46717 9.16158 1.47735 9.20179 1.4714 9.23364L2.45442 9.41714ZM2.11342 8.39714L2.79134 7.66201L1.16584 6.16301L0.48792 6.89814L-0.190003 7.63327L1.4355 9.13227L2.11342 8.39714ZM0.48792 6.89814L1.16565 6.16283C0.850626 5.87248 1.01261 5.33867 1.44703 5.27877L1.31042 4.28814L1.17381 3.29752C-0.929775 3.58761 -1.75179 6.1938 -0.189807 7.63345L0.48792 6.89814ZM1.31042 4.28814L1.44611 5.27889L3.81911 4.95389L3.68342 3.96314L3.54773 2.97239L1.17473 3.29739L1.31042 4.28814ZM3.68342 3.96314L3.81635 4.95427C4.154 4.90898 4.47572 4.7828 4.75413 4.58646L4.1778 3.76924L3.60148 2.95202C3.58634 2.96269 3.56885 2.96955 3.55049 2.97202L3.68342 3.96314ZM4.1778 3.76924L4.75413 4.58646C5.03253 4.39012 5.25939 4.12944 5.4154 3.82658L4.52642 3.36864L3.63744 2.9107C3.62896 2.92717 3.61662 2.94134 3.60148 2.95202L4.1778 3.76924ZM4.52642 3.36864L5.41302 3.83118L6.53702 1.67668L5.65042 1.21414L4.76382 0.751603L3.63982 2.9061L4.52642 3.36864ZM5.65042 1.21414L6.53502 1.68049C6.73356 1.30389 7.27184 1.31122 7.46314 1.67729L8.34942 1.21414L9.2357 0.750989C8.293 -1.05294 5.71128 -1.04561 4.76582 0.747789L5.65042 1.21414Z"
-                              fill="#FFC107" mask="url(#path-1-inside-1_2217_3140)" />
-                          </svg>
-
-                        </div>
-                      </div>
-                      <div className="d-flex align-items-center">
-                        <p className="fs-8 noto_sans text-neutral-600">2025/9/13</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div className="py-3 me-lg-6 me-0" style={{ maxWidth: '808px' }}>
-                  <div className="d-lg-flex d-none align-items-center mb-4">
-                    <div className="me-4">
-                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path
-                          d="M14.0249 3.47063L15.7101 6.70313C15.8355 6.94108 16.0154 7.14595 16.2352 7.30095C16.455 7.45596 16.7084 7.55668 16.9746 7.59488L20.5341 8.08238C22.4376 8.34488 23.1756 10.6916 21.7679 11.9966L19.3304 14.2459C19.1229 14.437 18.9671 14.6775 18.8776 14.945C18.788 15.2125 18.7676 15.4983 18.8181 15.7759L19.4129 19.0744C19.7436 20.9119 17.8319 22.3444 16.1541 21.5044L12.7521 19.8169C12.518 19.7022 12.2606 19.6425 11.9999 19.6425C11.7391 19.6425 11.4818 19.7022 11.2476 19.8169L7.84563 21.5044C6.16713 22.3369 4.25613 20.9119 4.58688 19.0744L5.18163 15.7751C5.28663 15.2126 5.09163 14.6351 4.67013 14.2451L2.23188 11.9966C0.82413 10.6991 1.56213 8.34412 3.46563 8.08162L7.02513 7.59413C7.29214 7.55831 7.54655 7.45853 7.76671 7.30327C7.98686 7.14801 8.16626 6.94187 8.28963 6.70237L9.97563 3.47063C10.8336 1.84312 13.1736 1.84312 14.0241 3.47063"
-                          fill="#FFC107" />
-                      </svg>
-                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path
-                          d="M14.0249 3.47063L15.7101 6.70313C15.8355 6.94108 16.0154 7.14595 16.2352 7.30095C16.455 7.45596 16.7084 7.55668 16.9746 7.59488L20.5341 8.08238C22.4376 8.34488 23.1756 10.6916 21.7679 11.9966L19.3304 14.2459C19.1229 14.437 18.9671 14.6775 18.8776 14.945C18.788 15.2125 18.7676 15.4983 18.8181 15.7759L19.4129 19.0744C19.7436 20.9119 17.8319 22.3444 16.1541 21.5044L12.7521 19.8169C12.518 19.7022 12.2606 19.6425 11.9999 19.6425C11.7391 19.6425 11.4818 19.7022 11.2476 19.8169L7.84563 21.5044C6.16713 22.3369 4.25613 20.9119 4.58688 19.0744L5.18163 15.7751C5.28663 15.2126 5.09163 14.6351 4.67013 14.2451L2.23188 11.9966C0.82413 10.6991 1.56213 8.34412 3.46563 8.08162L7.02513 7.59413C7.29214 7.55831 7.54655 7.45853 7.76671 7.30327C7.98686 7.14801 8.16626 6.94187 8.28963 6.70237L9.97563 3.47063C10.8336 1.84312 13.1736 1.84312 14.0241 3.47063"
-                          fill="#FFC107" />
-                      </svg>
-                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path
-                          d="M14.0249 3.47063L15.7101 6.70313C15.8355 6.94108 16.0154 7.14595 16.2352 7.30095C16.455 7.45596 16.7084 7.55668 16.9746 7.59488L20.5341 8.08238C22.4376 8.34488 23.1756 10.6916 21.7679 11.9966L19.3304 14.2459C19.1229 14.437 18.9671 14.6775 18.8776 14.945C18.788 15.2125 18.7676 15.4983 18.8181 15.7759L19.4129 19.0744C19.7436 20.9119 17.8319 22.3444 16.1541 21.5044L12.7521 19.8169C12.518 19.7022 12.2606 19.6425 11.9999 19.6425C11.7391 19.6425 11.4818 19.7022 11.2476 19.8169L7.84563 21.5044C6.16713 22.3369 4.25613 20.9119 4.58688 19.0744L5.18163 15.7751C5.28663 15.2126 5.09163 14.6351 4.67013 14.2451L2.23188 11.9966C0.82413 10.6991 1.56213 8.34412 3.46563 8.08162L7.02513 7.59413C7.29214 7.55831 7.54655 7.45853 7.76671 7.30327C7.98686 7.14801 8.16626 6.94187 8.28963 6.70237L9.97563 3.47063C10.8336 1.84312 13.1736 1.84312 14.0241 3.47063"
-                          fill="#FFC107" />
-                      </svg>
-                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path
-                          d="M14.0249 3.47063L15.7101 6.70313C15.8355 6.94108 16.0154 7.14595 16.2352 7.30095C16.455 7.45596 16.7084 7.55668 16.9746 7.59488L20.5341 8.08238C22.4376 8.34488 23.1756 10.6916 21.7679 11.9966L19.3304 14.2459C19.1229 14.437 18.9671 14.6775 18.8776 14.945C18.788 15.2125 18.7676 15.4983 18.8181 15.7759L19.4129 19.0744C19.7436 20.9119 17.8319 22.3444 16.1541 21.5044L12.7521 19.8169C12.518 19.7022 12.2606 19.6425 11.9999 19.6425C11.7391 19.6425 11.4818 19.7022 11.2476 19.8169L7.84563 21.5044C6.16713 22.3369 4.25613 20.9119 4.58688 19.0744L5.18163 15.7751C5.28663 15.2126 5.09163 14.6351 4.67013 14.2451L2.23188 11.9966C0.82413 10.6991 1.56213 8.34412 3.46563 8.08162L7.02513 7.59413C7.29214 7.55831 7.54655 7.45853 7.76671 7.30327C7.98686 7.14801 8.16626 6.94187 8.28963 6.70237L9.97563 3.47063C10.8336 1.84312 13.1736 1.84312 14.0241 3.47063"
-                          fill="#FFC107" />
-                      </svg>
-                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <mask id="path-1-inside-1_2217_2148" fill="white">
-                          <path
-                            d="M14.0249 3.47063L15.7101 6.70313C15.8355 6.94108 16.0154 7.14595 16.2352 7.30095C16.455 7.45596 16.7084 7.55668 16.9746 7.59488L20.5341 8.08238C22.4376 8.34488 23.1756 10.6916 21.7679 11.9966L19.3304 14.2459C19.1229 14.437 18.9671 14.6775 18.8776 14.945C18.788 15.2125 18.7676 15.4983 18.8181 15.7759L19.4129 19.0744C19.7436 20.9119 17.8319 22.3444 16.1541 21.5044L12.7521 19.8169C12.518 19.7022 12.2606 19.6425 11.9999 19.6425C11.7391 19.6425 11.4818 19.7022 11.2476 19.8169L7.84563 21.5044C6.16713 22.3369 4.25613 20.9119 4.58688 19.0744L5.18163 15.7751C5.28663 15.2126 5.09163 14.6351 4.67013 14.2451L2.23188 11.9966C0.82413 10.6991 1.56213 8.34412 3.46563 8.08162L7.02513 7.59413C7.29214 7.55831 7.54655 7.45853 7.76671 7.30327C7.98686 7.14801 8.16626 6.94187 8.28963 6.70237L9.97563 3.47063C10.8336 1.84312 13.1736 1.84312 14.0241 3.47063" />
-                        </mask>
-                        <path
-                          d="M15.7101 6.70313L14.8234 7.16542L14.8254 7.1692L15.7101 6.70313ZM16.9746 7.59488L16.8326 8.58476L16.8389 8.58563L16.9746 7.59488ZM20.5341 8.08238L20.6707 7.09175L20.6698 7.09162L20.5341 8.08238ZM21.7679 11.9966L22.446 12.7315L22.4477 12.73L21.7679 11.9966ZM19.3304 14.2459L20.0079 14.9814L20.0085 14.9808L19.3304 14.2459ZM18.8181 15.7759L19.8023 15.5984L19.8019 15.5966L18.8181 15.7759ZM19.4129 19.0744L20.3971 18.8972L20.397 18.8969L19.4129 19.0744ZM16.1541 21.5044L16.6018 20.6102L16.5985 20.6085L16.1541 21.5044ZM12.7521 19.8169L13.1965 18.921L13.192 18.9188L12.7521 19.8169ZM11.9999 19.6425V20.6425V19.6425ZM11.2476 19.8169L10.8077 18.9188L10.8033 18.921L11.2476 19.8169ZM7.84563 21.5044L8.28996 22.4002L8.29 22.4002L7.84563 21.5044ZM4.58688 19.0744L3.60274 18.897L3.6027 18.8972L4.58688 19.0744ZM5.18163 15.7751L4.19859 15.5916L4.19749 15.5977L5.18163 15.7751ZM4.67013 14.2451L5.34928 13.5111L5.34805 13.51L4.67013 14.2451ZM2.23188 11.9966L2.9098 11.2615L2.90961 11.2613L2.23188 11.9966ZM3.46563 8.08162L3.32994 7.09087L3.32902 7.091L3.46563 8.08162ZM7.02513 7.59413L6.8922 6.603L6.88944 6.60337L7.02513 7.59413ZM8.28963 6.70237L7.40302 6.23983L7.40065 6.24443L8.28963 6.70237ZM9.97563 3.47063L9.09102 3.00427L9.08903 3.00809L9.97563 3.47063ZM14.0249 3.47063L13.1382 3.93292L14.8234 7.16542L15.7101 6.70313L16.5969 6.24083L14.9116 3.00833L14.0249 3.47063ZM15.7101 6.70313L14.8254 7.1692C15.0244 7.54692 15.31 7.87213 15.6589 8.11818L16.2352 7.30095L16.8115 6.48373C16.7208 6.41977 16.6466 6.33524 16.5949 6.23705L15.7101 6.70313ZM16.2352 7.30095L15.6589 8.11818C16.0078 8.36422 16.41 8.52411 16.8326 8.58474L16.9746 7.59488L17.1166 6.60501C17.0068 6.58925 16.9022 6.54769 16.8115 6.48373L16.2352 7.30095ZM16.9746 7.59488L16.8389 8.58563L20.3984 9.07313L20.5341 8.08238L20.6698 7.09162L17.1103 6.60412L16.9746 7.59488ZM20.5341 8.08238L20.3975 9.073C21.4646 9.22015 21.8773 10.5316 21.088 11.2633L21.7679 11.9966L22.4477 12.73C24.474 10.8516 23.4107 7.4696 20.6707 7.09175L20.5341 8.08238ZM21.7679 11.9966L21.0897 11.2617L18.6522 13.511L19.3304 14.2459L20.0085 14.9808L22.446 12.7315L21.7679 11.9966ZM19.3304 14.2459L18.6529 13.5104C18.3213 13.8158 18.0724 14.2001 17.9293 14.6275L18.8776 14.945L19.8258 15.2625C19.8618 15.1549 19.9245 15.0582 20.0079 14.9814L19.3304 14.2459ZM18.8776 14.945L17.9293 14.6275C17.7862 15.055 17.7535 15.5117 17.8343 15.9552L18.8181 15.7759L19.8019 15.5966C19.7816 15.485 19.7898 15.3701 19.8258 15.2625L18.8776 14.945ZM18.8181 15.7759L17.834 15.9533L18.4288 19.2518L19.4129 19.0744L20.397 18.8969L19.8023 15.5984L18.8181 15.7759ZM19.4129 19.0744L18.4287 19.2515C18.6132 20.2764 17.5452 21.0825 16.6018 20.6102L16.1541 21.5044L15.7064 22.3986C18.1185 23.6062 20.8741 21.5474 20.3971 18.8972L19.4129 19.0744ZM16.1541 21.5044L16.5985 20.6085L13.1965 18.921L12.7521 19.8169L12.3078 20.7127L15.7098 22.4002L16.1541 21.5044ZM12.7521 19.8169L13.192 18.9188C12.8209 18.737 12.4131 18.6425 11.9999 18.6425V19.6425V20.6425C12.1081 20.6425 12.215 20.6673 12.3122 20.7149L12.7521 19.8169ZM11.9999 19.6425V18.6425C11.5866 18.6425 11.1788 18.737 10.8077 18.9188L11.2476 19.8169L11.6875 20.7149C11.7848 20.6673 11.8916 20.6425 11.9999 20.6425V19.6425ZM11.2476 19.8169L10.8033 18.921L7.40126 20.6085L7.84563 21.5044L8.29 22.4002L11.692 20.7127L11.2476 19.8169ZM7.84563 21.5044L7.4013 20.6085C6.44967 21.0805 5.38773 20.2701 5.57106 19.2515L4.58688 19.0744L3.6027 18.8972C3.12453 21.5537 5.88459 23.5933 8.28996 22.4002L7.84563 21.5044ZM4.58688 19.0744L5.57102 19.2518L6.16577 15.9525L5.18163 15.7751L4.19749 15.5977L3.60274 18.897L4.58688 19.0744ZM5.18163 15.7751L6.16465 15.9586C6.3337 15.053 6.01888 14.1307 5.34928 13.5111L4.67013 14.2451L3.99098 14.9791C4.16438 15.1396 4.23956 15.3723 4.19861 15.5916L5.18163 15.7751ZM4.67013 14.2451L5.34805 13.51L2.9098 11.2615L2.23188 11.9966L1.55396 12.7318L3.99221 14.9803L4.67013 14.2451ZM2.23188 11.9966L2.90961 11.2613C2.12534 10.5385 2.53332 9.21966 3.60224 9.07225L3.46563 8.08162L3.32902 7.091C0.590935 7.46859 -0.477076 10.8598 1.55415 12.7319L2.23188 11.9966ZM3.46563 8.08162L3.60132 9.07238L7.16082 8.58488L7.02513 7.59413L6.88944 6.60337L3.32994 7.09087L3.46563 8.08162ZM7.02513 7.59413L7.15806 8.58525C7.58471 8.52803 7.99123 8.36859 8.34303 8.1205L7.76671 7.30327L7.19038 6.48605C7.10186 6.54848 6.99956 6.5886 6.8922 6.603L7.02513 7.59413ZM7.76671 7.30327L8.34303 8.1205C8.69482 7.8724 8.98148 7.543 9.17861 7.16032L8.28963 6.70237L7.40065 6.24443C7.35104 6.34073 7.27891 6.42362 7.19038 6.48605L7.76671 7.30327ZM8.28963 6.70237L9.17623 7.16491L10.8622 3.93316L9.97563 3.47063L9.08903 3.00809L7.40303 6.23984L8.28963 6.70237ZM9.97563 3.47063L10.8602 3.93698C11.3448 3.01788 12.663 3.02521 13.1379 3.93378L14.0241 3.47063L14.9104 3.00747C13.6842 0.661043 10.3225 0.668375 9.09103 3.00427L9.97563 3.47063Z"
-                          fill="#FFC107" mask="url(#path-1-inside-1_2217_2148)" />
-                      </svg>
-                    </div>
-                    <p className="fs-8 noto_sans text-neutral-600">2025/9/13</p>
-                  </div>
-                  <div className="py-1 px-3 bg-neutral-250 rounded-pill mb-5">
-                    <p className="fs-8 text-neutral-700">購買產品：精選甜點盒 (3個月)、無負擔甜點盒(3個月)、季節限定甜點盒(12個月)</p>
-                  </div>
-                  <div>
-                    <p className="fw-bold ls-1 mb-2 lh-sm">愛吃甜點也很省腦，一盒甜是我的快樂密碼</p>
-                    <p id="textBox" className="text-truncate-box mb-lg-4 mb-6">
-                      不是我在誇，一盒甜都懂甜點控在想什麼。不只每次內容都有驚喜，還能吃到那種限時聯名，有種 VIP 搶先嚐的爽感，連同事看到我午茶的甜點都問哪裡買！</p>
-                  </div>
-                </div>
-                <div className="align-self-lg-start align-self-end flex-grow-1" style={{ width: '200px' }}>
-                  <div className="d-flex justify-content-end align-items-center p-3 me-lg-5 me-0 vote-box" onClick={() => handleLikes(3)}>
-                    <Icon className="icon-swap me-1" icon={`${likes[3]?.liked ? solid : outline}`} width="20" height="20">
-                    </Icon>
-                    <p className="fs-8 text-nowrap noto_sans" data-count="0">{likes[3]?.count === 0 ? "此評論有幫助" : "1 人認為此評論有幫助"}</p>
-                  </div>
-                </div>
-              </div>
+                    </li>
+                  </Fragment>
+                ))}
+              </ul>
             </div>
+            {/* 評論類別與排序 - mobile */}
+            <div className="d-flex d-lg-none justify-content-end gap-2 mb-6">
+              <Dropdown
+                options={mobileCategories}
+                width="auto"
+                value={selectedCategory}
+                onChange={handleCategoryChange}
+                buttonClass="text-neutral-800"
+              />
+              <Dropdown
+                options={mobileSortOptions}
+                value={sortOption}
+                onChange={handleSortChange}
+                buttonClass="text-neutral-800"
+              />
+            </div>
+            {/* 評論區 */}
+            <div className="d-flex flex-column mb-lg-17 mb-15 position-relative z-1">
+              {reviews.map((review, index) => (
+                <Fragment key={review.id}>
+                  <ReviewItem key={review.id} review={review} renderStars={renderStars} />
+                  {index !== reviews.length - 1 && (
+                    <hr className="border-neutral-500 border-1 my-lg-4 my-3" />
+                  )}
+                </Fragment>
+              ))}
+            </div>
+            {/* 分頁 */}
             <div className="d-flex justify-content-center">
               <Pagination
                 currentPage={1}
-                totalItems={1} // db.json subscriptions 筆數
+                totalItems={reviews.length} // 評論總數
                 itemsPerPage={5} // 每頁顯示幾筆
               />
             </div>
           </div>
         </section>
-
       </main>
     </>
-  )
+  );
 }
-export default ThemeDetail
+export default ThemeDetail;
