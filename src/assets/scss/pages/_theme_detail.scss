@@ -63,9 +63,6 @@
   }
 
   .swiperThemeDetail2 {
-    //height: 20%;
-    padding: 12px 0;
-
     .swiper-slide {
       width: 100%;
       height: 100%;
@@ -80,7 +77,7 @@
   // 小圖尺寸
   .swiperThemeDetail2 {
     width: 100%;
-    height: 116px;
+    height: 156px;
     margin-left: auto;
     margin-right: auto;
 
@@ -89,6 +86,7 @@
     }
     img {
       border-radius: 24px;
+      object-fit: cover;
     }
   }
 }
@@ -96,7 +94,7 @@
 // SECTION-1:mobile 滿版swiper
 .theme-detail-pics-sm {
   width: 100%;
-  height: 55vh;
+  height: 452px;
 
   .swiper-slide {
     display: flex;

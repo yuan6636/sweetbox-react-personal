@@ -5,7 +5,7 @@ import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import 'swiper/css/free-mode';
 import 'swiper/css/thumbs';
-import { useEffect, useState, Fragment } from 'react';
+import { useEffect, useState, Fragment, useRef } from 'react';
 import { useParams, NavLink, useNavigate } from 'react-router-dom';
 import { Icon } from '@iconify/react';
 import dayjs from 'dayjs';
@@ -31,12 +31,6 @@ const themes = [
   { id: 5, label: '無負擔甜點' },
   { id: 6, label: '素食甜點' },
 ];
-
-const themeImages = [1, 2, 3, 4].map((num) => ({
-  large: `./images/Theme_Detail/Feature/pic_card_large(${num}).jpg`,
-  small: `./images/Theme_Detail/Feature/pic_card_mobile(${num}).jpg`,
-  alt: `甜點盒主題展示圖${num}`,
-}));
 
 // 食用建議
 const usageTips = [
@@ -267,9 +261,12 @@ function ThemeDetail() {
   const [selectedCategory, setSelectedCategory] = useState('');
   const [sortOption, setSortOption] = useState('desc');
 
+  const mainSwiperRef = useRef(null);
+  const thumbsSwiperRef = useRef(null);
+  const mobileSwiperRef = useRef(null);
+
   const handleSubscribe = async () => {
     if (!activePlan || !themeData) return;
-
     try {
       // 取得使用者資料
       const userData = localStorage.getItem('user');
@@ -355,6 +352,22 @@ function ThemeDetail() {
     getThemeData();
   }, [id]);
 
+  useEffect(() => {
+    // 主題切換後，重製 Swiper 到第一張(speed = 0 表示瞬間跳轉，不播放滑動動畫)
+    if (mainSwiperRef.current && thumbsSwiperRef.current) {
+      // 主題詳細大圖
+      mainSwiperRef.current.slideToLoop(0, 0);
+      // 主題詳細小圖
+      thumbsSwiperRef.current.slideToLoop(0, 0);
+    }
+
+    // 手機版
+    if (mobileSwiperRef.current) {
+      // 增加時間回到第一張主題圖，避免切換主題停止 autoplay
+      mobileSwiperRef.current.slideToLoop(0, 10);
+    }
+  }, [id]);
+
   // 渲染評價星星
   const renderStars = (rating, size = 24) => {
     return Array.from({ length: 5 }, (_, index) => index + 1).map((number) => (
@@ -393,24 +406,24 @@ function ThemeDetail() {
           ></div>
           {/*mobile 滿版swiper */}
           <div className="mt-19 d-lg-none">
-            <Swiper
-              className="theme-detail-pics-sm"
-              modules={[Autoplay]}
-              autoplay={{ delay: 1000 }}
-              loop
-            >
-              {themeImages.map((image, index) => (
-                <SwiperSlide key={index}>
-                  <picture>
-                    <source srcSet={image.small} media="(max-width: 768px)" />
-                    <img src={image.large} alt={image.alt} />
-                  </picture>
-                </SwiperSlide>
-              ))}
-            </Swiper>
-            <div className="swiper-button-next"></div>
-            <div className="swiper-button-prev"></div>
-            <div className="swiper-pagination"></div>
+            {themeData && (
+              <Swiper
+                className="theme-detail-pics-sm"
+                modules={[Autoplay]}
+                autoplay={{ delay: 1000, disableOnInteraction: false }}
+                grabCursor={true}
+                loop
+                onSwiper={(swiper) => {
+                  mobileSwiperRef.current = swiper;
+                }}
+              >
+                {themeData?.images.detail.map((image, index) => (
+                  <SwiperSlide key={index}>
+                    <img src={image} alt={`${themeData.title}圖片}`} />
+                  </SwiperSlide>
+                ))}
+              </Swiper>
+            )}
           </div>
           {/* 內容：主題menu + 訂閱方案 */}
           <div className="container py-lg-11">
@@ -449,33 +462,43 @@ function ThemeDetail() {
                   <div className="theme-detail-pics d-lg-block d-none flex-grow-1">
                     {/* 大圖 */}
                     <Swiper
-                      className="swiperThemeDetail"
+                      className="swiperThemeDetail pb-3"
                       modules={[Thumbs, FreeMode]}
                       thumbs={{
                         swiper: thumbsSwiper && !thumbsSwiper.destroyed ? thumbsSwiper : null,
                       }}
+                      grabCursor={true}
                       loop
+                      onSwiper={(swiper) => {
+                        // Swiper instance 賦值到 mainSwiperRef，才可用slideToLoop 方法
+                        mainSwiperRef.current = swiper;
+                      }}
                     >
-                      {themeImages.map((image, index) => (
+                      {themeData?.images.detail.map((image, index) => (
                         <SwiperSlide key={index}>
-                          <img src={image.large} alt={image.alt} />
+                          <img src={image} alt={`${themeData.title}圖片}`} />
                         </SwiperSlide>
                       ))}
                     </Swiper>
                     {/* 小圖 */}
                     <Swiper
                       className="swiperThemeDetail2"
-                      onSwiper={setThumbsSwiper}
                       modules={[FreeMode, Thumbs]}
-                      loop
-                      spaceBetween={10}
-                      slidesPerView={4}
+                      spaceBetween={8}
+                      slidesPerView={3}
                       freeMode={true}
                       watchSlidesProgress={true}
+                      resistanceRatio={0}
+                      grabCursor={true}
+                      onSwiper={(swiper) => {
+                        thumbsSwiperRef.current = swiper;
+                        // 因為大圖的 Swiper 的 thumbs.swiper 需要小圖 instance，使用 state 才能觸發更新，大圖才能連動小圖
+                        setThumbsSwiper(swiper);
+                      }}
                     >
-                      {themeImages.map((image, index) => (
+                      {themeData?.images.detail.map((image, index) => (
                         <SwiperSlide key={index}>
-                          <img src={image.large} alt={image.alt} />
+                          <img src={image} alt={`${themeData.title}圖片}`} />
                         </SwiperSlide>
                       ))}
                     </Swiper>
