@@ -1,11 +1,28 @@
 // SECTION-1 ---------------------------------------
 // theme-menu
-.pie-img {
-  width: 576px;
-  height: auto;
-  position: absolute;
+.pie-bg {
+  background-image: none;
+
+  @media (min-width: 992px) {
+    background-image: url('/images/Theme_Detail/Feature/Pattern01.svg');
+    background-size: 576px auto;
+    background-repeat: no-repeat;
+    background-position: left bottom;
+  }
+}
+
+.theme-menu {
+  position: fixed;
+  top: 0;
   left: 0;
-  bottom: 0px;
+  right: 0;
+  background-color: $neutral-200;
+  padding-top: 68px;
+  z-index: 3;
+
+  @media (min-width: 992px) {
+    display: none;
+  }
 }
 
 //  plan-opts

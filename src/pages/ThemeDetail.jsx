@@ -393,17 +393,25 @@ function ThemeDetail() {
     <>
       <main className="main overflow-hidden">
         {/* section1 主題menu + 訂閱方案 */}
-        <section className="position-relative">
-          <img
-            className="pie-img d-none d-lg-block z-n1"
-            src="./images/Theme_Detail/Feature/Pattern01.svg"
-            alt="背景插圖"
-          />
+        <section className="pie-bg">
           {/* mobile：fixed menu-bg-color */}
-          <div
-            className="position-fixed d-lg-none w-100 z-3 bg-neutral-200"
-            style={{ height: '130px', top: 0 }}
-          ></div>
+          <div className="theme-menu">
+            <ul className="nav side-menu gap-2 py-2 px-3">
+              {themes.map((theme) => {
+                const { id, label } = theme;
+                return (
+                  <li key={id} className="nav-item">
+                    <NavLink
+                      to={`/themeDetail/${id}`}
+                      className={({ isActive }) => 'nav-link' + (isActive ? ' active' : '')}
+                    >
+                      {label}
+                    </NavLink>
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
           {/*mobile 滿版swiper */}
           <div className="mt-19 d-lg-none">
             {themeData && (
@@ -435,12 +443,9 @@ function ThemeDetail() {
               <div className="col-xl-8 col-lg-7">
                 <div className="d-flex">
                   {/*  menu */}
-                  {/* 固定寬度120px flex-shrink-0  */}
-                  <nav className="side-menu-area me-lg-6 flex-shrink-0">
-                    <h5 className=" d-none d-lg-block fw-bold fs-lg-7 text-nowrap ls-1 py-lg-5 ps-2">
-                      主題一覽
-                    </h5>
-                    <ul className="nav flex-lg-column side-menu gap-2 py-2 py-lg-0">
+                  <nav className="me-lg-6 d-none d-lg-block">
+                    <h5 className="fw-bold fs-lg-7 text-nowrap ls-1 py-lg-5 ps-2">主題一覽</h5>
+                    <ul className="nav flex-column side-menu">
                       {themes.map((theme) => {
                         const { id, label } = theme;
                         return (
