@@ -338,6 +338,7 @@ function ThemeDetail() {
   useEffect(() => {
     const getThemeData = async () => {
       setIsLoading(true);
+      setActivePlan(null);
 
       // 計算打 API 開始的時間
       const startTime = Date.now();
@@ -636,6 +637,7 @@ function ThemeDetail() {
                               type="button"
                               className="btn-primary-icon align-items-center ls-1 lh-sm"
                               onClick={handleSubscribe}
+                              disabled={!activePlan}
                             >
                               立刻訂閱
                               <Icon
