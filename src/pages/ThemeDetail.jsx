@@ -11,6 +11,7 @@ import { Icon } from '@iconify/react';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import timezone from 'dayjs/plugin/timezone';
+import { message } from 'antd';
 
 import api from '../api';
 import SideMenuFloat from '../components/SideMenuFloat';
@@ -269,12 +270,14 @@ function ThemeDetail() {
 
   const handleSubscribe = async () => {
     if (!activePlan || !themeData) return;
+
     try {
       // 取得使用者資料
       const userData = localStorage.getItem('user');
-      const userObj = JSON.parse(userData);
+      const userObj = userData ? JSON.parse(userData) : null;
 
       if (!userObj) {
+        message.warning('請先登入或註冊會員！');
         navigate('/login');
         return;
       }
