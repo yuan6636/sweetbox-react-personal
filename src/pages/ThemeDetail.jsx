@@ -17,6 +17,7 @@ import SideMenuFloat from '../components/SideMenuFloat';
 import Pagination from '../components/Pagination';
 import Dropdown from '../components/Dropdown';
 import ReviewItem from '../components/theme-detail/ReviewItem';
+import Loading from '../components/Loading';
 
 // 台灣時間
 dayjs.extend(utc);
@@ -260,6 +261,7 @@ function ThemeDetail() {
   const [isExpanded, setIsExpanded] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState('');
   const [sortOption, setSortOption] = useState('desc');
+  const [isLoading, setIsLoading] = useState(false);
 
   const mainSwiperRef = useRef(null);
   const thumbsSwiperRef = useRef(null);
@@ -335,6 +337,11 @@ function ThemeDetail() {
 
   useEffect(() => {
     const getThemeData = async () => {
+      setIsLoading(true);
+
+      // 計算打 API 開始的時間
+      const startTime = Date.now();
+
       try {
         const [themesRes, plansRes] = await Promise.all([api.get('/themes'), api.get('/plans')]);
         const theme = themesRes.data.find((item) => item.id === Number(id));
@@ -347,6 +354,19 @@ function ThemeDetail() {
         setThemeData(combinedThemeData);
       } catch (error) {
         console.error('取得主題失敗：', error?.message);
+      } finally {
+        // 計算打 API 後過了多少時間 elapsed
+        const elapsed = Date.now() - startTime;
+
+        // 設定一個最少 loading 時間 minimumLoadingTime
+        const minimumLoadingTime = 300;
+
+        // 若 elapsed < minimumLoadingTime 則等待，反之直接結束
+        if (elapsed < minimumLoadingTime) {
+          await new Promise((resolve) => setTimeout(resolve, minimumLoadingTime - elapsed));
+        }
+
+        setIsLoading(false);
       }
     };
     getThemeData();
@@ -394,246 +414,262 @@ function ThemeDetail() {
       <main className="main overflow-hidden">
         {/* section1 主題menu + 訂閱方案 */}
         <section className="pie-bg">
-          {/* mobile：fixed menu-bg-color */}
-          <div className="theme-menu">
-            <ul className="nav side-menu gap-2 py-2 px-3">
-              {themes.map((theme) => {
-                const { id, label } = theme;
-                return (
-                  <li key={id} className="nav-item">
-                    <NavLink
-                      to={`/themeDetail/${id}`}
-                      className={({ isActive }) => 'nav-link' + (isActive ? ' active' : '')}
-                    >
-                      {label}
-                    </NavLink>
-                  </li>
-                );
-              })}
-            </ul>
-          </div>
-          {/*mobile 滿版swiper */}
-          <div className="mt-19 d-lg-none">
-            {themeData && (
-              <Swiper
-                className="theme-detail-pics-sm"
-                modules={[Autoplay]}
-                autoplay={{ delay: 1000, disableOnInteraction: false }}
-                grabCursor={true}
-                loop
-                onSwiper={(swiper) => {
-                  mobileSwiperRef.current = swiper;
-                }}
-              >
-                {themeData?.images.detail.map((image, index) => (
-                  <SwiperSlide key={index}>
-                    <img src={image} alt={`${themeData.title}圖片}`} />
-                  </SwiperSlide>
-                ))}
-              </Swiper>
-            )}
-          </div>
-          {/* 內容：主題menu + 訂閱方案 */}
-          <div className="container py-lg-11">
-            {/* 桌機 side-menu-float */}
-            {/* scroll up才顯示  */}
-            <SideMenuFloat />
-            <div className="row">
-              {/* 左區塊：Menu + Swiper */}
-              <div className="col-xl-8 col-lg-7">
-                <div className="d-flex">
-                  {/*  menu */}
-                  <nav className="me-lg-6 d-none d-lg-block">
-                    <h5 className="fw-bold fs-lg-7 text-nowrap ls-1 py-lg-5 ps-2">主題一覽</h5>
-                    <ul className="nav flex-column side-menu">
-                      {themes.map((theme) => {
-                        const { id, label } = theme;
-                        return (
-                          <li key={id} className="nav-item">
-                            <NavLink
-                              to={`/themeDetail/${id}`}
-                              className={({ isActive }) =>
-                                'nav-link d-flex align-items-center' + (isActive ? ' active' : '')
-                              }
-                            >
-                              {label}
-                            </NavLink>
-                          </li>
-                        );
-                      })}
-                    </ul>
-                  </nav>
-                  {/* 中間 Swiper */}
-                  <div className="theme-detail-pics d-lg-block d-none flex-grow-1">
-                    {/* 大圖 */}
-                    <Swiper
-                      className="swiperThemeDetail pb-3"
-                      modules={[Thumbs, FreeMode]}
-                      thumbs={{
-                        swiper: thumbsSwiper && !thumbsSwiper.destroyed ? thumbsSwiper : null,
-                      }}
-                      grabCursor={true}
-                      loop
-                      onSwiper={(swiper) => {
-                        // Swiper instance 賦值到 mainSwiperRef，才可用slideToLoop 方法
-                        mainSwiperRef.current = swiper;
-                      }}
-                    >
-                      {themeData?.images.detail.map((image, index) => (
-                        <SwiperSlide key={index}>
-                          <img src={image} alt={`${themeData.title}圖片}`} />
-                        </SwiperSlide>
-                      ))}
-                    </Swiper>
-                    {/* 小圖 */}
-                    <Swiper
-                      className="swiperThemeDetail2"
-                      modules={[FreeMode, Thumbs]}
-                      spaceBetween={8}
-                      slidesPerView={3}
-                      freeMode={true}
-                      watchSlidesProgress={true}
-                      resistanceRatio={0}
-                      grabCursor={true}
-                      onSwiper={(swiper) => {
-                        thumbsSwiperRef.current = swiper;
-                        // 因為大圖的 Swiper 的 thumbs.swiper 需要小圖 instance，使用 state 才能觸發更新，大圖才能連動小圖
-                        setThumbsSwiper(swiper);
-                      }}
-                    >
-                      {themeData?.images.detail.map((image, index) => (
-                        <SwiperSlide key={index}>
-                          <img src={image} alt={`${themeData.title}圖片}`} />
-                        </SwiperSlide>
-                      ))}
-                    </Swiper>
-                  </div>
-                </div>
-              </div>
-
-              {/* 右區塊：訂閱方案 */}
-              <div className="col-xl-4 col-lg-5 plan-opts mb-17 mb-lg-11 pt-6 pt-lg-4 px-lg-5">
-                <div className="mb-9 mb-lg-5">
-                  <div className="theme-topic">
-                    <h1 className="mb-5 fs-3 fs-lg-2 fw-bold ls-1">{`${themeData?.title}盒`}</h1>
-                    <h2 className="mb-3 fs-7 ls-1 fw-bold">{`${themeData?.subtitle}`}</h2>
-                    <p>{`${themeData?.description}`}</p>
-                  </div>
-                  <div className="plan-area">
-                    {/* plan選項 */}
-
-                    <ul className="my-6">
-                      {themeData?.plans?.map((plan, idx) => {
-                        // 原始價 - 優惠價，算出節省金額
-                        const savedAmount = plan.originalPrice - plan.discountPrice;
-
-                        return (
-                          <li key={plan.id} className="mb-3">
-                            <button
-                              className={`card-plan ${activePlan?.id === plan.id ? 'active' : ''}`}
-                              type="button"
-                              onClick={() => setActivePlan(plan)}
-                            >
-                              <div className="subtitle">
-                                <p>
-                                  {idx === 0 ? '初嚐首選' : idx === 1 ? '人氣推薦' : '鑑賞家專屬'}
-                                </p>
-                                <p className="text-cta-200">節省 ${savedAmount}</p>
-                              </div>
-                              <div className="title">
-                                <p>{plan.durationMonths} 個月方案</p>
-                                <p className="align-bottom">
-                                  NT$ {plan.discountPrice}
-                                  <span>/月</span>
-                                </p>
-                              </div>
-                            </button>
-                          </li>
-                        );
-                      })}
-                    </ul>
-
-                    {/* 數量 */}
-                    <div className="quantity mb-lg-6 d-flex align-items-center">
-                      {/* 減少按鈕 */}
-                      <button
-                        className="btn-icon-lg"
-                        type="button"
-                        aria-label="Decrease"
-                        onClick={() => setQuantity((prev) => Math.max(prev - 1, 1))}
-                        disabled={quantity <= 1}
-                      >
-                        <Icon className="sub" icon="ic:round-minus" width="24" height="24" />
-                      </button>
-
-                      {/* spinner 顯示數量 */}
-                      <input
-                        className="spinner mx-3 fs-7 fw-bold ls-1 border-0 bg-transparent text-center"
-                        type="text"
-                        role="spinbutton"
-                        aria-live="assertive"
-                        aria-valuenow={quantity}
-                        value={quantity}
-                        readOnly
-                      />
-
-                      {/* 增加按鈕 */}
-                      <button
-                        className="btn-icon-lg"
-                        type="button"
-                        aria-label="Increase"
-                        onClick={() => setQuantity((prev) => prev + 1)}
-                      >
-                        <Icon className="sub" icon="ic:round-plus" width="24" height="24" />
-                      </button>
-                    </div>
-
-                    {/* 訂閱按鈕固定欄位 */}
-                    <div className="subscribe-fixed-bar d-flex justify-content-between align-items-center">
-                      <div className="pb-4">
-                        {/* 節省金額 */}
-                        <p className="mb-1 fs-9 text-cta-200">
-                          {activePlan
-                            ? `節省 $${(activePlan.originalPrice - activePlan.discountPrice) * quantity}`
-                            : ''}
-                        </p>
-                        {/* 總金額 */}
-                        <p className="fs-4 fw-bold ls-1">
-                          {activePlan ? `NT$ ${activePlan.discountPrice * quantity}` : ''}
-                        </p>
-                      </div>
-                      <div className="pt-3">
-                        <button
-                          type="button"
-                          className="btn-primary-icon align-items-center ls-1 lh-sm"
-                          onClick={handleSubscribe}
+          {isLoading ? (
+            <Loading text="載入甜點主題中..." />
+          ) : (
+            <>
+              {/* mobile：fixed menu-bg-color */}
+              <div className="theme-menu">
+                <ul className="nav side-menu gap-2 py-2 px-3">
+                  {themes.map((theme) => {
+                    const { id, label } = theme;
+                    return (
+                      <li key={id} className="nav-item">
+                        <NavLink
+                          to={`/themeDetail/${id}`}
+                          className={({ isActive }) => 'nav-link' + (isActive ? ' active' : '')}
                         >
-                          立刻訂閱
-                          <Icon className="ms-2" icon="tdesign:swap-right" width="24" height="24" />
-                        </button>
+                          {label}
+                        </NavLink>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </div>
+              {/*mobile 滿版swiper */}
+              <div className="mt-19 d-lg-none">
+                {themeData && (
+                  <Swiper
+                    className="theme-detail-pics-sm"
+                    modules={[Autoplay]}
+                    autoplay={{ delay: 1000, disableOnInteraction: false }}
+                    grabCursor={true}
+                    loop
+                    onSwiper={(swiper) => {
+                      mobileSwiperRef.current = swiper;
+                    }}
+                  >
+                    {themeData?.images.detail.map((image, index) => (
+                      <SwiperSlide key={index}>
+                        <img src={image} alt={`${themeData.title}圖片}`} />
+                      </SwiperSlide>
+                    ))}
+                  </Swiper>
+                )}
+              </div>
+              {/* 內容：主題menu + 訂閱方案 */}
+              <div className="container py-lg-11">
+                {/* 桌機 side-menu-float */}
+                {/* scroll up才顯示  */}
+                <SideMenuFloat />
+                <div className="row">
+                  {/* 左區塊：Menu + Swiper */}
+                  <div className="col-xl-8 col-lg-7">
+                    <div className="d-flex">
+                      {/*  menu */}
+                      <nav className="me-lg-6 d-none d-lg-block">
+                        <h5 className="fw-bold fs-lg-7 text-nowrap ls-1 py-lg-5 ps-2">主題一覽</h5>
+                        <ul className="nav flex-column side-menu">
+                          {themes.map((theme) => {
+                            const { id, label } = theme;
+                            return (
+                              <li key={id} className="nav-item">
+                                <NavLink
+                                  to={`/themeDetail/${id}`}
+                                  className={({ isActive }) =>
+                                    'nav-link d-flex align-items-center' +
+                                    (isActive ? ' active' : '')
+                                  }
+                                >
+                                  {label}
+                                </NavLink>
+                              </li>
+                            );
+                          })}
+                        </ul>
+                      </nav>
+                      {/* 中間 Swiper */}
+                      <div className="theme-detail-pics d-lg-block d-none flex-grow-1">
+                        {/* 大圖 */}
+                        <Swiper
+                          className="swiperThemeDetail pb-3"
+                          modules={[Thumbs, FreeMode]}
+                          thumbs={{
+                            swiper: thumbsSwiper && !thumbsSwiper.destroyed ? thumbsSwiper : null,
+                          }}
+                          grabCursor={true}
+                          loop
+                          onSwiper={(swiper) => {
+                            // Swiper instance 賦值到 mainSwiperRef，才可用slideToLoop 方法
+                            mainSwiperRef.current = swiper;
+                          }}
+                        >
+                          {themeData?.images.detail.map((image, index) => (
+                            <SwiperSlide key={index}>
+                              <img src={image} alt={`${themeData.title}圖片}`} />
+                            </SwiperSlide>
+                          ))}
+                        </Swiper>
+                        {/* 小圖 */}
+                        <Swiper
+                          className="swiperThemeDetail2"
+                          modules={[FreeMode, Thumbs]}
+                          spaceBetween={8}
+                          slidesPerView={3}
+                          freeMode={true}
+                          watchSlidesProgress={true}
+                          resistanceRatio={0}
+                          grabCursor={true}
+                          onSwiper={(swiper) => {
+                            thumbsSwiperRef.current = swiper;
+                            // 因為大圖的 Swiper 的 thumbs.swiper 需要小圖 instance，使用 state 才能觸發更新，大圖才能連動小圖
+                            setThumbsSwiper(swiper);
+                          }}
+                        >
+                          {themeData?.images.detail.map((image, index) => (
+                            <SwiperSlide key={index}>
+                              <img src={image} alt={`${themeData.title}圖片}`} />
+                            </SwiperSlide>
+                          ))}
+                        </Swiper>
                       </div>
                     </div>
                   </div>
-                </div>
-                {/* 食用建議advice */}
-                <div className="advice px-3 px-lg-0">
-                  <h6 className="ls-1 fw-bold fs-7 mb-5">食用建議</h6>
-                  <ul>
-                    {usageTips.map((tip) => (
-                      <li key={tip.icon} className="fs-8 mb-2 d-flex align-items-center">
-                        <img
-                          className="me-3"
-                          src={`./images/Theme_Detail/Feature/${tip.icon}.svg`}
-                          alt={tip.alt}
-                        />
-                        <p>{tip.text}</p>
-                      </li>
-                    ))}
-                  </ul>
+
+                  {/* 右區塊：訂閱方案 */}
+                  <div className="col-xl-4 col-lg-5 plan-opts mb-17 mb-lg-11 pt-6 pt-lg-4 px-lg-5">
+                    <div className="mb-9 mb-lg-5">
+                      <div className="theme-topic">
+                        <h1 className="mb-5 fs-3 fs-lg-2 fw-bold ls-1">{`${themeData?.title}盒`}</h1>
+                        <h2 className="mb-3 fs-7 ls-1 fw-bold">{`${themeData?.subtitle}`}</h2>
+                        <p>{`${themeData?.description}`}</p>
+                      </div>
+                      <div className="plan-area">
+                        {/* plan選項 */}
+
+                        <ul className="my-6">
+                          {themeData?.plans?.map((plan, idx) => {
+                            // 原始價 - 優惠價，算出節省金額
+                            const savedAmount = plan.originalPrice - plan.discountPrice;
+
+                            return (
+                              <li key={plan.id} className="mb-3">
+                                <button
+                                  className={`card-plan ${activePlan?.id === plan.id ? 'active' : ''}`}
+                                  type="button"
+                                  onClick={() => setActivePlan(plan)}
+                                >
+                                  <div className="subtitle">
+                                    <p>
+                                      {idx === 0
+                                        ? '初嚐首選'
+                                        : idx === 1
+                                          ? '人氣推薦'
+                                          : '鑑賞家專屬'}
+                                    </p>
+                                    <p className="text-cta-200">節省 ${savedAmount}</p>
+                                  </div>
+                                  <div className="title">
+                                    <p>{plan.durationMonths} 個月方案</p>
+                                    <p className="align-bottom">
+                                      NT$ {plan.discountPrice}
+                                      <span>/月</span>
+                                    </p>
+                                  </div>
+                                </button>
+                              </li>
+                            );
+                          })}
+                        </ul>
+
+                        {/* 數量 */}
+                        <div className="quantity mb-lg-6 d-flex align-items-center">
+                          {/* 減少按鈕 */}
+                          <button
+                            className="btn-icon-lg"
+                            type="button"
+                            aria-label="Decrease"
+                            onClick={() => setQuantity((prev) => Math.max(prev - 1, 1))}
+                            disabled={quantity <= 1}
+                          >
+                            <Icon className="sub" icon="ic:round-minus" width="24" height="24" />
+                          </button>
+
+                          {/* spinner 顯示數量 */}
+                          <input
+                            className="spinner mx-3 fs-7 fw-bold ls-1 border-0 bg-transparent text-center"
+                            type="text"
+                            role="spinbutton"
+                            aria-live="assertive"
+                            aria-valuenow={quantity}
+                            value={quantity}
+                            readOnly
+                          />
+
+                          {/* 增加按鈕 */}
+                          <button
+                            className="btn-icon-lg"
+                            type="button"
+                            aria-label="Increase"
+                            onClick={() => setQuantity((prev) => prev + 1)}
+                          >
+                            <Icon className="sub" icon="ic:round-plus" width="24" height="24" />
+                          </button>
+                        </div>
+
+                        {/* 訂閱按鈕固定欄位 */}
+                        <div className="subscribe-fixed-bar d-flex justify-content-between align-items-center">
+                          <div className="pb-4">
+                            {/* 節省金額 */}
+                            <p className="mb-1 fs-9 text-cta-200">
+                              {activePlan
+                                ? `節省 $${(activePlan.originalPrice - activePlan.discountPrice) * quantity}`
+                                : ''}
+                            </p>
+                            {/* 總金額 */}
+                            <p className="fs-4 fw-bold ls-1">
+                              {activePlan ? `NT$ ${activePlan.discountPrice * quantity}` : ''}
+                            </p>
+                          </div>
+                          <div className="pt-3">
+                            <button
+                              type="button"
+                              className="btn-primary-icon align-items-center ls-1 lh-sm"
+                              onClick={handleSubscribe}
+                            >
+                              立刻訂閱
+                              <Icon
+                                className="ms-2"
+                                icon="tdesign:swap-right"
+                                width="24"
+                                height="24"
+                              />
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    {/* 食用建議advice */}
+                    <div className="advice px-3 px-lg-0">
+                      <h6 className="ls-1 fw-bold fs-7 mb-5">食用建議</h6>
+                      <ul>
+                        {usageTips.map((tip) => (
+                          <li key={tip.icon} className="fs-8 mb-2 d-flex align-items-center">
+                            <img
+                              className="me-3"
+                              src={`./images/Theme_Detail/Feature/${tip.icon}.svg`}
+                              alt={tip.alt}
+                            />
+                            <p>{tip.text}</p>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  </div>
                 </div>
               </div>
-            </div>
-          </div>
+            </>
+          )}
         </section>
         {/* section2 甜點盒裡有甚麼 */}
         <section className="bg-neutral-400 theme-feature position-relative mt-5 mt-lg-0">
