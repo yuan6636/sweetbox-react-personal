@@ -25,15 +25,6 @@ dayjs.extend(utc);
 dayjs.extend(timezone);
 dayjs.tz.setDefault('Asia/Taipei');
 
-const themes = [
-  { id: 1, label: '精選甜點' },
-  { id: 2, label: '季節限定' },
-  { id: 3, label: '在地甜點' },
-  { id: 4, label: '異國風味' },
-  { id: 5, label: '無負擔甜點' },
-  { id: 6, label: '素食甜點' },
-];
-
 // 食用建議
 const usageTips = [
   { icon: 'Icon_openbook', alt: 'openbook icon', text: '開箱後，請先確認甜點品項與保存方式' },
@@ -255,6 +246,7 @@ const reviews = [
 function ThemeDetail() {
   const { id } = useParams();
   const [thumbsSwiper, setThumbsSwiper] = useState(null);
+  const [themes, setThemes] = useState([]);
   const [themeData, setThemeData] = useState(null);
   const [activePlan, setActivePlan] = useState(null);
   const [quantity, setQuantity] = useState(1);
@@ -267,6 +259,7 @@ function ThemeDetail() {
   const mainSwiperRef = useRef(null);
   const thumbsSwiperRef = useRef(null);
   const mobileSwiperRef = useRef(null);
+  const lastMenuItemRef = useRef(null);
 
   const handleSubscribe = async () => {
     if (!activePlan || !themeData) return;
@@ -348,6 +341,9 @@ function ThemeDetail() {
 
       try {
         const [themesRes, plansRes] = await Promise.all([api.get('/themes'), api.get('/plans')]);
+
+        setThemes(themesRes.data);
+
         const theme = themesRes.data.find((item) => item.id === Number(id));
         const relatedPlans = plansRes.data.filter((plan) => plan.themeId === Number(id));
 
@@ -426,14 +422,14 @@ function ThemeDetail() {
               <div className="theme-menu">
                 <ul className="nav side-menu gap-2 py-2 px-3">
                   {themes.map((theme) => {
-                    const { id, label } = theme;
+                    const { id, title } = theme;
                     return (
                       <li key={id} className="nav-item">
                         <NavLink
                           to={`/themeDetail/${id}`}
                           className={({ isActive }) => 'nav-link' + (isActive ? ' active' : '')}
                         >
-                          {label}
+                          {title}
                         </NavLink>
                       </li>
                     );
@@ -465,7 +461,7 @@ function ThemeDetail() {
               <div className="container py-lg-11">
                 {/* 桌機 side-menu-float */}
                 {/* scroll up才顯示  */}
-                <SideMenuFloat />
+                <SideMenuFloat themes={themes} lastMenuItemRef={lastMenuItemRef} />
                 <div className="row">
                   {/* 左區塊：Menu + Swiper */}
                   <div className="col-xl-8 col-lg-7">
@@ -474,10 +470,14 @@ function ThemeDetail() {
                       <nav className="me-lg-6 d-none d-lg-block">
                         <h5 className="fw-bold fs-lg-7 text-nowrap ls-1 py-lg-5 ps-2">主題一覽</h5>
                         <ul className="nav flex-column side-menu">
-                          {themes.map((theme) => {
-                            const { id, label } = theme;
+                          {themes.map((theme, index) => {
+                            const { id, title } = theme;
                             return (
-                              <li key={id} className="nav-item">
+                              <li
+                                key={id}
+                                className="nav-item"
+                                ref={index === themes.length - 1 ? lastMenuItemRef : null}
+                              >
                                 <NavLink
                                   to={`/themeDetail/${id}`}
                                   className={({ isActive }) =>
@@ -485,7 +485,7 @@ function ThemeDetail() {
                                     (isActive ? ' active' : '')
                                   }
                                 >
-                                  {label}
+                                  {title}
                                 </NavLink>
                               </li>
                             );
