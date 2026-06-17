@@ -1,7 +1,15 @@
 import { Icon } from '@iconify/react';
 import { useEffect, useRef, useState } from 'react';
 
-function Dropdown({ options, width = '108px', variant = "default", value, onChange, prefix }) {
+function Dropdown({
+  options,
+  width = '108px',
+  variant = 'default',
+  value,
+  onChange,
+  prefix,
+  buttonClass,
+}) {
   const [option, setOption] = useState(options[0].label);
   const [isSelected, setIsSelected] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
@@ -26,7 +34,7 @@ function Dropdown({ options, width = '108px', variant = "default", value, onChan
         setOption(isMatched.label);
         setIsSelected(value !== options[0].value); // 第一個通常是 "全部"
       }
-    }
+    };
     updateOption(matched, options);
   }, [value, options]);
 
@@ -41,24 +49,21 @@ function Dropdown({ options, width = '108px', variant = "default", value, onChan
   }, []);
 
   // 顯示文字邏輯：有 prefix 且不是全部時才加上前綴
-  const displayText =
-    prefix && value !== options[0].value
-      ? `${prefix}：${option}`
-      : option;
+  const displayText = prefix && value !== options[0].value ? `${prefix}：${option}` : option;
 
   return (
     <div className="dropdown dropdown-neutral-250">
-      {variant === "default" ? (
+      {variant === 'default' ? (
         <button
           ref={dropdownRef}
           className={`btn btn-secondary dropdown-toggle d-flex justify-content-center align-items-center
           ${isSelected ? 'text-neutral-800' : ''}
-          ${isOpen ? 'is-open' : ''}`}
+          ${isOpen ? 'is-open' : ''} ${buttonClass || ''}`}
           style={{ width }}
           type="button"
           onClick={() => setIsOpen((prev) => !prev)}
         >
-          <span className='me-1'>{displayText}</span>
+          <span className="me-1">{displayText}</span>
           <Icon icon="iconamoon:arrow-down-2-bold" width="20" height="20" />
         </button>
       ) : (
@@ -77,14 +82,11 @@ function Dropdown({ options, width = '108px', variant = "default", value, onChan
       )}
       <ul
         className={`dropdown-menu mt-2 dropdown-menu-neutral-250 ${isOpen ? 'show' : ''}`}
-        style={{ right: 0}}
+        style={{ right: 0, width }}
       >
         {options.map((opt, index) => (
           <li key={index}>
-            <a
-              className="dropdown-item"
-              onClick={(e) => selectOption(e, opt)}
-            >
+            <a className="dropdown-item" onClick={(e) => selectOption(e, opt)}>
               {opt.label}
             </a>
           </li>

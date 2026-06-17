@@ -32,6 +32,7 @@
   &:disabled {
     background-color: $neutral-300;
     color: $neutral-500;
+    pointer-events: none;
   }
 
   // 992px 以下使用小尺寸
@@ -153,7 +154,8 @@
   }
 }
 
-.btn-icon-leading, .btn-simple-icon {
+.btn-icon-leading,
+.btn-simple-icon {
   background-color: transparent;
   color: $neutral-800;
   padding: 12px 12px;
@@ -177,7 +179,7 @@
   }
 }
 
-.btn-simple-icon{
+.btn-simple-icon {
   padding: 0;
 }
 
@@ -202,7 +204,7 @@
   color: $neutral-800;
 
   &:hover {
-    color: $primary-600; 
+    color: $primary-600;
   }
 
   &:active {
@@ -323,7 +325,8 @@
     background-color: $neutral-400;
   }
 
-  &:active, &.active {
+  &:active,
+  &.active {
     color: $neutral-100;
     background-color: $neutral-800;
   }
@@ -347,7 +350,6 @@
     background-color: $neutral-300;
     color: $neutral-800;
     border: none;
-
   }
 }
 

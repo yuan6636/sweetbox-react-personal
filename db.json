@@ -10,7 +10,13 @@
       "images": {
         "home": "./images/Home_Page/pic_feature.png",
         "main": "./images/Theme_Page/pic_theme_feature.png",
-        "square": "./images/Cart_Page/pic_feature.jpg"
+        "square": "./images/Cart_Page/pic_feature.jpg",
+        "detail": [
+          "./images/Theme_Detail/Feature/pic-select-large-1.jpg",
+          "./images/Theme_Detail/Feature/pic-select-large-2.jpg",
+          "./images/Theme_Detail/Feature/pic-select-large-3.jpg",
+          "./images/Theme_Detail/Feature/pic-select-large-4.jpg"
+        ]
       }
     },
     {
@@ -23,7 +29,13 @@
       "images": {
         "home": "./images/Home_Page/pic_season.png",
         "main": "./images/Theme_Page/pic_theme_season.png",
-        "square": "./images/Cart_Page/pic_season.jpg"
+        "square": "./images/Cart_Page/pic_season.jpg",
+        "detail": [
+          "./images/Theme_Detail/Feature/pic-season-large-1.jpg",
+          "./images/Theme_Detail/Feature/pic-season-large-2.jpg",
+          "./images/Theme_Detail/Feature/pic-season-large-3.jpg",
+          "./images/Theme_Detail/Feature/pic-season-large-4.jpg"
+        ]
       }
     },
     {
@@ -36,7 +48,13 @@
       "images": {
         "home": "./images/Home_Page/pic_local.png",
         "main": "./images/Theme_Page/pic_theme_local.png",
-        "square": "./images/Cart_Page/pic_local.jpg"
+        "square": "./images/Cart_Page/pic_local.jpg",
+        "detail": [
+          "./images/Theme_Detail/Feature/pic-local-large-1.jpg",
+          "./images/Theme_Detail/Feature/pic-local-large-2.jpg",
+          "./images/Theme_Detail/Feature/pic-local-large-3.jpg",
+          "./images/Theme_Detail/Feature/pic-local-large-4.jpg"
+        ]
       }
     },
     {
@@ -48,7 +66,13 @@
       "description": "每月解鎖一國的代表甜點，為你展開一場從舌尖出發的甜點之旅。",
       "images": {
         "main": "./images/Theme_Page/pic_theme_world.png",
-        "square": "./images/Cart_Page/pic_world.jpg"
+        "square": "./images/Cart_Page/pic_world.jpg",
+        "detail": [
+          "./images/Theme_Detail/Feature/pic-world-large-1.jpg",
+          "./images/Theme_Detail/Feature/pic-world-large-2.jpg",
+          "./images/Theme_Detail/Feature/pic-world-large-3.jpg",
+          "./images/Theme_Detail/Feature/pic-world-large-4.jpg"
+        ]
       }
     },
     {
@@ -60,7 +84,13 @@
       "description": "嚴選天然原料，低糖、無麩質、植物奶製作，每一口都純粹而滿足。",
       "images": {
         "main": "./images/Theme_Page/pic_theme_health.png",
-        "square": "./images/Cart_Page/pic_health.jpg"
+        "square": "./images/Cart_Page/pic_health.jpg",
+        "detail": [
+          "./images/Theme_Detail/Feature/pic-health-large-1.jpg",
+          "./images/Theme_Detail/Feature/pic-health-large-2.jpg",
+          "./images/Theme_Detail/Feature/pic-health-large-3.jpg",
+          "./images/Theme_Detail/Feature/pic-health-large-4.jpg"
+        ]
       }
     },
     {
@@ -72,7 +102,13 @@
       "description": "無蛋無奶植物系甜點，每一口甜，都是對自己與地球的一份溫柔。",
       "images": {
         "main": "./images/Theme_Page/pic_theme_veg.png",
-        "square": "./images/Cart_Page/pic_veg.jpg"
+        "square": "./images/Cart_Page/pic_veg.jpg",
+        "detail": [
+          "./images/Theme_Detail/Feature/pic-veg-large-1.jpg",
+          "./images/Theme_Detail/Feature/pic-veg-large-2.jpg",
+          "./images/Theme_Detail/Feature/pic-veg-large-3.jpg",
+          "./images/Theme_Detail/Feature/pic-veg-large-4.jpg"
+        ]
       }
     }
   ],
