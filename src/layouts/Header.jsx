@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { Icon } from '@iconify/react';
 import { Tooltip } from 'bootstrap';
@@ -6,11 +6,10 @@ import { Tooltip } from 'bootstrap';
 import { getUser, logout } from '../../src/utils/auth';
 import NavIcon from '../components/NavIcon';
 import api from '../api';
+import useTooltip from '../hooks/useTooltip';
 
 function Header() {
   const [cartCount, setCartCount] = useState(0);
-
-  const tooltipRef = useRef(null);
 
   const navigate = useNavigate();
   const handleLogout = () => {
@@ -19,16 +18,8 @@ function Header() {
   };
   const user = getUser();
 
-  useEffect(() => {
-    let tooltip;
-
-    if (tooltipRef.current) {
-      tooltip = new Tooltip(tooltipRef.current);
-    }
-    return () => {
-      tooltip?.dispose();
-    };
-  }, [user]);
+  const customerServiceRef = useTooltip();
+  const userNameRef = useTooltip(user);
 
   useEffect(() => {
     // 使用者未登入，清空購物車數量
@@ -79,13 +70,15 @@ function Header() {
         <ul className="nav d-none d-lg-flex align-items-center">
           {!user?.isAdmin && (
             <>
-              <li className="nav-item">
-                <NavIcon
-                  to="/"
-                  icon="ri:customer-service-line"
-                  activeIcon="ri:customer-service-fill"
-                  label="客服圖示"
-                />
+              <li className="nav-item p-3">
+                <span
+                  ref={customerServiceRef}
+                  data-bs-toggle="tooltip"
+                  data-bs-placement="top"
+                  data-bs-title="Coming Soon"
+                >
+                  <Icon icon="ri:customer-service-line" width="24" height="24" />
+                </span>
               </li>
               <li className="nav-item position-relative">
                 <NavIcon
@@ -120,7 +113,7 @@ function Header() {
                     )}
                   </div>
                   <span
-                    ref={tooltipRef}
+                    ref={userNameRef}
                     className="user-name"
                     data-bs-toggle="tooltip"
                     data-bs-placement="top"
