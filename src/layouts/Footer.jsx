@@ -3,9 +3,11 @@ import { NavLink } from 'react-router-dom';
 
 // hooks
 import { useAuth } from '../contexts/auth';
+import useTooltip from '../hooks/useTooltip';
 
 function Footer() {
   const { user } = useAuth();
+  const memberRef = useTooltip();
 
   return (
     <footer className="footer bg-neutral-400 position-relative">
@@ -27,8 +29,15 @@ function Footer() {
               <NavLink to="/admin/subscribe">後台管理</NavLink>
             </li>
           ) : (
-            <li className="footer-nav-item">
-              <NavLink to="/subscription">會員中心</NavLink>
+            <li className="footer-nav-item no-hover">
+              <span
+                ref={memberRef}
+                data-bs-toggle="tooltip"
+                data-bs-placement="top"
+                data-bs-title="Coming Soon"
+              >
+                會員中心
+              </span>
             </li>
           )}
         </ul>
