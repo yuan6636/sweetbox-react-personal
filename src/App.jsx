@@ -15,8 +15,8 @@ function App() {
           <Header />
           <Outlet />
         </CartProvider>
+        <Footer />
       </AuthProvider>
-      <Footer />
     </div>
   );
 }
