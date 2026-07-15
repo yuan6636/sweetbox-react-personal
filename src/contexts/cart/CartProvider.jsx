@@ -1,6 +1,5 @@
-import { useEffect, useCallback, useReducer } from 'react';
+import { useState, useEffect, useCallback, useReducer } from 'react';
 
-import { getUser } from '../../utils/auth';
 import { useAuth } from '../auth';
 
 import api from '../../api';
@@ -12,13 +11,13 @@ const initialState = null;
 
 export function CartProvider({ children }) {
   const [cartMain, dispatch] = useReducer(CartReducer, initialState);
-  const { isLogin } = useAuth();
+  const [isCartLoading, setIsCartLoading] = useState(true);
+  const { isLogin, user } = useAuth();
 
   const refreshCart = useCallback(async () => {
-    const user = getUser();
-
     if (!user) {
       dispatch({ type: 'CLEAR_CART' });
+      setIsCartLoading(false);
       return;
     }
 
@@ -30,8 +29,10 @@ export function CartProvider({ children }) {
     } catch (error) {
       console.error('取得購物車失敗', error?.message);
       dispatch({ type: 'CLEAR_CART' });
+    } finally {
+      setIsCartLoading(false);
     }
-  }, []);
+  }, [user]);
 
   const setCart = useCallback((cart) => {
     dispatch({ type: 'SET_CART', payload: cart });
@@ -53,6 +54,10 @@ export function CartProvider({ children }) {
     dispatch({ type: 'REMOVE_CART_ITEM', payload: { itemId } });
   }, []);
 
+  const addCartItem = useCallback((item, index) => {
+    dispatch({ type: 'ADD_CART_ITEM', payload: { item, index } });
+  }, []);
+
   const updateCartItem = useCallback((itemId, patch) => {
     dispatch({ type: 'UPDATE_CART_ITEM', payload: { itemId, patch } });
   }, []);
@@ -66,9 +71,11 @@ export function CartProvider({ children }) {
     (async () => {
       if (!isLogin) {
         dispatch({ type: 'CLEAR_CART' });
+        setIsCartLoading(false);
         return;
       }
 
+      setIsCartLoading(true);
       await refreshCart();
     })();
   }, [isLogin, refreshCart]);
@@ -78,12 +85,14 @@ export function CartProvider({ children }) {
     <CartContext.Provider
       value={{
         cartMain,
+        isCartLoading,
         refreshCart,
         setCart,
         setCartItems,
         clearCart,
         updateCartMeta,
         removeCartItem,
+        addCartItem,
         updateCartItem,
         removeCoupon,
       }}

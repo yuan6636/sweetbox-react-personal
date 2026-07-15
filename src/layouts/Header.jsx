@@ -1,51 +1,39 @@
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { Icon } from '@iconify/react';
 import { Tooltip } from 'bootstrap';
 
-import { getUser, logout } from '../../src/utils/auth';
 import NavIcon from '../components/NavIcon';
-import api from '../api';
 import useTooltip from '../hooks/useTooltip';
+import { useCart } from '../contexts/cart';
+import { useAuth } from '../contexts/auth';
 
 function Header() {
-  const [cartCount, setCartCount] = useState(0);
+  // Context hook
+  const { user, logout } = useAuth();
+  const { cartMain, clearCart } = useCart();
+  // 自訂義 hook
+  const customerServiceRef = useTooltip();
+  const userNameRef = useTooltip(user);
 
   const navigate = useNavigate();
   const handleLogout = () => {
     logout();
     navigate('/');
   };
-  const user = getUser();
 
-  const customerServiceRef = useTooltip();
-  const userNameRef = useTooltip(user);
+  const cartCount = cartMain?.cart_items?.length || 0;
 
   useEffect(() => {
-    // 使用者未登入，清空購物車數量
+    // 使用者未登入，清空購物車
     const resetCartCount = () => {
-      setCartCount(0);
+      clearCart();
     };
 
     if (!user) {
       resetCartCount();
     }
-  }, [user]);
-
-  useEffect(() => {
-    if (!user) return;
-    // 取得購物車方案數量
-    const fetchCartItems = async () => {
-      try {
-        const cartRes = await api.get(`/carts?userId=${user.id}&_embed=cart_items`);
-        setCartCount(cartRes.data[0]?.cart_items?.length || 0);
-      } catch (err) {
-        console.error('取得購物車方案數量失敗', err?.message || '請稍後再試！');
-      }
-    };
-
-    fetchCartItems();
-  }, [user]);
+  }, [user, clearCart]);
 
   return (
     <nav className="navbar pt-3 px-3 pt-lg-5 px-lg-0">

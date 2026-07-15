@@ -30,6 +30,21 @@ export function CartReducer(state, action) {
         cart_items: (state.cart_items || []).filter((item) => item.id !== action.payload.itemId),
       };
 
+    case 'ADD_CART_ITEM': {
+      if (!state) return state;
+
+      const { item, index } = action.payload;
+      const items = [...(state.cart_items || [])];
+
+      if (typeof index === 'number' && index >= 0 && index <= items.length) {
+        items.splice(index, 0, item);
+      } else {
+        items.push(item);
+      }
+
+      return { ...state, cart_items: items };
+    }
+
     case 'UPDATE_CART_ITEM':
       if (!state) return state;
 

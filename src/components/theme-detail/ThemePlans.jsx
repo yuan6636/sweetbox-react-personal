@@ -22,6 +22,7 @@ import ThemeDesktopSwiper from './ThemeDesktopSwiper';
 
 // hook
 import useThemeData from '../../hooks/useThemeData';
+import { useCart } from '../../contexts/cart';
 
 // data
 import { usageTips } from './mockData';
@@ -37,6 +38,7 @@ function ThemePlans() {
   const [quantity, setQuantity] = useState(1);
   const navigate = useNavigate();
   const { themes, currentTheme, isLoading } = useThemeData(id, setActivePlan);
+  const { refreshCart } = useCart();
 
   const mainSwiperRef = useRef(null);
   const thumbsSwiperRef = useRef(null);
@@ -107,6 +109,7 @@ function ThemePlans() {
 
       await api.put(`/carts/${cart.id}`, updatedCart);
 
+      await refreshCart();
       navigate('/cart');
     } catch (err) {
       console.error('錯誤:', err);
