@@ -11,8 +11,7 @@ function Footer() {
   const memberRef = useTooltip();
 
   return (
-    <footer className="footer bg-neutral-400 position-relative">
-      <div className="footer-wave"></div>
+    <footer className="footer bg-neutral-100 position-relative">
       <nav className="container d-flex flex-column flex-lg-row justify-content-between align-items-center mb-3 px-0">
         <NavLink to="/">
           <img
