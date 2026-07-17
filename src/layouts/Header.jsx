@@ -1,7 +1,6 @@
 import { useEffect } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { Icon } from '@iconify/react';
-import { Tooltip } from 'bootstrap';
 
 import NavIcon from '../components/NavIcon';
 import useTooltip from '../hooks/useTooltip';
@@ -172,10 +171,8 @@ function Header() {
             ) : (
               // 訪客、一般使用者顯示
               <>
-                <li className="dropdown-item-wrapper">
-                  <NavLink className="dropdown-item" to="/service">
-                    客服諮詢
-                  </NavLink>
+                <li className="dropdown-item-wrapper" onClick={(e) => e.stopPropagation()}>
+                  <span className="dropdown-item disabled">客服諮詢</span>
                 </li>
                 <li className="dropdown-item-wrapper">
                   <NavLink className="dropdown-item" to="/cart">
