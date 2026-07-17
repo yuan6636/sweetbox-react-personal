@@ -29,7 +29,7 @@
     line-height: 18px;
     color: $neutral-700;
 
-    &:not(.no-hover):hover {
+    &:hover {
       background: linear-gradient(#ff5f1f, #ff8c5e);
       -webkit-background-clip: text; // Chrome/Safari
       background-clip: text; // 其他瀏覽器支援度不同

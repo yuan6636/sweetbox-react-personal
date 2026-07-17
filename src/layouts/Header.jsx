@@ -12,7 +12,6 @@ function Header() {
   const { user, logout } = useAuth();
   const { cartMain, clearCart } = useCart();
   // 自訂義 hook
-  const customerServiceRef = useTooltip();
   const userNameRef = useTooltip(user);
 
   const navigate = useNavigate();
@@ -58,12 +57,7 @@ function Header() {
           {!user?.isAdmin && (
             <>
               <li className="nav-item p-3">
-                <span
-                  ref={customerServiceRef}
-                  data-bs-toggle="tooltip"
-                  data-bs-placement="top"
-                  data-bs-title="Coming Soon"
-                >
+                <span className="disabled">
                   <Icon icon="ri:customer-service-line" width="24" height="24" />
                 </span>
               </li>
