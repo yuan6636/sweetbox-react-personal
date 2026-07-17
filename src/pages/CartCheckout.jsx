@@ -1,20 +1,29 @@
+// 外部資源
 import { useEffect, useState } from 'react';
 import { Icon } from '@iconify/react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
-import api from '../api';
-import useAuth from '../../hooks/useAuth';
 import { message } from 'antd';
-import taiwanData from '../assets/utils/taiwanDistricts.json';
-import InvoiceSection from '../components/InvoiceSection';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import timezone from 'dayjs/plugin/timezone';
+
+// utils
+import taiwanData from '../assets/utils/taiwanDistricts.json';
 import { creditCardYears, creditCardMonths } from '../assets/utils/formOptions';
 import { formatCardNumber, getCardType } from '../assets/utils/paymentUtils';
+
+// components
+import InvoiceSection from '../components/InvoiceSection';
 import ReceiverSection from '../components/cart/ReceiverSection';
 import PaymentSection from '../components/cart/PaymentSection';
 import OrderSummary from '../components/cart/OrderSummary';
+
+import api from '../api';
+
+// hooks
+import { useCart } from '../contexts/cart';
+import { useAuth } from '../contexts/auth';
 
 // 設定台灣時區
 dayjs.extend(utc);
@@ -36,8 +45,8 @@ function CartCheckout() {
   } = useForm({ mode: 'onTouched' });
 
   const { user } = useAuth();
-  const [cartMain, setCartMain] = useState(null);
-  const [cartItems, setCartItems] = useState([]);
+  const { cartMain, setCart, clearCart } = useCart();
+  const [enrichedCartItems, setEnrichedCartItems] = useState([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [selectedChips, setSelectedChips] = useState([]); // 已選的訂閱備註
@@ -55,7 +64,7 @@ function CartCheckout() {
           navigate('/cart');
           return;
         }
-        setCartMain(userCart);
+        setCart(userCart);
 
         const [themesRes, plansRes, savedCardsRes] = await Promise.all([
           api.get('/themes'),
@@ -77,7 +86,7 @@ function CartCheckout() {
         });
 
         setSavedCards(savedCardsRes.data);
-        setCartItems(enrichedItems);
+        setEnrichedCartItems(enrichedItems);
       } catch (err) {
         console.error('資料讀取失敗', err);
         message.error('無法取得訂單資訊');
@@ -86,7 +95,7 @@ function CartCheckout() {
       }
     };
     fetchData();
-  }, [navigate, user.id]);
+  }, [navigate, user.id, setCart]);
 
   const [cardNumber, expiryMonth, expiryYear, cardOwner] = watch([
     'cardNumber',
@@ -122,7 +131,7 @@ function CartCheckout() {
     return `${abbr || 'XX'}${durationStr}${randomStr}`;
   };
   const onSubmit = async (formData) => {
-    if (!cartItems || cartItems.length === 0) {
+    if (!enrichedCartItems || enrichedCartItems.length === 0) {
       message.warning('您的購物車裡還沒有甜點呢！');
       navigate('/cartEmpty');
       return;
@@ -170,12 +179,12 @@ function CartCheckout() {
       }
 
       let remainingDiscount = currentDiscountTotal;
-      const preCalculatedItems = cartItems.map((item, index) => {
+      const preCalculatedItems = enrichedCartItems.map((item, index) => {
         const itemSubTotal = (item.plan?.discountPrice || 0) * item.quantity; //折前小計
         let itemDiscount = 0;
 
         if (currentSubTotal > 0) {
-          if (index === cartItems.length - 1) {
+          if (index === enrichedCartItems.length - 1) {
             // 最後品項扣除「剩餘折扣額」
             itemDiscount = remainingDiscount;
           } else {
@@ -290,13 +299,13 @@ function CartCheckout() {
       const subIds = results.map((sub) => sub.id).join(',');
 
       // 清理購物車
-      for (const item of cartItems) {
+      for (const item of enrichedCartItems) {
         await api.delete(`/cart_items/${item.id}`);
       }
       if (cartMain?.id) await api.delete(`/carts/${cartMain.id}`);
 
+      clearCart();
       navigate(`/cartFinish?sub_ids=${subIds}`, { replace: true, state: { showSuccess: true } });
-
     } catch (error) {
       console.error('結帳失敗:', error);
       message.error({ content: '處理失敗，請稍後再試。', key: 'checkout', duration: 3 });
@@ -336,7 +345,7 @@ function CartCheckout() {
   const districts = currentCity ? Object.keys(taiwanData['台灣'][currentCity]) : [];
 
   // 金額
-  const subTotal = cartItems.reduce(
+  const subTotal = enrichedCartItems.reduce(
     (sum, item) => sum + (item.plan?.discountPrice || 0) * item.quantity,
     0,
   );
@@ -505,7 +514,7 @@ function CartCheckout() {
               <div className="col-lg-4 px-0 px-lg-3">
                 {/* 訂單明細 */}
                 <OrderSummary
-                  cartItems={cartItems}
+                  cartItems={enrichedCartItems}
                   displayCartMain={displayCartMain}
                   isSubmitting={isSubmitting}
                   isLoading={isLoading}

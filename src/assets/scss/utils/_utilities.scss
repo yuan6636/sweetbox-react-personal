@@ -59,3 +59,9 @@ $utilities: map-merge(
 .text-prewrap {
   white-space: pre-wrap;
 }
+
+.disabled {
+  opacity: 0.5;
+  pointer-events: none;
+  cursor: not-allowed;
+}

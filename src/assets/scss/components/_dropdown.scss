@@ -27,26 +27,9 @@
   }
 
   &-burger {
-
     &:active,
     &.selected {
       color: $primary-600;
-    }
-  }
-
-  &-login {
-
-    &:active,
-    &.selected {
-      &::before {
-        content: "";
-        position: absolute;
-        bottom: 4px;
-        width: 64px;
-        height: 2px;
-        border-radius: 100px;
-        background-color: $neutral-800;
-      }
     }
   }
 }
@@ -54,20 +37,19 @@
 .dropdown-menu {
   padding: 0;
   text-align: center;
-  backdrop-filter: blur(16px);
-  background-color: rgba($neutral-100, 0.4);
-  border: 1px solid $neutral-100;
+  box-shadow: 0 6px 18px rgba($black, 0.06);
   border-radius: 20px;
   line-height: 27px;
   letter-spacing: 0.1rem;
 
   &-avatar {
     width: 192px;
-    background-color: rgba($neutral-100, 0.4);
+    background-color: $neutral-100;
 
     &[data-bs-popper] {
       top: 72px;
-      left: -40px;
+      left: 50%;
+      transform: translateX(-50%);
     }
 
     .dropdown-item {
@@ -122,10 +104,6 @@
       padding-bottom: 33px;
     }
   }
-
-  li:not(:last-child) {
-    border-bottom: 1px solid $neutral-100;
-  }
 }
 
 .dropdown-menu.sub-dropdown-menu {
@@ -138,15 +116,15 @@
 
   &.w-124 {
     width: 124px;
-    left: 0;   // 預設靠左
+    left: 0; // 預設靠左
     right: auto;
   }
 
   &.w-84 {
     width: 84px;
-    right: 0;  // 貼齊父層右邊
+    right: 0; // 貼齊父層右邊
     left: auto;
-    .dropdown-btn{
+    .dropdown-btn {
       font-size: 14px;
     }
   }
@@ -195,7 +173,7 @@
       background-color: $neutral-100;
       color: $neutral-800;
     }
-    
+
     &.is-open {
       background-color: $neutral-100;
       color: $neutral-800;
@@ -208,9 +186,9 @@
 
 .dropdown-menu-neutral-250 {
   &.show {
-    min-width: 108px;   // 保持原本寬度
-    max-width: 200px;   // 避免超寬
-    width: auto;        // 讓它依內容，但不超過 max-width
+    min-width: 108px; // 保持原本寬度
+    max-width: 200px; // 避免超寬
+    width: auto; // 讓它依內容，但不超過 max-width
     border-radius: 8px;
     background-color: $neutral-100;
     box-shadow: 0 2px 4px 0 rgba($black, 0.06);
@@ -230,7 +208,7 @@
     li:first-of-type {
       border-top-left-radius: 8px;
       border-top-right-radius: 8px;
-    } 
+    }
 
     li:last-of-type {
       border-bottom-left-radius: 8px;
@@ -242,8 +220,6 @@
     }
   }
 }
-
-
 
 // Avatar 下拉選單
 .avatar-dropdown {
@@ -277,7 +253,6 @@
 /* 下拉選單 */
 .custom-dropdown {
   background-color: $neutral-250;
-  backdrop-filter: none;
   border-radius: 8px;
   min-width: 104px;
   border: 0;
@@ -294,7 +269,6 @@
     }
   }
 }
-
 
 // 方案下拉選單
 .plan-dropdown {
@@ -314,7 +288,6 @@
   .dropdown-menu {
     width: 137px;
     min-width: 0;
-    backdrop-filter: none;
     border: 0;
     background-color: $neutral-300;
     color: $neutral-700;
@@ -338,7 +311,6 @@
   .custom-dropdown {
     padding: 4px;
     background-color: $neutral-100;
-    backdrop-filter: none;
     border-radius: 16px;
     width: 100%;
     border: 1px solid $neutral-100;
@@ -348,14 +320,14 @@
     box-shadow:
       0 4px 6px -4px rgb(0 0 0 / 0.1),
       0 10px 15px -3px rgb(0 0 0 / 0.1);
-      
-    li{
-      &:first-child .dropdown-item{
+
+    li {
+      &:first-child .dropdown-item {
         border-top-left-radius: 16px;
         border-top-right-radius: 16px;
       }
 
-      &:last-child .dropdown-item{
+      &:last-child .dropdown-item {
         border-bottom-left-radius: 16px;
         border-bottom-right-radius: 16px;
       }
@@ -367,8 +339,8 @@
       margin: 0;
       font-size: 14px;
       border-radius: unset;
-      text-align:left;
-      
+      text-align: left;
+
       &.active,
       &:active {
         background-color: $neutral-300;

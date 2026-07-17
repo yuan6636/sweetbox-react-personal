@@ -1,17 +1,24 @@
-import { Outlet } from "react-router-dom";
-import Footer from "./layouts/Footer";
-import Header from "./layouts/Header";
-import ScrollToTop from "./components/ScrollToTop"
-function App() {
+import { Outlet } from 'react-router-dom';
+import Footer from './layouts/Footer';
+import Header from './layouts/Header';
+import ScrollToTop from './components/ScrollToTop';
 
+import { CartProvider } from './contexts/cart';
+import { AuthProvider } from './contexts/auth';
+
+function App() {
   return (
     <div>
       <ScrollToTop />
-      <Header />
-      <Outlet />
-      <Footer />
+      <AuthProvider>
+        <CartProvider>
+          <Header />
+          <Outlet />
+        </CartProvider>
+        <Footer />
+      </AuthProvider>
     </div>
-  )
+  );
 }
 
-export default App
+export default App;
