@@ -1,26 +1,26 @@
 .custom-range-picker {
-    --ant-date-picker-cell-active-with-range-bg: $primary-100;
-    background-color: $neutral-250; // 灰底
-    border: none; // 去掉邊框
-    border-radius: 100px; // 圓角膠囊
-    padding: 12px 16px; // 內距
-    color: $neutral-600; // 字體顏色
+  --ant-date-picker-cell-active-with-range-bg: $primary-100;
+  background-color: $neutral-250; // 灰底
+  border: none; // 去掉邊框
+  border-radius: 100px; // 圓角膠囊
+  padding: 12px 16px; // 內距
+  color: $neutral-600; // 字體顏色
 
-    .ant-picker-input>input {
-        color: $neutral-800; // 輸入文字顏色
-        font-weight: 400;
-        text-align: center;
-    }
+  .ant-picker-input > input {
+    color: $neutral-800; // 輸入文字顏色
+    font-weight: 400;
+    text-align: center;
+  }
 
-    .ant-picker-input>input::placeholder {
-        color: $neutral-600;
-    }
+  .ant-picker-input > input::placeholder {
+    color: $neutral-600;
+  }
 
-    &:hover {
-        background-color: $neutral-100; // hover 狀態
-    }
+  &:hover {
+    background-color: $neutral-100; // hover 狀態
+  }
 
-    .ant-picker-active-bar {
-        display: none !important;
-    }
+  .ant-picker-active-bar {
+    display: none !important;
+  }
 }

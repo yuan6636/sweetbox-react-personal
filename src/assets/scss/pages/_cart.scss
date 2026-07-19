@@ -1,5 +1,5 @@
 @mixin stepper-bar {
-  content: "";
+  content: '';
   position: absolute;
   top: 16px;
   height: 2px;
@@ -184,7 +184,8 @@
   }
 }
 
-.cart-main, .login-main {
+.cart-main,
+.login-main {
   .form-check-input {
     &:checked {
       background-color: $neutral-800;
@@ -403,10 +404,8 @@
   background-image: none;
   @media (min-width: 576px) {
     background-image:
-      url("/images/Cart_Page/cart_pattern01.svg"),
-      url("/images/Cart_Page/cart_pattern02.svg"),
-      url("/images/Cart_Page/cart_pattern03.svg"),
-      url("/images/Cart_Page/cart_pattern04.svg");
+      url('/images/Cart_Page/cart_pattern01.svg'), url('/images/Cart_Page/cart_pattern02.svg'),
+      url('/images/Cart_Page/cart_pattern03.svg'), url('/images/Cart_Page/cart_pattern04.svg');
     background-size: 25%, 25%, 25%, 22%;
     background-position:
       left bottom,

@@ -62,10 +62,7 @@ function FeedbackSwiper() {
           <h2>
             <span className="visually-hidden">好評分享</span>
             <picture>
-              <source
-                media="(min-width: 576px)"
-                srcSet="./images/Home_Page/title_section06.svg"
-              />
+              <source media="(min-width: 576px)" srcSet="./images/Home_Page/title_section06.svg" />
               <img
                 className="feedback-img"
                 src="./images/Home_Page/title_section06_mobile.png"
@@ -85,17 +82,9 @@ function FeedbackSwiper() {
           grabCursor={true}
         >
           {feedbackData.map((feedback, index) => (
-            <SwiperSlide
-              key={index}
-              className="swiper-slide"
-              style={{ width: '300px' }}
-            >
+            <SwiperSlide key={index} className="swiper-slide" style={{ width: '300px' }}>
               <div className="card bg border-light bg-neutral-200 feedback-card w-100">
-                <img
-                  src={feedback.img}
-                  className="card-img-top w-100"
-                  alt="..."
-                />
+                <img src={feedback.img} className="card-img-top w-100" alt="..." />
                 <div className="card-body d-flex flex-column justify-content-between">
                   <div className="content">
                     <p className="star-number ls-1 text-neutral-800">

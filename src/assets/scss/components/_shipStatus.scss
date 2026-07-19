@@ -34,11 +34,11 @@
         border-bottom: none;
       }
     }
-  
+
     .ship-icon {
       transition: transform 0.2s;
     }
-  
+
     &.open .ship-icon {
       transform: rotate(180deg);
     }
@@ -75,7 +75,6 @@
     font-size: 12px;
     color: $neutral-800;
   }
-
 }
 
 // 手機版本
@@ -110,14 +109,17 @@
       justify-content: center;
       align-items: center;
       gap: 4px;
-      &:hover, &:active {
+      &:hover,
+      &:active {
         background-color: $neutral-400;
       }
       .ship-label {
         border: none;
         flex-grow: 1;
         text-align: center;
-        &:hover, &:active, &.hasData {
+        &:hover,
+        &:active,
+        &.hasData {
           color: $neutral-800;
           border: none;
         }
@@ -145,12 +147,12 @@
       z-index: 999;
       background-color: $neutral-200;
       border-top-left-radius: 24px;
-        border-top-right-radius: 24px;
+      border-top-right-radius: 24px;
       .bottom-header {
         padding-top: 8px;
         padding-bottom: 20px;
         .tab {
-          border-bottom: 4px solid #DEDEDE;
+          border-bottom: 4px solid #dedede;
           width: 44px;
         }
         .bottom-header-title {
@@ -166,7 +168,9 @@
             border: 1px solid $neutral-300;
             border-radius: 16px;
             text-align: left;
-            &:hover, &.active, &:active {
+            &:hover,
+            &.active,
+            &:active {
               background-color: $neutral-300;
               border: none;
             }

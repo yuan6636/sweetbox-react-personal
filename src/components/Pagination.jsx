@@ -1,4 +1,4 @@
-import { Icon } from "@iconify/react";
+import { Icon } from '@iconify/react';
 
 function Pagination({ currentPage, totalItems, itemsPerPage, onChangePage }) {
   const totalPages = Math.ceil(totalItems / itemsPerPage);
@@ -18,17 +18,20 @@ function Pagination({ currentPage, totalItems, itemsPerPage, onChangePage }) {
           {/* 只有不是第一頁才顯示左箭頭 */}
           {currentPage > 1 && (
             <li className="page-item">
-              <a className="page-link" href="#" aria-label="Previous"
-                 onClick={(e) => handleClick(e, currentPage - 1)}>
+              <a
+                className="page-link"
+                href="#"
+                aria-label="Previous"
+                onClick={(e) => handleClick(e, currentPage - 1)}
+              >
                 <Icon icon="iconamoon:arrow-left-2-bold" width="14" height="14" />
               </a>
             </li>
           )}
 
           {Array.from({ length: totalPages }, (_, index) => (
-            <li className={`page-item ${currentPage === index + 1 ? "active" : ""}`} key={index}>
-              <a className="page-link" href="#"
-                 onClick={(e) => handleClick(e, index + 1)}>
+            <li className={`page-item ${currentPage === index + 1 ? 'active' : ''}`} key={index}>
+              <a className="page-link" href="#" onClick={(e) => handleClick(e, index + 1)}>
                 {index + 1}
               </a>
             </li>
@@ -37,8 +40,12 @@ function Pagination({ currentPage, totalItems, itemsPerPage, onChangePage }) {
           {/* 只有不是最後一頁才顯示右箭頭 */}
           {currentPage < totalPages && (
             <li className="page-item">
-              <a className="page-link" href="#" aria-label="Next"
-                 onClick={(e) => handleClick(e, currentPage + 1)}>
+              <a
+                className="page-link"
+                href="#"
+                aria-label="Next"
+                onClick={(e) => handleClick(e, currentPage + 1)}
+              >
                 <Icon icon="iconamoon:arrow-right-2-bold" width="14" height="14" />
               </a>
             </li>
@@ -52,8 +59,12 @@ function Pagination({ currentPage, totalItems, itemsPerPage, onChangePage }) {
           {/* 只有不是第一頁才顯示左箭頭 */}
           {currentPage > 1 && (
             <li className="page-item">
-              <a className="page-link" href="#" aria-label="Previous"
-                 onClick={(e) => handleClick(e, currentPage - 1)}>
+              <a
+                className="page-link"
+                href="#"
+                aria-label="Previous"
+                onClick={(e) => handleClick(e, currentPage - 1)}
+              >
                 <Icon icon="iconamoon:arrow-left-2-bold" width="14" height="14" />
               </a>
             </li>
@@ -80,8 +91,12 @@ function Pagination({ currentPage, totalItems, itemsPerPage, onChangePage }) {
           {/* 只有不是最後一頁才顯示右箭頭 */}
           {currentPage < totalPages && (
             <li className="page-item">
-              <a className="page-link" href="#" aria-label="Next"
-                 onClick={(e) => handleClick(e, currentPage + 1)}>
+              <a
+                className="page-link"
+                href="#"
+                aria-label="Next"
+                onClick={(e) => handleClick(e, currentPage + 1)}
+              >
                 <Icon icon="iconamoon:arrow-right-2-bold" width="14" height="14" />
               </a>
             </li>

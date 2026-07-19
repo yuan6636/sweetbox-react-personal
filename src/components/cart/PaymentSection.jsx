@@ -1,7 +1,7 @@
-import Input from "../Input";
-import Select from "../Select";
-import { Controller } from "react-hook-form";
-import FormError from "../FormError";
+import Input from '../Input';
+import Select from '../Select';
+import { Controller } from 'react-hook-form';
+import FormError from '../FormError';
 import { Icon } from '@iconify/react';
 
 function PaymentSection({
@@ -183,9 +183,7 @@ function PaymentSection({
         <label className="form-check-label s-text" htmlFor="saveCard">
           記住此卡片資訊以提供下次使用
         </label>
-        {matchedSavedCard && (
-            <span className="small text-neutral-600 ms-2">(此卡片已儲存)</span>
-        )}
+        {matchedSavedCard && <span className="small text-neutral-600 ms-2">(此卡片已儲存)</span>}
       </div>
     </section>
   );

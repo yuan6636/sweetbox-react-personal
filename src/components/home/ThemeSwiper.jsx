@@ -73,10 +73,7 @@ function ThemeSwiper() {
             {/* Additional required wrapper */}
             {/* Slides */}
             {themes.map((theme) => (
-              <SwiperSlide
-                key={theme.id}
-                className="swiper-slide position-relative"
-              >
+              <SwiperSlide key={theme.id} className="swiper-slide position-relative">
                 <div className="d-flex">
                   <div className="row">
                     <div className="col-7">
@@ -100,10 +97,7 @@ function ThemeSwiper() {
                           />
                         </h3>
                         <h4 className="fs-6 fw-bold ls-1 mb-2">
-                          {highlightText(
-                            theme.subtitle,
-                            highlightMap[theme.id],
-                          )}
+                          {highlightText(theme.subtitle, highlightMap[theme.id])}
                         </h4>
                         <p className="fs-6 fs-5">{theme.description}</p>
                       </div>
@@ -112,12 +106,7 @@ function ThemeSwiper() {
                         className="btn-primary-icon ls-1 lh-sm fs-6 fw-bold d-flex align-items-center"
                       >
                         了解更多
-                        <Icon
-                          className="ms-2"
-                          icon="tdesign:swap-right"
-                          width="24"
-                          height="24"
-                        />
+                        <Icon className="ms-2" icon="tdesign:swap-right" width="24" height="24" />
                       </NavLink>
                     </div>
                   </div>
@@ -139,19 +128,13 @@ function ThemeSwiper() {
         {/* mobile:card */}
         <ul className="card-themeOpts d-lg-none">
           {themes.map((theme) => (
-            <li
-              key={theme.id}
-              className="card text-center bg-transparent border-0 py-4 mb-9"
-            >
+            <li key={theme.id} className="card text-center bg-transparent border-0 py-4 mb-9">
               <div className="card-body px-0">
                 <p className="en-font card-subtitle text-primary text-capitalize mb-3 ls-1 fs-7 fw-bold">
                   {theme.titleEn}
                 </p>
                 <h3 className="card-title">
-                  <img
-                    src={themesTitleMap[theme.id].src}
-                    alt={themesTitleMap[theme.id].alt}
-                  />
+                  <img src={themesTitleMap[theme.id].src} alt={themesTitleMap[theme.id].alt} />
                 </h3>
                 <img
                   className="w-100 h-auto my-6"
@@ -167,12 +150,7 @@ function ThemeSwiper() {
                   className="btn-primary-icon ls-1 lh-sm fs-6 fw-bold d-inline-flex align-items-center mx-auto"
                 >
                   了解更多
-                  <Icon
-                    className="ms-2"
-                    icon="tdesign:swap-right"
-                    width="24"
-                    height="24"
-                  />
+                  <Icon className="ms-2" icon="tdesign:swap-right" width="24" height="24" />
                 </NavLink>
               </div>
             </li>

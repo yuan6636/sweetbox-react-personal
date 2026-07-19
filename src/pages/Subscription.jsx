@@ -5,10 +5,10 @@ import api from '../api';
 import { BeatLoader } from 'react-spinners';
 
 // 元件區
-import Dropdown from "../components/Dropdown";
-import Pagination from "../components/Pagination";
-import Tab from "../components/subscriptions/user/Tab";
-import SubscriptionList from "../components/subscriptions/user/SubscriptionList";
+import Dropdown from '../components/Dropdown';
+import Pagination from '../components/Pagination';
+import Tab from '../components/subscriptions/user/Tab';
+import SubscriptionList from '../components/subscriptions/user/SubscriptionList';
 import EmptySubscription from '../components/subscriptions/user/EmptySubscription';
 
 const themeOptions = [
@@ -48,7 +48,7 @@ function Subscription() {
       // 取得篩選條件
       const themeId = searchParams.get('themeId');
       const status = searchParams.get('status');
-      const page = Number(searchParams.get('page')) || 1; 
+      const page = Number(searchParams.get('page')) || 1;
 
       // 組合 subscriptions
       let url = `/subscriptions?userId=${userId}&_expand=plan&_expand=theme&_sort=createdAt&_order=desc&_page=${page}&_limit=5`;
@@ -79,12 +79,12 @@ function Subscription() {
       const totalCount = Number(itemsRes.headers.get('x-Total-Count'));
 
       const ordersMap = ordersRes.data.reduce(groupByOrders, new Map());
-      
+
       const items = itemsRes.data.map((item) => ({
         ...item,
         orders: ordersMap.get(item.id) ?? [],
       }));
-      
+
       setTotalItems(totalCount);
       setSubscriptions(items);
     } catch (error) {
@@ -99,14 +99,16 @@ function Subscription() {
       }, 300);
     }
   }, [navigate, searchParams]);
-  
+
   // 組合訂閱列表和主題資料
   useEffect(() => {
     fetchSubscriptions();
   }, [fetchSubscriptions]);
 
   // api error, 顯示錯誤訊息
-  if (error) { return <h1 className='d-flex justify-content-center align-items-center vh-100'>{error}</h1> }
+  if (error) {
+    return <h1 className="d-flex justify-content-center align-items-center vh-100">{error}</h1>;
+  }
 
   const handelThemeChange = (value) => {
     const params = new URLSearchParams(searchParams);
@@ -118,7 +120,7 @@ function Subscription() {
     }
     params.set('page', 1);
     setSearchParams(params);
-  }
+  };
 
   const handelStatusChange = (value) => {
     const params = new URLSearchParams(searchParams);
@@ -139,7 +141,7 @@ function Subscription() {
 
     params.set('page', page);
     setSearchParams(params);
-  }
+  };
 
   return (
     <div className="py-sm-11 pt-20 pb-5 bg-neutral-300">
@@ -173,10 +175,7 @@ function Subscription() {
             <p className="text-center">載入訂閱中...</p>
           </div>
         ) : subscriptions.length ? (
-          <SubscriptionList
-            subscriptions={subscriptions}
-            fetchSubscriptions={fetchSubscriptions}
-          />
+          <SubscriptionList subscriptions={subscriptions} fetchSubscriptions={fetchSubscriptions} />
         ) : hasFilters ? (
           <p className="h3 text-center">目前篩選條件下沒有訂閱紀錄</p>
         ) : (

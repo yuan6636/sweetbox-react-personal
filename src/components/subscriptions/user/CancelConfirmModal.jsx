@@ -9,19 +9,19 @@ const cardIcons = {
 };
 
 // 生成發票號碼
-  const generateInvoiceNumber = () => {
-    // 兩個隨機英文字母
-    const letters = Array.from({ length: 2 }, () => {
-      return String.fromCharCode(Math.floor(Math.random() * 26) + 65);
-    }).join('');
+const generateInvoiceNumber = () => {
+  // 兩個隨機英文字母
+  const letters = Array.from({ length: 2 }, () => {
+    return String.fromCharCode(Math.floor(Math.random() * 26) + 65);
+  }).join('');
 
-    // 後面 6 位數字
-    const numbers = Math.floor(Math.random() * 1000000)
-      .toString()
-      .padStart(6, '0');
+  // 後面 6 位數字
+  const numbers = Math.floor(Math.random() * 1000000)
+    .toString()
+    .padStart(6, '0');
 
-    return `${letters}-${numbers}`;
-  };
+  return `${letters}-${numbers}`;
+};
 
 function CancelConfirmModal({
   cancelConfirmModalRef,

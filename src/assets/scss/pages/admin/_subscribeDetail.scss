@@ -1,9 +1,9 @@
 :root {
-  --neutral-200 : #{$neutral-200};
-  --neutral-300 : #{$neutral-300};
-  --neutral-600 : #{$neutral-600};
-  --neutral-800 : #{$neutral-800};
-  --semantic-error : #{$semantic-error};
+  --neutral-200: #{$neutral-200};
+  --neutral-300: #{$neutral-300};
+  --neutral-600: #{$neutral-600};
+  --neutral-800: #{$neutral-800};
+  --semantic-error: #{$semantic-error};
   --primary-200: #{$primary-200};
   --primary-600: #{$primary-600};
   --CTA-200: #{$CTA-200};
@@ -11,8 +11,9 @@
 
 .backList {
   &::before {
-    content: "";
-    background-image: url("/images/icon/chevron-left-svgrepo-com.svg");background-position: center;
+    content: '';
+    background-image: url('/images/icon/chevron-left-svgrepo-com.svg');
+    background-position: center;
     background-size: cover;
     background-repeat: no-repeat;
   }
@@ -51,11 +52,11 @@
 .column-table {
   width: 100%;
   table-layout: fixed;
-  >thead>tr> th:nth-child(7),
-  >tbody>tr> td:nth-child(7) {
+  > thead > tr > th:nth-child(7),
+  > tbody > tr > td:nth-child(7) {
     width: 196px;
   }
-  &>tbody>tr>th {
+  & > tbody > tr > th {
     height: 68px;
     border: none;
   }
@@ -87,7 +88,9 @@
   .sticky-section {
     position: sticky;
     top: 0;
-    transition: transform 0.3s ease, background-color 0.25s ease;
+    transition:
+      transform 0.3s ease,
+      background-color 0.25s ease;
     &.z-999 {
       z-index: 9999;
     }
@@ -100,7 +103,8 @@
     .container {
       .order-mobile {
         height: 92px;
-        .subscription-text, .subscription-id {
+        .subscription-text,
+        .subscription-id {
           line-height: 1.2;
         }
         .icon {
@@ -154,12 +158,13 @@
       padding: 24px 32px;
       flex-shrink: 1;
     }
-
-    
   }
 }
 // 付款狀態
-.unprocessed, .archived, .unprocessed-mobile, .archived-mobile {
+.unprocessed,
+.archived,
+.unprocessed-mobile,
+.archived-mobile {
   .payStatusBadge {
     padding: 3px 16px;
     background-color: var(--neutral-300);
@@ -170,18 +175,21 @@
     cursor: default;
     &.failed {
       color: var(--semantic-error);
-      background-color: #F4E6E2;
+      background-color: #f4e6e2;
     }
   }
 }
 
-.unprocessed table, .archived table, .unprocessed-mobile{
+.unprocessed table,
+.archived table,
+.unprocessed-mobile {
   --bs-table-bg: var(--neutral-200);
   tbody {
     tr:hover > * {
       background-color: $neutral-300;
     }
-    th, td {
+    th,
+    td {
       vertical-align: middle;
     }
   }
@@ -289,8 +297,8 @@
       .shipStatus-icon {
         opacity: 1;
         transition: opacity 0.2s ease;
-      }  
-    } 
+      }
+    }
     &.is-selected {
       .shipStatus-text {
         color: $neutral-800;
@@ -299,7 +307,7 @@
         .shipStatus-text {
           border-bottom: 1px solid currentColor;
         }
-      
+
         .shipStatus-icon {
           opacity: 1;
           transition: opacity 0.2s ease;
@@ -315,7 +323,7 @@
         }
       }
     }
-    
+
     // 展開時 虛線不顯示
     .is-open {
       border: none !important;
@@ -331,12 +339,12 @@
       .shipStatus-text {
         border: none;
       }
-    
+
       .shipStatus-icon {
         opacity: 0;
       }
     }
-    // 
+    //
     // &:not(.is-archived):not(.is-open) {
     //   .shipStatus-text {
     //     width: 65px;
@@ -347,7 +355,6 @@
     //     opacity: 1;
     //   }
     // }
-    
   }
   .shipStatus-dropdown-menu {
     min-width: unset;
@@ -372,13 +379,13 @@
 
 // 出貨日期
 .shipDate-btn.btn {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    justify-content: center;
-    background-color: $neutral-300;
-    border-radius: 100px;
-    padding: 8px 6px 8px 16px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  justify-content: center;
+  background-color: $neutral-300;
+  border-radius: 100px;
+  padding: 8px 6px 8px 16px;
   &:hover {
     background-color: $neutral-400;
   }
@@ -390,7 +397,7 @@
 }
 .shipDate-wrapper {
   position: relative;
-  .datePicker{
+  .datePicker {
     position: absolute;
     inset: 0;
     opacity: 0;
@@ -418,8 +425,6 @@
   }
 }
 
-
-
 .archived {
   .badge {
     width: 68px;
@@ -430,9 +435,6 @@
     font-size: 12px;
   }
 }
-
-
-
 
 // 手機版本-未處理訂單
 .unprocessed-mobile {
@@ -446,7 +448,7 @@
         }
         .order-info {
           padding-top: 6px; //避免跟上面的 divider 產生 margin-collapse(外距塌陷)
-          padding-bottom: 6px;  //避免跟下面的 divider 產生 margin-collapse
+          padding-bottom: 6px; //避免跟下面的 divider 產生 margin-collapse
         }
         .order-shipStatus {
           padding-top: 6px; //避免跟上面的 divider 產生 margin-collapse(外距塌陷)

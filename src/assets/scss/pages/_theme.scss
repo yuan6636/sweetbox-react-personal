@@ -35,9 +35,7 @@
   top: 0px;
   margin: 0 auto;
   left: 50%; // 讓元素左邊對齊容器中線
-  transform: translateX(
-    -50%
-  ); // 再往左移自身寬度的一半，結合上面的left 就會是水平置中
+  transform: translateX(-50%); // 再往左移自身寬度的一半，結合上面的left 就會是水平置中
   img {
     width: 50vw;
   }
@@ -107,5 +105,5 @@
 
 .theme-title::after,
 .theme-title::before {
-  content: "．";
+  content: '．';
 }

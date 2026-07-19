@@ -4,13 +4,11 @@ function CancelReminderModal({
   cancelReminderModalRef,
   handleModalState,
   handleCloseModal,
-  subscription
+  subscription,
 }) {
   if (!subscription) return null;
-  
-  const deliveredCount = Math.max(
-    ...subscription.orders.map((order) => order.cycle),
-  );
+
+  const deliveredCount = Math.max(...subscription.orders.map((order) => order.cycle));
   const calculatePenalty = (subscription) => {
     const { discountPrice, originalPrice } = subscription.plan;
     const difference = Math.abs(discountPrice - originalPrice);
@@ -35,11 +33,7 @@ function CancelReminderModal({
             <div className="cancel-modal-left d-flex justify-content-center align-items-center bg-neutral-800">
               <div className="cancel-modal-left-content">
                 <div className="notice-icon-wrapper d-flex justify-content-center align-items-center mb-8">
-                  <Icon
-                    icon="gridicons:notice-outline"
-                    width="32"
-                    height="32"
-                  ></Icon>
+                  <Icon icon="gridicons:notice-outline" width="32" height="32"></Icon>
                 </div>
                 <div className="px-2 px-sm-0">
                   <h2
@@ -66,8 +60,8 @@ function CancelReminderModal({
                     className="btn-close btn-close-lg"
                     aria-label="Close"
                     onClick={() => {
-                      handleCloseModal()
-                      handleModalState(null, null)
+                      handleCloseModal();
+                      handleModalState(null, null);
                     }}
                   ></button>
                 </div>
@@ -95,8 +89,8 @@ function CancelReminderModal({
                       type="button"
                       className="btn btn-cta-200 btn-action py-3 px-6"
                       onClick={() => {
-                        handleCloseModal()
-                        handleModalState(null, null)
+                        handleCloseModal();
+                        handleModalState(null, null);
                       }}
                     >
                       保留訂閱，繼續甜點旅程

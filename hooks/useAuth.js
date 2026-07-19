@@ -1,11 +1,11 @@
-import { getUser } from "../src/utils/auth";
+import { getUser } from '../src/utils/auth';
 
 const useAuth = () => {
   const user = getUser();
 
   return {
     user,
-    isLogin: !!user
+    isLogin: !!user,
   };
 };
 

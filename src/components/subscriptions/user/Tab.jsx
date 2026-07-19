@@ -18,7 +18,7 @@ function Tab() {
             className={({ isActive }) =>
               `nav-link ${isActive ? 'active' : ''} px-3 py-4 px-sm-4 py-sm-5`
             }
-            style={tab.disabled ? {pointerEvents: 'none'} : {}}
+            style={tab.disabled ? { pointerEvents: 'none' } : {}}
           >
             <span className="underline">{tab.label}</span>
           </NavLink>

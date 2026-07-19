@@ -15,7 +15,8 @@
     .nav-link {
       color: $neutral-700;
       padding: 16px 20px;
-      &:hover, &.active {
+      &:hover,
+      &.active {
         color: $primary-600;
         .underline {
           padding-bottom: 8px;

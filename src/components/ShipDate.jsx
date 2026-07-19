@@ -1,7 +1,7 @@
-import { Icon } from "@iconify/react";
-import { useState } from "react";
-import { DatePicker, ConfigProvider  } from "antd";
-import dayjs from "dayjs";
+import { Icon } from '@iconify/react';
+import { useState } from 'react';
+import { DatePicker, ConfigProvider } from 'antd';
+import dayjs from 'dayjs';
 import 'antd/dist/reset.css';
 import zhTW from 'antd/locale/zh_TW';
 // function ShipDate({record, isDatePickerOpen, onToggleDatePicker}) {
@@ -28,7 +28,7 @@ import zhTW from 'antd/locale/zh_TW';
 //     : "選擇日期";
 //   }
 
-//   // 產生 CSS 
+//   // 產生 CSS
 //   let rootClass = "shipDate-btn";
 //   if (isError) rootClass += " is-error";
 //   if (!isShipped && !isError) rootClass += " is-empty btn";
@@ -68,18 +68,16 @@ import zhTW from 'antd/locale/zh_TW';
 //     //       placement="bottomLeft"
 //     //       getPopupContainer={(trigger) =>
 //     //         trigger.parentElement
-//     //       } 
+//     //       }
 //     //     />
 //     //   )}
 //     // </div>
 //     // 新版本
 //     // 控制 datepicker 開啟關閉
 
-  
-  
 //   // 先只處理最簡單的：顯示日期或 -
 //   <div className="position-relative" style={{display: 'inline'}}>
-//   <div className={`shipDateInput d-flex align-items-center ${isDatePickerOpen ? "expanded" : ""}`} onClick={()=>{onToggleDatePicker(orderID)}}> 
+//   <div className={`shipDateInput d-flex align-items-center ${isDatePickerOpen ? "expanded" : ""}`} onClick={()=>{onToggleDatePicker(orderID)}}>
 //     <span className="me-1">{shipDate || '選擇日期'}</span>
 //     <Icon icon="mdi:calendar-month-outline" width={'14px'} className=""/>
 //   </div>
@@ -100,7 +98,7 @@ import zhTW from 'antd/locale/zh_TW';
 //           }}
 //           placeholder="選擇日期"
 //           format="YYYY-MM-DD"
-          
+
 //           // 控制彈出位置
 //           getPopupContainer={(trigger) => trigger.parentElement}
 //           placement="bottomLeft"
@@ -109,9 +107,9 @@ import zhTW from 'antd/locale/zh_TW';
 //             offset: [0, 8],  // 按鈕下方 8px
 //             overflow: { adjustX: true, adjustY: true }
 //           }}
-          
+
 //           // 隱藏輸入框本身
-//           style={{ 
+//           style={{
 //             position: 'absolute',
 //             top: '100%',
 //             left: 0,
@@ -120,14 +118,14 @@ import zhTW from 'antd/locale/zh_TW';
 //             opacity: 0,
 //             pointerEvents: 'none',
 //           }}
-          
-//           popupStyle={{ 
+
+//           popupStyle={{
 //             zIndex: 1050,
 //           }}
-          
+
 //           // 自訂渲染
 //           popupClassName="ship-date-picker-popup"
-          
+
 //           // 顯示 Today 按鈕
 //           showToday
 //           renderExtraFooter={() => null}
@@ -139,68 +137,68 @@ import zhTW from 'antd/locale/zh_TW';
 
 const isMobile = window.innerWidth < 992;
 
-function ShippedDate({record, isOpen, onToggle, onChange}) {
-  const {paymentStatus, shippingDate, isArchived} = record
-  console.log('payment_status:', record.id, paymentStatus)
-  const currentPayment = paymentStatus
-  const hasData = !(shippingDate === null)
+function ShippedDate({ record, isOpen, onToggle, onChange }) {
+  const { paymentStatus, shippingDate, isArchived } = record;
+  console.log('payment_status:', record.id, paymentStatus);
+  const currentPayment = paymentStatus;
+  const hasData = !(shippingDate === null);
   // 付款失敗或是未付款
-  if(currentPayment !== "paid") {
-    return (
-      <div className="shipDate-disabled">-</div>
-    )
+  if (currentPayment !== 'paid') {
+    return <div className="shipDate-disabled">-</div>;
   }
   // 已付款已歸檔
-  if(currentPayment === "paid" && isArchived) {
-    return (
-      <div className="shipDate archived text-neutral-800">
-        {shippingDate}
-      </div>
-    )
+  if (currentPayment === 'paid' && isArchived) {
+    return <div className="shipDate archived text-neutral-800">{shippingDate}</div>;
   }
   // 已付款未歸檔
-  console.log(shippingDate)
+  console.log(shippingDate);
   return (
     <div className="shipDate-wrapper position-relative">
       {/* 按鈕 */}
-      <div className={`shipDate-btn d-flex align-items-center px-4 py-2 ${isOpen ? "open" : ""}`} onClick={onToggle}>
+      <div
+        className={`shipDate-btn d-flex align-items-center px-4 py-2 ${isOpen ? 'open' : ''}`}
+        onClick={onToggle}
+      >
         <div className="flex-grow-1 text-neutral-800 shipDate-value">
-          {hasData ? shippingDate : "選擇日期"}
+          {hasData ? shippingDate : '選擇日期'}
         </div>
-        {!isArchived && <div className="icon-box text-neutral-600">
-          <Icon icon="mdi:calendar-month-outline" className="icon" />
-        </div>}
+        {!isArchived && (
+          <div className="icon-box text-neutral-600">
+            <Icon icon="mdi:calendar-month-outline" className="icon" />
+          </div>
+        )}
       </div>
       {/* 行事曆 */}
       {isOpen && (
         <ConfigProvider
           theme={{
-            token:{
-              colorPrimary: "#FF5F1F" //套用主顏色
-            }
+            token: {
+              colorPrimary: '#FF5F1F', //套用主顏色
+            },
           }}
         >
-          <DatePicker className="shipDate-picker" value={hasData ? dayjs(shippingDate) : null} 
-            onChange={(date)=>{
-              if(!date){
-                onChange(null)
-                return
+          <DatePicker
+            className="shipDate-picker"
+            value={hasData ? dayjs(shippingDate) : null}
+            onChange={(date) => {
+              if (!date) {
+                onChange(null);
+                return;
               }
-            onChange(
-                date.format("YYYY-MM-DD")
-              );
+              onChange(date.format('YYYY-MM-DD'));
               onToggle();
-          }} 
-          open={isOpen} classNames={{popup: "shipDate-picker-popup"}}
-          placement={isMobile ? "bottomRight" : "bottomLeft"}
-          getPopupContainer={(trigger)=>trigger.parentElement}
-          dropdownAlign={{
-            offset:[0,8]
-          }}/>
+            }}
+            open={isOpen}
+            classNames={{ popup: 'shipDate-picker-popup' }}
+            placement={isMobile ? 'bottomRight' : 'bottomLeft'}
+            getPopupContainer={(trigger) => trigger.parentElement}
+            dropdownAlign={{
+              offset: [0, 8],
+            }}
+          />
         </ConfigProvider>
-        
       )}
     </div>
-  )
+  );
 }
 export default ShippedDate;

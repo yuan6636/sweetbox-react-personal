@@ -1,4 +1,4 @@
-import { NavLink } from "react-router-dom";
+import { NavLink } from 'react-router-dom';
 
 function AdminNav() {
   const navItems = [
@@ -17,9 +17,7 @@ function AdminNav() {
           <li className="nav-item" key={item.label}>
             <NavLink
               to={item.path}
-              className={({ isActive }) =>
-                `nav-link ${isActive ? "active" : ""}`
-              }
+              className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
             >
               <span className="underline">{item.label}</span>
             </NavLink>

@@ -7,8 +7,7 @@ const steps = [
     image: './images/Home_Page/select.svg',
     imageAlt: 'select 圖示',
     title: '1. 挑選你的主題',
-    description:
-      '無論你想和家人分享、或獨自探索甜味風景，我們都有適合你的那一盒甜。',
+    description: '無論你想和家人分享、或獨自探索甜味風景，我們都有適合你的那一盒甜。',
   },
   {
     id: 2,
@@ -65,9 +64,7 @@ function SubscriptionSteps() {
               <h3 className="fs-lg-4 fs-6 ls-1 fw-bold text-neutral-800 mb-lg-3 mb-2">
                 {step.title}
               </h3>
-              <p className="fs-lg-6 fs-7 text-neutral-800">
-                {step.description}
-              </p>
+              <p className="fs-lg-6 fs-7 text-neutral-800">{step.description}</p>
             </li>
           ))}
         </ul>
@@ -77,12 +74,7 @@ function SubscriptionSteps() {
             className="btn-primary-icon ls-1 lh-sm fs-6 fw-bold d-flex align-items-center"
           >
             立刻訂閱
-            <Icon
-              className="ms-2"
-              icon="tdesign:swap-right"
-              width="24"
-              height="24"
-            />
+            <Icon className="ms-2" icon="tdesign:swap-right" width="24" height="24" />
           </NavLink>
         </div>
       </div>

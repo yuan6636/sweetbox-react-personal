@@ -1,45 +1,43 @@
 .sub-pagination .page-item {
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: transparent;
+  width: 48px;
+  height: 48px;
+
+  &:not(.disabled):hover {
+    .page-link {
+      background-color: $neutral-800;
+      color: $neutral-100;
+    }
+  }
+
+  &.active {
+    .page-link {
+      background-color: $neutral-800;
+      color: $neutral-100;
+    }
+  }
+
+  &.disabled {
     background-color: transparent;
-    width: 48px;
-    height: 48px;
-
-    &:not(.disabled):hover {
-        .page-link {
-            background-color: $neutral-800;
-            color: $neutral-100;
-        }
-    }
-
-    &.active {
-        .page-link {
-            background-color: $neutral-800;
-            color: $neutral-100;
-        }
-
-    }
-
-    &.disabled {
-        background-color: transparent;
-    }
+  }
 }
 
 .sub-pagination .page-item .page-link {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: transparent;
-    width: 36px;
-    height: 36px;
-    border: 0;
-    color: $neutral-900;
-    font-size: 14px;
-    flex-shrink: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: transparent;
+  width: 36px;
+  height: 36px;
+  border: 0;
+  color: $neutral-900;
+  font-size: 14px;
+  flex-shrink: 0;
 
-    & svg {
-        flex-shrink: 0; // 避免被壓縮 
-
-    }
+  & svg {
+    flex-shrink: 0; // 避免被壓縮
+  }
 }

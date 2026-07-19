@@ -9,8 +9,7 @@ const faqTabs = [
       {
         id: 'hot-1',
         question: '我要訂購甜點盒，需要加入會員嗎？',
-        answer:
-          '是的，目前我們僅開放會員訂購服務，以方便你管理訂閱狀態、配送地址與付款資訊。',
+        answer: '是的，目前我們僅開放會員訂購服務，以方便你管理訂閱狀態、配送地址與付款資訊。',
       },
       {
         id: 'hot-2',
@@ -38,8 +37,7 @@ const faqTabs = [
       {
         id: 'account-1',
         question: '我要訂購甜點盒，需要加入會員嗎？',
-        answer:
-          '是的，目前我們僅開放會員訂購服務，以方便你管理訂閱狀態、配送地址與付款資訊。',
+        answer: '是的，目前我們僅開放會員訂購服務，以方便你管理訂閱狀態、配送地址與付款資訊。',
       },
       {
         id: 'account-2',
@@ -49,14 +47,12 @@ const faqTabs = [
       {
         id: 'account-3',
         question: '成為會員有哪些好處？',
-        answer:
-          '將不定期收到會員專屬優惠、當朋友以你的邀請碼訂閱成功後，你將獲得100元折價券。',
+        answer: '將不定期收到會員專屬優惠、當朋友以你的邀請碼訂閱成功後，你將獲得100元折價券。',
       },
       {
         id: 'account-4',
         question: '我要怎麼查看我的訂單或訂閱狀態？',
-        answer:
-          '登入會員後前往「會員中心」的「訂閱紀錄」，即可查看目前與過去的訂單資訊。',
+        answer: '登入會員後前往「會員中心」的「訂閱紀錄」，即可查看目前與過去的訂單資訊。',
       },
     ],
   },
@@ -78,8 +74,7 @@ const faqTabs = [
       {
         id: 'money-3',
         question: '我可以取消或暫停我的訂閱嗎？',
-        answer:
-          '可以，但若在訂閱期間取消或暫停，需補齊過去訂閱期數的折扣差額。',
+        answer: '可以，但若在訂閱期間取消或暫停，需補齊過去訂閱期數的折扣差額。',
       },
       {
         id: 'money-4',
@@ -101,8 +96,7 @@ const faqTabs = [
       {
         id: 'other-2',
         question: '我拿到破損的產品，怎麼辦？',
-        answer:
-          '不用擔心！我們會提供協助。請拍照告訴我們破損產品的狀況，我們將盡快為你處理。',
+        answer: '不用擔心！我們會提供協助。請拍照告訴我們破損產品的狀況，我們將盡快為你處理。',
       },
       {
         id: 'other-3',
@@ -121,9 +115,7 @@ function FaqSection() {
         <div className="faq-bg rounded-panel ">
           <div className="px-lg-9 py-lg-10 py-9">
             <div className="text-center mb-9">
-              <p className="en-font fs-7 fs-lg-5 fw-bold ls-1 mb-3 mb-lg-6 text-primary-600">
-                FAQ
-              </p>
+              <p className="en-font fs-7 fs-lg-5 fw-bold ls-1 mb-3 mb-lg-6 text-primary-600">FAQ</p>
               <h2>
                 <span className="visually-hidden">FAQ</span>
                 <picture>
@@ -131,10 +123,7 @@ function FaqSection() {
                     media="(min-width: 576px)"
                     srcSet="./images/Home_Page/title_section08.svg"
                   />
-                  <img
-                    src="./images/Home_Page/title_section08_mobile.png"
-                    alt="FAQ-img"
-                  />
+                  <img src="./images/Home_Page/title_section08_mobile.png" alt="FAQ-img" />
                 </picture>
               </h2>
             </div>
@@ -142,11 +131,7 @@ function FaqSection() {
             <ul className="nav nav-pills faq-nav" id="pills-tab" role="tablist">
               {faqTabs.map((tab) => {
                 return (
-                  <li
-                    key={tab.id}
-                    className="nav-item me-2 me-lg-3"
-                    role="presentation"
-                  >
+                  <li key={tab.id} className="nav-item me-2 me-lg-3" role="presentation">
                     <button
                       className={`nav-link ${tab.isDefault && 'active'}`}
                       id={`pills-${tab.id}-tab`}
@@ -174,10 +159,7 @@ function FaqSection() {
                   aria-labelledby={`pills-${tab.id}-tab`}
                 >
                   {/* 問題 */}
-                  <div
-                    className="accordion accordion-flush"
-                    id={`accordion-${tab.id}`}
-                  >
+                  <div className="accordion accordion-flush" id={`accordion-${tab.id}`}>
                     {tab.items.map((item) => (
                       <div key={item.id} className="accordion-item">
                         <h3 className="accordion-header">
@@ -199,12 +181,7 @@ function FaqSection() {
                                 height="24"
                               />
                               {/* 減號 */}
-                              <Icon
-                                className="sub"
-                                icon="ic:round-minus"
-                                width="24"
-                                height="24"
-                              />
+                              <Icon className="sub" icon="ic:round-minus" width="24" height="24" />
                             </div>
                           </button>
                         </h3>
