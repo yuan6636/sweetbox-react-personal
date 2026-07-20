@@ -1,6 +1,6 @@
 import { Icon } from '@iconify/react';
 import ShipDate from './ShipDate';
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 
 const SHIP_TEXT = {
   pending: '待出貨',
@@ -61,7 +61,6 @@ function ShippingStatus({ record, isOpen, onToggle, onChange }) {
   const { shippingStatus, isArchived } = record;
   const currentPayment = record.paymentStatus;
   const currentShipStatus = record.shippingStatus;
-  // const [open, setOpen] =useState(false)
   const isPayFailed = currentPayment === 'failed';
   const isPaySuccess = currentPayment === 'paid';
   const hasData = shippingStatus !== null && shippingStatus !== undefined;
@@ -75,23 +74,6 @@ function ShippingStatus({ record, isOpen, onToggle, onChange }) {
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
-  // const wrapperRef = useRef(null);
-  // 偵測外部點選
-  //   useEffect(() => {
-  //   function handleClickOutside(event) {
-  //     if (wrapperRef.current && !wrapperRef.current.contains(event.target)) {
-  //       if (isOpen) {
-  //         onToggle(false); // 關閉
-  //       }
-  //     }
-  //   }
-
-  //   document.addEventListener("mousedown", handleClickOutside);
-
-  //   return () => {
-  //     document.removeEventListener("mousedown", handleClickOutside);
-  //   };
-  // }, [isOpen, onToggle]);
 
   if (isArchived) {
     return <span className="ship-badge archieved">{SHIP_TEXT[shippingStatus]}</span>;
@@ -128,101 +110,5 @@ function ShippingStatus({ record, isOpen, onToggle, onChange }) {
         ))}
     </div>
   );
-  // if(hasData) {
-  //   return (
-  //     <div className="ship-status-button position-relative">
-  //       <div
-  //         className={`ship-dropdown ${isOpen ? "open" : ""}`}
-  //         onClick={() => onToggle()}
-  //       >
-  //         <span className={`ship-label ${hasData ? "hasData" : ""}`}>
-  //           {SHIP_TEXT[shippingStatus]}
-  //         </span>
-
-  //         <Icon
-  //           icon="mdi:chevron-down"
-  //           className="ship-icon"
-  //         />
-  //       </div>
-  //       {!isMobile && isOpen && (
-  //         <div className="ship-menu">
-  //           <button className="ship-option" onClick={() => onChange(1)}>
-  //             待出貨
-  //           </button>
-  //           <button className="ship-option" onClick={() => onChange(2)}>
-  //             已出貨
-  //           </button>
-  //         </div>
-  //       )}
-  //       {isMobile && isOpen && (
-  //         <div className="ship-menu-mobile">
-  //           <div className="bottom-header d-flex flex-column align-items-center">
-  //             <div className="tab mb-6"></div>
-  //             <div className="bottom-header-title fw-bold">變更出貨狀態</div>
-  //           </div>
-  //           <div className="bottom-content">
-  //             <div className="bottom-options d-flex flex-column px-3 mb-6">
-  //               <button className={`ship-option mb-4 ${shippingStatus === 1 ? "active" : ""}`} onClick={() => onChange(1)}>
-  //                 <p className="fw-bold fs-8 text-neutral-800 mb-1">待出貨</p>
-  //                 <p className="fs-8 text-neutral-600">訂單準備中，尚未安排物流</p>
-  //               </button>
-  //               <button className={`ship-option ${shippingStatus === 2 ? "active" : ""}`} onClick={() => onChange(2)}>
-  //                 <p className="fw-bold fs-8 text-neutral-800 mb-1">已出貨</p>
-  //                 <p className="fs-8 text-neutral-600">訂單已完成出貨作業</p>
-  //               </button>
-  //             </div>
-  //             <div className="bottom-text py-3 fs-8 text-center text-neutral-700">取消不變更</div>
-  //           </div>
-  //         </div>
-  //       )}
-  //     </div>
-  //   )
-  // }
-  // return (
-  //   <div className="ship-status-button position-relative">
-  //     <div
-  //       className={`ship-dropdown ${isOpen ? "open" : ""}`}
-  //       onClick={() => onToggle()}
-  //     >
-  //       <span className={`ship-label ${hasData ? "hasData" : ""}`}>
-  //         {isOpen ? "請選擇" : "出貨狀態"}
-  //       </span>
-
-  //       <Icon
-  //         icon="mdi:chevron-down"
-  //         className="ship-icon"
-  //       />
-  //     </div>
-  //     {!isMobile && isOpen && (
-  //       <div className="ship-menu">
-  //         <button className="ship-option aa" onClick={() => onChange(1)}>
-  //           待出貨
-  //         </button>
-  //         <button className="ship-option" onClick={() => onChange(2)}>
-  //           已出貨
-  //         </button>
-  //       </div>
-  //     )}
-  //     {isMobile && isOpen && (
-  //       <div className="ship-menu">
-  //         <div className="bottom-header">
-  //           <div className="tab"></div>
-  //           <div className="bottom-header-title">變更出貨狀態</div>
-  //         </div>
-  //         <div className="bottom-content">
-  //           <div className="bottom-options">
-  //             <button className="ship-option aa" onClick={() => onChange(1)}>
-  //               待出貨
-  //             </button>
-  //             <button className="ship-option" onClick={() => onChange(2)}>
-  //               已出貨
-  //             </button>
-  //           </div>
-  //           <div className="bottom-text">取消不變更</div>
-  //         </div>
-  //       </div>
-  //     )}
-  //   </div>
-  // );
 }
 export default ShippingStatus;

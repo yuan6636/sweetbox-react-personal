@@ -59,11 +59,9 @@ function Subscribe() {
     ])
       .then(([usersRes, themesRes, subsRes, ordersRes]) => {
         // users
-        console.log('users:', usersRes.data);
         setUserData(usersRes.data);
 
         // themes
-        console.log('themes:', themesRes.data);
         const options = [
           { label: '全部主題', value: 'theme_all' },
           ...themesRes.data.map((item) => ({
@@ -72,16 +70,11 @@ function Subscribe() {
           })),
         ];
         setThemeOptions(options);
-        console.log('theme options:', options);
 
         // subscriptions
-        console.log('subscriptions raw:', subsRes.data);
         const merged = subsRes.data.map((sub) => {
           const user = usersRes.data.find((u) => u.id === sub.userId);
           const theme = themesRes.data.find((t) => t.id === sub.themeId);
-
-          console.log('matching user for sub:', sub.id, '=>', user);
-          console.log('matching theme for sub:', sub.id, '=>', theme);
 
           return {
             ...sub,
@@ -90,34 +83,17 @@ function Subscribe() {
             themeTitle: theme ? theme.title : null,
           };
         });
-        console.log('subscriptions merged:', merged);
         setSubData(merged);
 
         // orders
-        console.log('orders:', ordersRes.data);
         setSubscriptionOrders(ordersRes.data);
       })
-      .catch((err) => console.log('error:', err));
+      .catch((err) => console.error('error:', err));
   }, []);
 
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
   const paginatedData = subData.slice(startIndex, endIndex);
-  const updateSubscription = async (item) => {
-    try {
-      const res = await api.patch(`/subscriptions/${item.id}`, {
-        isProcessed: !item.isProcessed, // 切換狀態
-        updated_at: new Date().toISOString(), // 更新時間
-      });
-
-      console.log('updated:', res.data);
-
-      // 更新前端 state
-      setSubData((prev) => prev.map((s) => (s.id === item.id ? { ...s, ...res.data } : s)));
-    } catch (err) {
-      console.error('Update failed', err);
-    }
-  };
   // 計算篩選數量
   const filterCount =
     (dateRange.length > 0 ? 1 : 0) +
@@ -196,15 +172,9 @@ function Subscribe() {
                 onChange={(values) => setDateRange(values || [])}
                 renderExtraFooter={() => (
                   <div className="d-flex justify-content-end my-2">
-                    <Button
-                      className="bg-primary-600 text-white fs-8 px-2 rounded-1"
-                      onClick={() => console.log('OK clicked')}
-                    >
-                      OK
-                    </Button>
+                    <Button className="bg-primary-600 text-white fs-8 px-2 rounded-1">OK</Button>
                   </div>
                 )}
-
                 variant="filled"
                 className="custom-range-picker"
               />
@@ -403,12 +373,7 @@ function Subscribe() {
                   onChange={(values) => setDateRange(values || [])}
                   renderExtraFooter={() => (
                     <div className="d-flex justify-content-end my-2">
-                      <Button
-                        className="bg-primary-600 text-white fs-8 px-2 rounded-1"
-                        onClick={() => console.log('OK clicked')}
-                      >
-                        OK
-                      </Button>
+                      <Button className="bg-primary-600 text-white fs-8 px-2 rounded-1">OK</Button>
                     </div>
                   )}
                   variant="filled"

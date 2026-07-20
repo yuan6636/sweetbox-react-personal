@@ -6,15 +6,11 @@ import ShippedDate from '../../components/ShipDate';
 import ShippingStatus from '../../components/ShipStatus';
 import { useState, useEffect, useRef } from 'react';
 import { Icon } from '@iconify/react';
-import { NavLink, useParams, useNavigate } from 'react-router-dom';
+import { NavLink, useParams } from 'react-router-dom';
 import api from '../../api';
-import useAuth from '../../../hooks/useAuth';
 
 function SubscribeDetail() {
-  const navigate = useNavigate();
   const { id } = useParams();
-  const { user, isLogin } = useAuth();
-  const isAdmin = user.isAdmin;
   // 原始資料
   const [allOrders, setAllOrders] = useState([]);
   // 可編輯資料
@@ -34,9 +30,6 @@ function SubscribeDetail() {
       api.get(`/themes`),
       api.get(`/users`),
     ]);
-    console.log('subId', subId);
-    console.log('ordersRes', ordersRes.data);
-    console.log('subscriptionsRes', subscriptionsRes.data);
     const subWithItem = subscriptionsRes.data[0];
     const orders = ordersRes.data;
 
@@ -63,7 +56,6 @@ function SubscribeDetail() {
   useEffect(() => {
     const fetchData = async () => {
       const result = await getSubscriptionWithInfo(id);
-      console.log('result11:', result);
       setSubscriptionData(result);
       setAllOrders(result.orders);
       setEditedOrders(result.orders);
@@ -125,22 +117,10 @@ function SubscribeDetail() {
           );
         });
       });
-      // await api.patch(`/subscription_orders/${id}`, {
-      //   shippingStatus : newStatus
-      // })
-      // getOrderData()
     } catch (err) {
-      console.log('update shipping status error: ', err);
+      console.error('update shipping status error: ', err);
     }
     setOpenId(null); //關閉下拉選單
-    // 只修改顯示不改後端資料
-    // setOrderData((prev)=>{
-    //   return prev.map((order)=>{
-    //     return (
-    //       order.orderNo === id ? {...order, shippingStatus: newStatus} : order
-    //     )
-    //   })
-    // })
   };
 
   // 出貨日期按鈕管理
@@ -153,22 +133,10 @@ function SubscribeDetail() {
           return order.id === id ? { ...order, shippingDate: newDate } : order;
         });
       });
-      // await api.patch(`/subscription_orders/${id}`, {
-      //   shipping_date : newDate
-      // })
-      // getOrderData()
     } catch (err) {
-      console.log('update shipping_date err: ', err);
+      console.error('update shipping_date err: ', err);
     }
     setOpenDateId(null); //選完關閉datepicker
-    // 只修改顯示不改後端資料
-    // setOrderData((prev)=>{
-    //   return prev.map((order)=> {
-    //     return order.orderNo === id ? {
-    //       ...order, shipping_date: newDate
-    //     } : order
-    //   })
-    // })
   };
   // 更新歸檔
   const updateArchived = async (item) => {
@@ -183,14 +151,9 @@ function SubscribeDetail() {
             return order.id === item.id ? { ...order, isArchived: !item.isArchived } : order;
           });
         });
-        // const res = await api.patch(`/subscription_orders/${item.id}`, {
-        //   isArchived : !item.isArchived
-        // })
-        // getOrderData()
-        // console.log('update:', res.data.isArchived)
       }
     } catch (err) {
-      console.log('archived error:', err);
+      console.error('archived error:', err);
     }
   };
   // 取消變更
@@ -199,9 +162,6 @@ function SubscribeDetail() {
   };
   // 儲存變更
   const saveChange = async () => {
-    //
-    console.log('all:', allOrders);
-    console.log('edit:', editedOrders);
     const updates = editedOrders.filter((editedO) => {
       // 根據該輪的訂單找出對應的原始資料
       const origin = allOrders.find((originO) => String(originO.id) === String(editedO.id));
@@ -212,7 +172,6 @@ function SubscribeDetail() {
         editedO.isArchived !== origin.isArchived
       );
     });
-    console.log('update:', updates);
     // 遍歷需要更新的資料，一筆一筆做patch
     for (const order of updates) {
       await api.patch(`/orders/${order.id}`, {
@@ -235,7 +194,6 @@ function SubscribeDetail() {
       <main
         className={`main d-block d-lg-none overflow-hidden sticky-section ${mode === 'hidden' ? 'hide-top' : ''} ${isSticky ? 'is-sticky bg-neutral-200 z-999' : 'bg-neutral-300'}`}
       >
-        {/* <main className={`main d-block d-lg-none overflow-hidden sticky-section ${isSticky ? "is-sticky bg-neutral-200 z-999" : "bg-neutral-300"} `}></main> */}
         {/* 如果沒有父層的 overflow-hidden，mt-20會因為外部塌陷凸出 main，造成navbar背景會有白色區塊，也就是 body的背景 */}
         {/* 加上 overflow-hidden後，mt-20會留在main內，預留空間給navbar顯示 */}
         {/* 沒置頂時區塊背景色300，置頂時覆蓋navbar，並且CSS設定translate(-80px)，視覺上就不會有預留的mt-20 */}
@@ -457,7 +415,6 @@ function SubscribeDetail() {
                             />
                           </td>
                           <td className="text-center fw-normal">
-                            {/* <ShipDate record={item} isDatePickerOpen={openDatePicker[item.orderID] || false} onToggleDatePicker={toggleDatePicker}/> */}
                             <ShippedDate
                               record={item}
                               isOpen={openDateId === item.orderNo}
@@ -632,23 +589,6 @@ function SubscribeDetail() {
                           <ShippingStatus record={item} />
                         </td>
                         <td className="text-center fw-normal">
-                          {/* disable 跟 archived 沒互動效果 */}
-                          {/* {
-                              (!item.isEditable || item.isArchieved) && (
-                                <span className={`shipText ${!item.isArchieved ? 'archieved' : 'disable'}`}>{item.isArchieved ? item.shipDate : '-'}</span>
-                              )
-                            } */}
-                          {/* UI介面操作產生的狀態 default/expanded/selected */}
-                          {/* {
-                              (item.isEditable && !item.isArchieved) && (
-                                <div className={`shipDateInput ${openDateOrderId === item.orderID ? 'expanded' : ''}`}
-                                  onClick={()=>{setOpenOrderId(openDateOrderId === item.orderID ? null : item.orderID)}}
-                                >
-                                  <span className={`${item.shipDate} === null ? 'noValue' : 'value'`}>{item.shipDate || '選擇日期'}</span>
-                                  <span className="calendarIcon"></span>
-                                </div>
-                              )
-                            } */}
                           <ShippedDate
                             record={item}
                             isOpen={openDateId === item.orderNo}
