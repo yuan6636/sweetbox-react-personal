@@ -11,11 +11,13 @@ import SubscribeDetail from '../pages/admin/SubscribeDetail';
 import Login from '../pages/Login';
 import NotFound from '../pages/NotFound';
 import ProtectedRoute from '../components/ProtectedRoute';
+import ErrorPage from '../pages/ErrorPage';
 
 const routes = [
   {
     path: '/',
     element: <App />,
+    errorElement: <ErrorPage />,
     children: [
       {
         index: true, // 這樣就代表 "/" 對應 Home
@@ -26,22 +28,6 @@ const routes = [
         element: <Login />,
       },
       {
-        path: 'cart',
-        element: (
-          <ProtectedRoute>
-            <Cart />
-          </ProtectedRoute>
-        ),
-      },
-      {
-        path: 'cartCheckout',
-        element: <CartCheckout />,
-      },
-      {
-        path: 'cartFinish',
-        element: <CartFinish />,
-      },
-      {
         path: 'theme',
         element: <Theme />,
       },
@@ -49,25 +35,41 @@ const routes = [
         path: 'themeDetail/:id',
         element: <ThemeDetail />,
       },
+      // 需要登入的路由，用 ProtectedRoute 先驗證
       {
-        path: 'subscription',
-        element: <Subscription />,
+        element: <ProtectedRoute />,
+        children: [
+          {
+            path: 'cart',
+            element: <Cart />,
+          },
+          {
+            path: 'cartCheckout',
+            element: <CartCheckout />,
+          },
+          {
+            path: 'cartFinish',
+            element: <CartFinish />,
+          },
+          {
+            path: 'subscription',
+            element: <Subscription />,
+          },
+        ],
       },
+      // 後台頁面也使用 ProtectedRoute 驗證
       {
-        path: 'admin/subscribe',
-        element: (
-          <ProtectedRoute requireAdmin>
-            <Subscribe />
-          </ProtectedRoute>
-        ),
-      },
-      {
-        path: 'admin/subscribeDetail/:id',
-        element: (
-          <ProtectedRoute requireAdmin>
-            <SubscribeDetail />
-          </ProtectedRoute>
-        ),
+        element: <ProtectedRoute requireAdmin />,
+        children: [
+          {
+            path: 'admin/subscribe',
+            element: <Subscribe />,
+          },
+          {
+            path: 'admin/subscribeDetail/:id',
+            element: <SubscribeDetail />,
+          },
+        ],
       },
       {
         path: '*',
