@@ -4,7 +4,13 @@ export const setAuth = (user, token) => {
 };
 
 export const getUser = () => {
-  return JSON.parse(localStorage.getItem('user'));
+  try {
+    const raw = localStorage.getItem('user');
+    return raw ? JSON.parse(raw) : null;
+  } catch (error) {
+    console.error('讀取使用者資料失敗:', error);
+    return null;
+  }
 };
 
 export const getToken = () => {
