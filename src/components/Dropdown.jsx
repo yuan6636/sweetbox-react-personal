@@ -1,5 +1,8 @@
 import { Icon } from '@iconify/react';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
+
+// hooks
+import { useClickOutside } from '../hooks/useClickOutside';
 
 function Dropdown({
   options,
@@ -13,7 +16,6 @@ function Dropdown({
   const [option, setOption] = useState(options?.[0]?.label ?? '');
   const [isSelected, setIsSelected] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
-  const dropdownRef = useRef(null);
 
   function selectOption(e, opt) {
     e.preventDefault();
@@ -25,6 +27,12 @@ function Dropdown({
       onChange(opt.value); // 把選中的 value 傳出去
     }
   }
+
+  function onOutsideClick() {
+    setIsOpen(false);
+  }
+
+  const dropdownRef = useClickOutside(onOutsideClick);
 
   // 當外部 value 改變時，更新內部顯示
   useEffect(() => {
@@ -38,26 +46,15 @@ function Dropdown({
     updateOption(matched, options);
   }, [value, options]);
 
-  useEffect(() => {
-    function handleClickOutside(e) {
-      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
-        setIsOpen(false);
-      }
-    }
-    document.addEventListener('click', handleClickOutside);
-    return () => document.removeEventListener('click', handleClickOutside);
-  }, []);
-
   if (!options || options.length === 0) return null;
 
   // 顯示文字邏輯：有 prefix 且不是全部時才加上前綴
   const displayText = prefix && value !== options?.[0]?.value ? `${prefix}：${option}` : option;
 
   return (
-    <div className="dropdown dropdown-neutral-250">
+    <div className="dropdown dropdown-neutral-250" ref={dropdownRef}>
       {variant === 'default' ? (
         <button
-          ref={dropdownRef}
           className={`btn btn-secondary dropdown-toggle d-flex justify-content-center align-items-center
           ${isSelected ? 'text-neutral-800' : ''}
           ${isOpen ? 'is-open' : ''} ${buttonClass || ''}`}
@@ -70,7 +67,6 @@ function Dropdown({
         </button>
       ) : (
         <button
-          ref={dropdownRef}
           className={`btn btn-secondary dropdown-toggle d-flex justify-content-center align-items-center p-3 ${isOpen ? 'is-open' : ''}`}
           type="button"
           onClick={() => setIsOpen((prev) => !prev)}

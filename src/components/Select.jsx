@@ -1,5 +1,8 @@
 import { Icon } from '@iconify/react';
-import { useState, useEffect, useRef, useId } from 'react';
+import { useState, useId } from 'react';
+
+// hooks
+import { useClickOutside } from '../hooks/useClickOutside';
 
 const Select = ({
   //字尾(選用)
@@ -14,17 +17,11 @@ const Select = ({
   const [isOpen, setIsOpen] = useState(false);
   const id = useId();
 
-  const dropdownRef = useRef(null);
+  function onOutsideClick() {
+    setIsOpen(false);
+  }
 
-  useEffect(() => {
-    function handleClickOutside(e) {
-      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) setIsOpen(false);
-    }
-
-    document.addEventListener('mousedown', handleClickOutside);
-
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
+  const dropdownRef = useClickOutside(onOutsideClick);
 
   const isSelected = value && value !== placeholderText;
   const displayText = isSelected ? `${value}${suffix}` : placeholderText;
