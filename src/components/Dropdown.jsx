@@ -84,9 +84,9 @@ function Dropdown({
       >
         {options.map((opt, index) => (
           <li key={index}>
-            <a className="dropdown-item" onClick={(e) => selectOption(e, opt)}>
+            <button className="dropdown-item" onClick={(e) => selectOption(e, opt)}>
               {opt.label}
-            </a>
+            </button>
           </li>
         ))}
       </ul>
