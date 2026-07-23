@@ -4,7 +4,7 @@ import FormError from './FormError';
 const Input = ({
   id,
   register,
-  errors,
+  errors = {},
   wrapperClass = 'mb-4 mb-lg-6',
   labelText,
   type,
@@ -15,7 +15,7 @@ const Input = ({
   labelRight,
   ...rest //可打包剩餘未提及之 html 原生屬性
 }) => {
-  const hasError = !!errors[id];
+  const hasError = !!errors?.[id];
   const borderClass = hasError ? 'border border-semantic-error' : '';
 
   return (
@@ -39,8 +39,8 @@ const Input = ({
           placeholder={placeholderText}
           id={id}
           aria-label={ariaLabel}
-          {...register(id, rules)}
           {...rest} //其餘未提及之 html 原生屬性
+          {...register(id, rules)}
         />
       </div>
       {/*錯誤訊息 */}
