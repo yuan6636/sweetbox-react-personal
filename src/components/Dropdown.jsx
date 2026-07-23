@@ -10,7 +10,7 @@ function Dropdown({
   prefix,
   buttonClass,
 }) {
-  const [option, setOption] = useState(options[0].label);
+  const [option, setOption] = useState(options?.[0]?.label ?? '');
   const [isSelected, setIsSelected] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef(null);
@@ -32,7 +32,7 @@ function Dropdown({
     const updateOption = (isMatched, options) => {
       if (isMatched) {
         setOption(isMatched.label);
-        setIsSelected(value !== options[0].value); // 第一個通常是 "全部"
+        setIsSelected(value !== options?.[0]?.value); // 第一個通常是 "全部"
       }
     };
     updateOption(matched, options);
@@ -48,8 +48,10 @@ function Dropdown({
     return () => document.removeEventListener('click', handleClickOutside);
   }, []);
 
+  if (!options || options.length === 0) return null;
+
   // 顯示文字邏輯：有 prefix 且不是全部時才加上前綴
-  const displayText = prefix && value !== options[0].value ? `${prefix}：${option}` : option;
+  const displayText = prefix && value !== options?.[0]?.value ? `${prefix}：${option}` : option;
 
   return (
     <div className="dropdown dropdown-neutral-250">
