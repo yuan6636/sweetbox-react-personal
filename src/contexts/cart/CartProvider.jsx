@@ -14,24 +14,11 @@ export function CartProvider({ children }) {
   const [isCartLoading, setIsCartLoading] = useState(true);
   const { isLogin, user } = useAuth();
 
-  const refreshCart = useCallback(async () => {
-    if (!user) {
-      dispatch({ type: 'CLEAR_CART' });
-      setIsCartLoading(false);
-      return;
-    }
+  const fetchCartData = useCallback(async () => {
+    if (!user) return;
+    const cartRes = await api.get(`/carts?userId=${user.id}&_embed=cart_items`);
 
-    try {
-      const cartRes = await api.get(`/carts?userId=${user.id}&_embed=cart_items`);
-      const userCart = cartRes?.data[0] || null;
-
-      dispatch({ type: 'SET_CART', payload: userCart });
-    } catch (error) {
-      console.error('取得購物車失敗', error?.message);
-      dispatch({ type: 'CLEAR_CART' });
-    } finally {
-      setIsCartLoading(false);
-    }
+    return cartRes?.data[0] || null;
   }, [user]);
 
   const setCart = useCallback((cart) => {
@@ -66,21 +53,67 @@ export function CartProvider({ children }) {
     dispatch({ type: 'REMOVE_COUPON', payload: { updatedAt } });
   }, []);
 
+  const refreshCart = useCallback(async () => {
+    if (!user) {
+      clearCart();
+      setIsCartLoading(false);
+      return;
+    }
+
+    try {
+      const userCart = await fetchCartData();
+
+      setCart(userCart);
+    } catch (error) {
+      console.error('取得購物車失敗', error?.message);
+      clearCart();
+    } finally {
+      setIsCartLoading(false);
+    }
+  }, [user, fetchCartData, setCart, clearCart]);
+
   useEffect(() => {
-    // 使用 IIFE 寫法暫時關閉 eslint 警告
-    (async () => {
+    // 避免 isLogin/user 短時間內連續變化時（如快速切換帳號），
+    // 較舊的請求較晚回來、蓋掉較新的購物車資料。
+    // effect 重新執行前，React 會先呼叫 cleanup 把 isIgnore 設為 true，
+    // 讓過期的回應不再觸發 dispatch。
+    let isIgnore = false;
+
+    const loadCart = async () => {
       if (!isLogin) {
-        dispatch({ type: 'CLEAR_CART' });
+        clearCart();
         setIsCartLoading(false);
         return;
       }
 
       setIsCartLoading(true);
-      await refreshCart();
-    })();
-  }, [isLogin, refreshCart]);
 
-  // 3. 用 value 傳值到子元件
+      try {
+        const userCart = await fetchCartData();
+
+        if (!isIgnore) {
+          setCart(userCart);
+        }
+      } catch (error) {
+        console.error('取得購物車失敗', error?.message);
+
+        if (!isIgnore) {
+          clearCart();
+        }
+      } finally {
+        if (!isIgnore) {
+          setIsCartLoading(false);
+        }
+      }
+    };
+
+    loadCart();
+
+    return () => {
+      isIgnore = true;
+    };
+  }, [isLogin, fetchCartData, setCart, clearCart]);
+
   return (
     <CartContext.Provider
       value={{
