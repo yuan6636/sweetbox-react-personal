@@ -66,7 +66,6 @@ export function CartProvider({ children }) {
       setCart(userCart);
     } catch (error) {
       console.error('取得購物車失敗', error?.message);
-      clearCart();
     } finally {
       setIsCartLoading(false);
     }
