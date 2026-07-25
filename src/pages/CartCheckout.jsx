@@ -54,6 +54,7 @@ function CartCheckout() {
   const [matchedSavedCard, setMatchedSavedCard] = useState(null);
 
   useEffect(() => {
+    if (!user) return;
     const fetchData = async () => {
       try {
         const cartRes = await api.get(`/carts?userId=${user.id}&_embed=cart_items`);
@@ -95,7 +96,7 @@ function CartCheckout() {
       }
     };
     fetchData();
-  }, [navigate, user.id, setCart]);
+  }, [navigate, user, setCart]);
 
   const [cardNumber, expiryMonth, expiryYear, cardOwner] = watch([
     'cardNumber',
