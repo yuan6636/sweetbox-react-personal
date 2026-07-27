@@ -1,4 +1,4 @@
-function OrderSummary({ cartItems, displayCartMain, isSubmitting, isLoading }) {
+function OrderSummary({ cartItems = [], displayCartMain, isSubmitting, isLoading }) {
   return (
     <section className="cart-panel py-4 px-3 p-lg-8 mb-2 mb-lg-6">
       <h2 className="cart-section-title mb-3 mb-lg-6">訂單明細</h2>
@@ -10,7 +10,7 @@ function OrderSummary({ cartItems, displayCartMain, isSubmitting, isLoading }) {
                 <img
                   className="order-img rounded-2 bg-secondary d-inline-block"
                   src={item.theme?.images?.square}
-                  alt={item.theme?.title}
+                  alt={item.theme?.title || '甜點盒商品圖'}
                 />
               </div>
               <div className="px-2 flex-grow-1 d-flex flex-column justify-content-center">

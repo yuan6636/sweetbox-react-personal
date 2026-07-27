@@ -309,8 +309,11 @@ function CartCheckout() {
       navigate(`/cartFinish?sub_ids=${subIds}`, { replace: true, state: { showSuccess: true } });
     } catch (error) {
       console.error('結帳失敗:', error);
-      message.error({ content: '處理失敗，請稍後再試。', key: 'checkout', duration: 3 });
-      setIsSubmitting(false);
+      message.error({
+        content: '處理失敗，如已扣款請勿重複送出，請重新整理頁面後再試，如有疑慮請聯繫客服。',
+        key: 'checkout',
+        duration: 3,
+      });
     }
   };
 
