@@ -10,7 +10,7 @@ import { CartReducer } from './CartReducer';
 const initialState = null;
 
 export function CartProvider({ children }) {
-  const [cartMain, dispatch] = useReducer(CartReducer, initialState);
+  const [cart, dispatch] = useReducer(CartReducer, initialState);
   const [isCartLoading, setIsCartLoading] = useState(true);
   const { isLogin, user } = useAuth();
 
@@ -116,7 +116,7 @@ export function CartProvider({ children }) {
   return (
     <CartContext.Provider
       value={{
-        cartMain,
+        cart,
         isCartLoading,
         refreshCart,
         setCart,

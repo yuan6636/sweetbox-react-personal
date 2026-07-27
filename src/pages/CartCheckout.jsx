@@ -45,7 +45,7 @@ function CartCheckout() {
   } = useForm({ mode: 'onTouched' });
 
   const { user } = useAuth();
-  const { cartMain, setCart, clearCart } = useCart();
+  const { cart, setCart, clearCart } = useCart();
   const [enrichedCartItems, setEnrichedCartItems] = useState([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
@@ -303,7 +303,7 @@ function CartCheckout() {
       for (const item of enrichedCartItems) {
         await api.delete(`/cart_items/${item.id}`);
       }
-      if (cartMain?.id) await api.delete(`/carts/${cartMain.id}`);
+      if (cart?.id) await api.delete(`/carts/${cart.id}`);
 
       clearCart();
       navigate(`/cartFinish?sub_ids=${subIds}`, { replace: true, state: { showSuccess: true } });
@@ -353,10 +353,10 @@ function CartCheckout() {
     (sum, item) => sum + (item.plan?.discountPrice || 0) * item.quantity,
     0,
   );
-  const discountTotal = cartMain?.discountTotal || 0;
+  const discountTotal = cart?.discountTotal || 0;
   const finalTotal = Math.max(0, subTotal - discountTotal);
-  const displayCartMain = {
-    ...cartMain,
+  const displayCart = {
+    ...cart,
     subTotal,
     discountTotal,
     finalTotal,
@@ -519,7 +519,7 @@ function CartCheckout() {
                 {/* 訂單明細 */}
                 <OrderSummary
                   cartItems={enrichedCartItems}
-                  displayCartMain={displayCartMain}
+                  displayCart={displayCart}
                   isSubmitting={isSubmitting}
                   isLoading={isLoading}
                 />

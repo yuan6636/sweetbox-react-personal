@@ -22,7 +22,7 @@ function Cart() {
   const navigate = useNavigate();
   const { isLogin } = useAuth();
   const {
-    cartMain,
+    cart,
     isCartLoading,
     updateCartMeta,
     removeCartItem,
@@ -42,7 +42,7 @@ function Cart() {
   const [success, setSuccess] = useState(false);
   const [openDropdownId, setOpenDropdownId] = useState(null);
 
-  const cartItems = useMemo(() => cartMain?.cart_items ?? [], [cartMain]);
+  const cartItems = useMemo(() => cart?.cart_items ?? [], [cart]);
 
   const timerRefs = useRef({});
   const deletingItemsRef = useRef(new Set());
@@ -57,11 +57,11 @@ function Cart() {
 
   // 更新購物車的折扣和優惠券 ID
   useEffect(() => {
-    if (!cartMain) return;
+    if (!cart) return;
 
-    setDiscountTotal(cartMain.discountTotal || 0);
-    setCouponId(cartMain.couponId || null);
-  }, [cartMain]);
+    setDiscountTotal(cart.discountTotal || 0);
+    setCouponId(cart.couponId || null);
+  }, [cart]);
 
   useEffect(() => {
     const timers = timerRefs.current;
@@ -255,7 +255,7 @@ function Cart() {
       const finalDiscount = Math.round(discount);
       const now = dayjs().format('YYYY-MM-DDTHH:mm:ss.SSSZ');
 
-      await api.patch(`/carts/${cartMain.id}`, {
+      await api.patch(`/carts/${cart.id}`, {
         couponId: coupon.id,
         updatedAt: now,
       });
@@ -275,10 +275,10 @@ function Cart() {
   const handleCancelCoupon = async () => {
     const now = dayjs().format('YYYY-MM-DDTHH:mm:ss.SSSZ');
     try {
-      await api.put(`/carts/${cartMain.id}`, {
-        id: cartMain.id,
-        userId: cartMain.userId,
-        createdAt: cartMain.createdAt,
+      await api.put(`/carts/${cart.id}`, {
+        id: cart.id,
+        userId: cart.userId,
+        createdAt: cart.createdAt,
         updatedAt: now,
       });
 
@@ -296,9 +296,9 @@ function Cart() {
 
   // 前往結帳(更新carts資料表+導航)
   const handleGoToCheckout = async () => {
-    if (!cartMain || cartItems.length === 0) return;
+    if (!cart || cartItems.length === 0) return;
     try {
-      await api.patch(`/carts/${cartMain.id}`, {
+      await api.patch(`/carts/${cart.id}`, {
         ...(couponId && { couponId }),
         discountTotal,
         updatedAt: dayjs().format('YYYY-MM-DDTHH:mm:ss.SSSZ'),
