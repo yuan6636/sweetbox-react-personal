@@ -1,8 +1,13 @@
+import { Controller } from 'react-hook-form';
+import { Icon } from '@iconify/react';
+
+// components
 import Input from '../Input';
 import Select from '../Select';
-import { Controller } from 'react-hook-form';
 import FormError from '../FormError';
-import { Icon } from '@iconify/react';
+
+// utils
+import { stripNonDigits } from '../../utils/inputHelpers';
 
 function PaymentSection({
   register,
@@ -45,11 +50,8 @@ function PaymentSection({
             <Icon icon="logos:jcb" width="20.69" height="16"></Icon>
           </div>
         }
-        // ...rest 部分
         maxLength={19}
-        onInput={(e) => {
-          e.target.value = e.target.value.replace(/\D/g, ''); // 強制過濾非數字字元
-        }}
+        onInput={stripNonDigits}
       />
       <Input
         id="cardOwner"
@@ -163,11 +165,8 @@ function PaymentSection({
                   message: '安全碼應為 3 碼。',
                 },
               }}
-              // ...rest 部分
               maxLength={3}
-              onInput={(e) => {
-                e.target.value = e.target.value.replace(/\D/g, ''); // 強制過濾非數字字元
-              }}
+              onInput={stripNonDigits}
             />
           </div>
         </div>
