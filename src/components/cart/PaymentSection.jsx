@@ -72,10 +72,8 @@ function PaymentSection({
 
       <div className="mb-4 mb-lg-6">
         <div className="row g-3">
-          <div className="col-lg-6">
-            <label htmlFor="" className="form-label px-2">
-              有效期限
-            </label>
+          <div className="col-lg-6" role="group" aria-label="有效期限">
+            <label className="form-label px-2">有效期限</label>
             <div className="row g-3">
               <div className="col-6">
                 <Controller
