@@ -75,7 +75,7 @@ function CartCheckout() {
         const plansData = plansRes.data;
         const themesData = themesRes.data;
 
-        //資料組合
+        // 結帳當下重新組合商品明細（含 plan、theme 詳細資料）並鎖定為價格快照
         const enrichedItems = userCart.cart_items.map((item) => {
           const planDetail = plansData.find((p) => p.id === item.planId);
           const themeDetail = themesData.find((t) => t.id === planDetail?.themeId);
@@ -154,7 +154,7 @@ function CartCheckout() {
       const lastFour = formData.cardNumber.replace(/\s/g, '').slice(-4);
 
       // 抓取郵遞區號
-      const { city: city, district: district } = formData;
+      const { city, district } = formData;
       const zipCodeStr = taiwanData['台灣']?.[city]?.[district]?.postalCode || '';
 
       const nowIsoString = new Date().toISOString();
@@ -289,14 +289,14 @@ function CartCheckout() {
         return subRes.data; // 回傳給 Promise.all
       };
 
-      // --- 3. Promise.all 循序執行(json server 不支援同時寫入)
+      // 3. 使用迴圈依序執行(json server 不支援同時寫入)
       const results = [];
       for (const item of preCalculatedItems) {
         const result = await createSubscriptionTask(item);
         results.push(result);
       }
 
-      // --- 4. 成功後導頁 ---
+      // 4. 成功後導頁
       const subIds = results.map((sub) => sub.id).join(',');
 
       // 清理購物車
