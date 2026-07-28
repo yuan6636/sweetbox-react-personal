@@ -12,6 +12,7 @@ import timezone from 'dayjs/plugin/timezone';
 import taiwanData from '../assets/utils/taiwanDistricts.json';
 import { creditCardYears, creditCardMonths } from '../assets/utils/formOptions';
 import { formatCardNumber, getCardType } from '../assets/utils/paymentUtils';
+import { generateSubNumber, calculateDisplayCart } from '../utils/checkoutHelpers';
 
 // components
 import InvoiceSection from '../components/InvoiceSection';
@@ -24,6 +25,8 @@ import api from '../api';
 // hooks
 import { useCart } from '../contexts/cart';
 import { useAuth } from '../contexts/auth';
+import { useMatchedSavedCard } from '../hooks/useMatchedSavedCard';
+import { useQuickNotes } from '../hooks/useQuickNotes';
 
 // 設定台灣時區
 dayjs.extend(utc);
@@ -44,14 +47,22 @@ function CartCheckout() {
     formState: { errors },
   } = useForm({ mode: 'onTouched' });
 
-  const { user } = useAuth();
-  const { cart, setCart, clearCart } = useCart();
   const [enrichedCartItems, setEnrichedCartItems] = useState([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  const [selectedChips, setSelectedChips] = useState([]); // 已選的訂閱備註
   const [savedCards, setSavedCards] = useState([]);
-  const [matchedSavedCard, setMatchedSavedCard] = useState(null);
+
+  const { user } = useAuth();
+  const { cart, setCart, clearCart } = useCart();
+  const matchedSavedCard = useMatchedSavedCard({ watch, savedCards });
+  const { selectedChips, currentNote, quickNoteChips, toggleChip } = useQuickNotes({
+    watch,
+    getValues,
+    setValue,
+  });
+
+  // 金額
+  const { subTotal, discountTotal, displayCart } = calculateDisplayCart(cart, enrichedCartItems);
 
   useEffect(() => {
     if (!user) return;
@@ -98,39 +109,6 @@ function CartCheckout() {
     fetchData();
   }, [navigate, user, setCart]);
 
-  const [cardNumber, expiryMonth, expiryYear, cardOwner] = watch([
-    'cardNumber',
-    'expiryMonth',
-    'expiryYear',
-    'cardOwner',
-  ]);
-
-  useEffect(() => {
-    // 確認付款資料是否填完
-    if (!cardNumber || !expiryMonth || !expiryYear || !cardOwner) {
-      setMatchedSavedCard(null);
-      return;
-    }
-
-    // 已儲存的信用卡
-    const storedCard = savedCards.find(
-      (card) =>
-        card.lastFour === cardNumber.slice(-4) &&
-        card.expiryMonth === Number(expiryMonth) &&
-        card.expiryYear === Number(expiryYear) &&
-        card.cardOwner === cardOwner &&
-        card.cardBrand === getCardType(cardNumber),
-    );
-
-    setMatchedSavedCard(storedCard || null);
-  }, [cardNumber, expiryMonth, expiryYear, cardOwner, savedCards]);
-
-  const generateSubNumber = (abbr, durationMonths) => {
-    const durationStr = String(durationMonths).padStart(2, '0'); // 期數補齊兩碼
-    // 產生 6 碼隨機英文數字(大寫)
-    const randomStr = Math.random().toString(36).substring(2, 8).toUpperCase().padEnd(6, '0');
-    return `${abbr || 'XX'}${durationStr}${randomStr}`;
-  };
   const onSubmit = async (formData) => {
     if (!enrichedCartItems || enrichedCartItems.length === 0) {
       message.warning('您的購物車裡還沒有甜點呢！');
@@ -348,47 +326,9 @@ function CartCheckout() {
   const cities = Object.keys(taiwanData['台灣']);
   const districts = currentCity ? Object.keys(taiwanData['台灣'][currentCity]) : [];
 
-  // 金額
-  const subTotal = enrichedCartItems.reduce(
-    (sum, item) => sum + (item.plan?.discountPrice || 0) * item.quantity,
-    0,
-  );
-  const discountTotal = cart?.discountTotal || 0;
-  const finalTotal = Math.max(0, subTotal - discountTotal);
-  const displayCart = {
-    ...cart,
-    subTotal,
-    discountTotal,
-    finalTotal,
-  };
-
   const handleCardNumberChange = (e) => {
     const formattedValue = formatCardNumber(e.target.value);
     setValue('cardNumber', formattedValue, { shouldValidate: true });
-  };
-
-  // 訂閱備註字數
-  const currentNote = watch('note', '');
-
-  //訂閱備註快選
-  const quickNoteChips = [
-    '請在下午送達。',
-    '請直接放門口。',
-    '請放管理室。',
-    '請提前來電。',
-    '對堅果過敏。',
-    '對花生過敏。',
-  ];
-
-  const toggleChip = (chip) => {
-    const currentText = getValues('note') || '';
-    if (selectedChips.includes(chip)) {
-      setSelectedChips(selectedChips.filter((item) => item !== chip));
-      setValue('note', currentText.replace(chip, ''), { shouldValidate: true });
-    } else {
-      setSelectedChips([...selectedChips, chip]);
-      setValue('note', currentText + chip, { shouldValidate: true });
-    }
   };
 
   return (
