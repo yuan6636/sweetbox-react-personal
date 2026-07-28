@@ -20,3 +20,30 @@ export const calculateDisplayCart = (cart, enrichedCartItems) => {
   };
   return { subTotal, discountTotal, displayCart };
 };
+
+export const allocateDiscountToItems = ({ enrichedCartItems, subTotal, discountTotal }) => {
+  let remainingDiscount = discountTotal;
+
+  return enrichedCartItems.map((item, index) => {
+    const itemSubTotal = (item.plan?.discountPrice || 0) * item.quantity; //折扣前小計
+    let itemDiscount = 0;
+
+    if (subTotal > 0) {
+      if (index === enrichedCartItems.length - 1) {
+        // 最後品項扣除「剩餘折扣額」
+        itemDiscount = remainingDiscount;
+      } else {
+        // 前面的品項按比例四捨五入計算
+        itemDiscount = Math.round((itemSubTotal / subTotal) * discountTotal);
+        remainingDiscount -= itemDiscount; // 扣除已經分配出去的折扣
+      }
+    }
+
+    return {
+      ...item,
+      itemSubTotal,
+      itemDiscount,
+      firstOrderAmount: itemSubTotal - itemDiscount,
+    };
+  });
+};

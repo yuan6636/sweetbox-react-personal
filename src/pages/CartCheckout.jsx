@@ -12,7 +12,7 @@ import timezone from 'dayjs/plugin/timezone';
 import taiwanData from '../assets/utils/taiwanDistricts.json';
 import { creditCardYears, creditCardMonths } from '../assets/utils/formOptions';
 import { formatCardNumber, getCardType } from '../assets/utils/paymentUtils';
-import { generateSubNumber, calculateDisplayCart } from '../utils/checkoutHelpers';
+import { calculateDisplayCart, allocateDiscountToItems } from '../utils/checkoutHelpers';
 
 // components
 import InvoiceSection from '../components/InvoiceSection';
@@ -27,6 +27,9 @@ import { useCart } from '../contexts/cart';
 import { useAuth } from '../contexts/auth';
 import { useMatchedSavedCard } from '../hooks/useMatchedSavedCard';
 import { useQuickNotes } from '../hooks/useQuickNotes';
+
+// services
+import { createSubscriptionWithOrder } from '../services/subscriptionService';
 
 // 設定台灣時區
 dayjs.extend(utc);
@@ -121,8 +124,6 @@ function CartCheckout() {
     try {
       const userId = user?.id;
       const todayStr = dayjs().format('YYYY-MM-DD');
-      const currentSubTotal = subTotal;
-      const currentDiscountTotal = discountTotal;
       // 是否要儲存新的信用卡
       const shouldSaveNewCard = formData.saveCard && !matchedSavedCard;
       let finalPaymentMethodId = null; //預留給新產生的卡片id
@@ -157,124 +158,46 @@ function CartCheckout() {
         finalPaymentMethodId = matchedSavedCard.id || null;
       }
 
-      let remainingDiscount = currentDiscountTotal;
-      const preCalculatedItems = enrichedCartItems.map((item, index) => {
-        const itemSubTotal = (item.plan?.discountPrice || 0) * item.quantity; //折前小計
-        let itemDiscount = 0;
-
-        if (currentSubTotal > 0) {
-          if (index === enrichedCartItems.length - 1) {
-            // 最後品項扣除「剩餘折扣額」
-            itemDiscount = remainingDiscount;
-          } else {
-            // 前面的品項按比例四捨五入計算
-            itemDiscount = Math.round((itemSubTotal / currentSubTotal) * currentDiscountTotal);
-            remainingDiscount -= itemDiscount; // 扣除已經分配出去的折扣
-          }
-        }
-
-        return {
-          ...item,
-          itemSubTotal,
-          itemDiscount,
-          firstOrderAmount: itemSubTotal - itemDiscount,
-        };
+      const preCalculatedItems = allocateDiscountToItems({
+        enrichedCartItems,
+        subTotal,
+        discountTotal,
       });
 
-      // 訂閱Task
-      const createSubscriptionTask = async (item) => {
-        const { firstOrderAmount } = item; //折前小計
-        const subNo = generateSubNumber(item.theme?.titleAbbr, item.plan?.durationMonths);
-        const endDateStr = dayjs()
-          .add(item.plan?.durationMonths - 1, 'month')
-          .format('YYYY-MM-DD');
-        const nextPaymentStr = dayjs().add(1, 'month').format('YYYY-MM-DD');
-        const firstOrderNo = `${subNo}01`;
-
-        const subscriptionPayload = {
-          userId,
-          planId: item.planId,
-          themeId: item.theme?.id,
-          subscriptionNumber: subNo,
-          quantity: item.quantity,
-          unitPrice: item.plan?.discountPrice || 0,
-          durationMonths: item.plan?.durationMonths,
-          startDate: todayStr,
-          endDate: endDateStr,
-          nextPaymentDate: nextPaymentStr,
-          status: 'active',
-          isProcessed: false,
-          note: formData.note || '',
-          createdAt: nowIsoString,
-          paymentMethodId: finalPaymentMethodId,
-          paymentSnapshot: {
-            cardOwner: formData.cardOwner,
-            cardBrand: currentCardBrand,
-            lastFour,
-            expiryMonth: Number(formData.expiryMonth),
-            expiryYear: Number(formData.expiryYear),
-          },
-          shippingInfo: {
-            zipCode: zipCodeStr,
-            city,
-            district,
-            street: formData.street,
-            name: formData.name,
-            phone: formData.phone,
-          },
-          invoiceInfo: {
-            type: formData.type,
-            carrier: formData.carrier || '',
-            taxId: formData.taxId || '',
-            companyName: formData.companyName || '',
-            companyEmail: formData.companyEmail || '',
-            donateCode: formData.donateCode || '',
-          },
-        };
-
-        // 1 先 POST Subscription 取得 ID
-        const subRes = await api.post('/subscriptions', subscriptionPayload);
-
-        const realSubId = subRes.data.id; // ← 拿真實 id
-
-        // 2 POST Order
-        await api.post('/orders', {
-          subscriptionId: realSubId,
-          orderNo: firstOrderNo,
-          cycle: 1,
-          amount: firstOrderAmount,
-          createdAt: nowIsoString,
-          paymentDueDate: todayStr,
-          paymentStatus: 'paid',
-          paymentDate: todayStr,
-          shippingStatus: 'pending',
-          shippingDate: null,
-          paymentSnapshot: {
-            cardOwner: formData.cardOwner,
-            cardBrand: currentCardBrand,
-            lastFour,
-            expiryMonth: Number(formData.expiryMonth),
-            expiryYear: Number(formData.expiryYear),
-          },
-          invoice: {
-            number: `AB-${Math.floor(Math.random() * 100000000)}`,
-            date: nowIsoString,
-            fileUrl: null,
-          },
-          isArchived: false,
-        });
-
-        return subRes.data; // 回傳給 Promise.all
+      const paymentSnapshot = {
+        cardOwner: formData.cardOwner,
+        cardBrand: currentCardBrand,
+        lastFour,
+        expiryMonth: Number(formData.expiryMonth),
+        expiryYear: Number(formData.expiryYear),
       };
 
-      // 3. 使用迴圈依序執行(json server 不支援同時寫入)
+      const shippingInfo = {
+        zipCode: zipCodeStr,
+        city,
+        district,
+        street: formData.street,
+        name: formData.name,
+        phone: formData.phone,
+      };
+
+      // 使用迴圈依序執行(json server 不支援同時寫入)
       const results = [];
       for (const item of preCalculatedItems) {
-        const result = await createSubscriptionTask(item);
+        const result = await createSubscriptionWithOrder({
+          item,
+          userId,
+          finalPaymentMethodId,
+          formData,
+          paymentSnapshot,
+          shippingInfo,
+          todayStr,
+          nowIsoString,
+        });
         results.push(result);
       }
 
-      // 4. 成功後導頁
+      // 成功後導頁
       const subIds = results.map((sub) => sub.id).join(',');
 
       // 清理購物車
