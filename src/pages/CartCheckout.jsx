@@ -12,6 +12,7 @@ import timezone from 'dayjs/plugin/timezone';
 import taiwanData from '../assets/utils/taiwanDistricts.json';
 import { creditCardYears, creditCardMonths } from '../assets/utils/formOptions';
 import { formatCardNumber, getCardType } from '../assets/utils/paymentUtils';
+import { calculateDisplayCart, allocateDiscountToItems } from '../utils/checkoutHelpers';
 
 // components
 import InvoiceSection from '../components/InvoiceSection';
@@ -24,6 +25,11 @@ import api from '../api';
 // hooks
 import { useCart } from '../contexts/cart';
 import { useAuth } from '../contexts/auth';
+import { useMatchedSavedCard } from '../hooks/useMatchedSavedCard';
+import { useQuickNotes } from '../hooks/useQuickNotes';
+
+// services
+import { createSubscriptionWithOrder } from '../services/subscriptionService';
 
 // 設定台灣時區
 dayjs.extend(utc);
@@ -44,16 +50,25 @@ function CartCheckout() {
     formState: { errors },
   } = useForm({ mode: 'onTouched' });
 
-  const { user } = useAuth();
-  const { cartMain, setCart, clearCart } = useCart();
   const [enrichedCartItems, setEnrichedCartItems] = useState([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  const [selectedChips, setSelectedChips] = useState([]); // 已選的訂閱備註
   const [savedCards, setSavedCards] = useState([]);
-  const [matchedSavedCard, setMatchedSavedCard] = useState(null);
+
+  const { user } = useAuth();
+  const { cart, setCart, clearCart } = useCart();
+  const matchedSavedCard = useMatchedSavedCard({ watch, savedCards });
+  const { selectedChips, currentNote, quickNoteChips, toggleChip } = useQuickNotes({
+    watch,
+    getValues,
+    setValue,
+  });
+
+  // 金額
+  const { subTotal, discountTotal, displayCart } = calculateDisplayCart(cart, enrichedCartItems);
 
   useEffect(() => {
+    if (!user) return;
     const fetchData = async () => {
       try {
         const cartRes = await api.get(`/carts?userId=${user.id}&_embed=cart_items`);
@@ -74,7 +89,7 @@ function CartCheckout() {
         const plansData = plansRes.data;
         const themesData = themesRes.data;
 
-        //資料組合
+        // 結帳當下重新組合商品明細（含 plan、theme 詳細資料）並鎖定為價格快照
         const enrichedItems = userCart.cart_items.map((item) => {
           const planDetail = plansData.find((p) => p.id === item.planId);
           const themeDetail = themesData.find((t) => t.id === planDetail?.themeId);
@@ -95,41 +110,8 @@ function CartCheckout() {
       }
     };
     fetchData();
-  }, [navigate, user.id, setCart]);
+  }, [navigate, user, setCart]);
 
-  const [cardNumber, expiryMonth, expiryYear, cardOwner] = watch([
-    'cardNumber',
-    'expiryMonth',
-    'expiryYear',
-    'cardOwner',
-  ]);
-
-  useEffect(() => {
-    // 確認付款資料是否填完
-    if (!cardNumber || !expiryMonth || !expiryYear || !cardOwner) {
-      setMatchedSavedCard(null);
-      return;
-    }
-
-    // 已儲存的信用卡
-    const storedCard = savedCards.find(
-      (card) =>
-        card.lastFour === cardNumber.slice(-4) &&
-        card.expiryMonth === Number(expiryMonth) &&
-        card.expiryYear === Number(expiryYear) &&
-        card.cardOwner === cardOwner &&
-        card.cardBrand === getCardType(cardNumber),
-    );
-
-    setMatchedSavedCard(storedCard || null);
-  }, [cardNumber, expiryMonth, expiryYear, cardOwner, savedCards]);
-
-  const generateSubNumber = (abbr, durationMonths) => {
-    const durationStr = String(durationMonths).padStart(2, '0'); // 期數補齊兩碼
-    // 產生 6 碼隨機英文數字(大寫)
-    const randomStr = Math.random().toString(36).substring(2, 8).toUpperCase().padEnd(6, '0');
-    return `${abbr || 'XX'}${durationStr}${randomStr}`;
-  };
   const onSubmit = async (formData) => {
     if (!enrichedCartItems || enrichedCartItems.length === 0) {
       message.warning('您的購物車裡還沒有甜點呢！');
@@ -142,8 +124,6 @@ function CartCheckout() {
     try {
       const userId = user?.id;
       const todayStr = dayjs().format('YYYY-MM-DD');
-      const currentSubTotal = subTotal;
-      const currentDiscountTotal = discountTotal;
       // 是否要儲存新的信用卡
       const shouldSaveNewCard = formData.saveCard && !matchedSavedCard;
       let finalPaymentMethodId = null; //預留給新產生的卡片id
@@ -153,7 +133,7 @@ function CartCheckout() {
       const lastFour = formData.cardNumber.replace(/\s/g, '').slice(-4);
 
       // 抓取郵遞區號
-      const { city: city, district: district } = formData;
+      const { city, district } = formData;
       const zipCodeStr = taiwanData['台灣']?.[city]?.[district]?.postalCode || '';
 
       const nowIsoString = new Date().toISOString();
@@ -178,138 +158,63 @@ function CartCheckout() {
         finalPaymentMethodId = matchedSavedCard.id || null;
       }
 
-      let remainingDiscount = currentDiscountTotal;
-      const preCalculatedItems = enrichedCartItems.map((item, index) => {
-        const itemSubTotal = (item.plan?.discountPrice || 0) * item.quantity; //折前小計
-        let itemDiscount = 0;
-
-        if (currentSubTotal > 0) {
-          if (index === enrichedCartItems.length - 1) {
-            // 最後品項扣除「剩餘折扣額」
-            itemDiscount = remainingDiscount;
-          } else {
-            // 前面的品項按比例四捨五入計算
-            itemDiscount = Math.round((itemSubTotal / currentSubTotal) * currentDiscountTotal);
-            remainingDiscount -= itemDiscount; // 扣除已經分配出去的折扣
-          }
-        }
-
-        return {
-          ...item,
-          itemSubTotal,
-          itemDiscount,
-          firstOrderAmount: itemSubTotal - itemDiscount,
-        };
+      const preCalculatedItems = allocateDiscountToItems({
+        enrichedCartItems,
+        subTotal,
+        discountTotal,
       });
 
-      // 訂閱Task
-      const createSubscriptionTask = async (item) => {
-        const { firstOrderAmount } = item; //折前小計
-        const subNo = generateSubNumber(item.theme?.titleAbbr, item.plan?.durationMonths);
-        const endDateStr = dayjs()
-          .add(item.plan?.durationMonths - 1, 'month')
-          .format('YYYY-MM-DD');
-        const nextPaymentStr = dayjs().add(1, 'month').format('YYYY-MM-DD');
-        const firstOrderNo = `${subNo}01`;
-
-        const subscriptionPayload = {
-          userId,
-          planId: item.planId,
-          themeId: item.theme?.id,
-          subscriptionNumber: subNo,
-          quantity: item.quantity,
-          unitPrice: item.plan?.discountPrice || 0,
-          durationMonths: item.plan?.durationMonths,
-          startDate: todayStr,
-          endDate: endDateStr,
-          nextPaymentDate: nextPaymentStr,
-          status: 'active',
-          isProcessed: false,
-          note: formData.note || '',
-          createdAt: nowIsoString,
-          paymentMethodId: finalPaymentMethodId,
-          paymentSnapshot: {
-            cardOwner: formData.cardOwner,
-            cardBrand: currentCardBrand,
-            lastFour,
-            expiryMonth: Number(formData.expiryMonth),
-            expiryYear: Number(formData.expiryYear),
-          },
-          shippingInfo: {
-            zipCode: zipCodeStr,
-            city,
-            district,
-            street: formData.street,
-            name: formData.name,
-            phone: formData.phone,
-          },
-          invoiceInfo: {
-            type: formData.type,
-            carrier: formData.carrier || '',
-            taxId: formData.taxId || '',
-            companyName: formData.companyName || '',
-            companyEmail: formData.companyEmail || '',
-            donateCode: formData.donateCode || '',
-          },
-        };
-
-        // 1 先 POST Subscription 取得 ID
-        const subRes = await api.post('/subscriptions', subscriptionPayload);
-
-        const realSubId = subRes.data.id; // ← 拿真實 id
-
-        // 2 POST Order
-        await api.post('/orders', {
-          subscriptionId: realSubId,
-          orderNo: firstOrderNo,
-          cycle: 1,
-          amount: firstOrderAmount,
-          createdAt: nowIsoString,
-          paymentDueDate: todayStr,
-          paymentStatus: 'paid',
-          paymentDate: todayStr,
-          shippingStatus: 'pending',
-          shippingDate: null,
-          paymentSnapshot: {
-            cardOwner: formData.cardOwner,
-            cardBrand: currentCardBrand,
-            lastFour,
-            expiryMonth: Number(formData.expiryMonth),
-            expiryYear: Number(formData.expiryYear),
-          },
-          invoice: {
-            number: `AB-${Math.floor(Math.random() * 100000000)}`,
-            date: nowIsoString,
-            fileUrl: null,
-          },
-          isArchived: false,
-        });
-
-        return subRes.data; // 回傳給 Promise.all
+      const paymentSnapshot = {
+        cardOwner: formData.cardOwner,
+        cardBrand: currentCardBrand,
+        lastFour,
+        expiryMonth: Number(formData.expiryMonth),
+        expiryYear: Number(formData.expiryYear),
       };
 
-      // --- 3. Promise.all 循序執行(json server 不支援同時寫入)
+      const shippingInfo = {
+        zipCode: zipCodeStr,
+        city,
+        district,
+        street: formData.street,
+        name: formData.name,
+        phone: formData.phone,
+      };
+
+      // 使用迴圈依序執行(json server 不支援同時寫入)
       const results = [];
       for (const item of preCalculatedItems) {
-        const result = await createSubscriptionTask(item);
+        const result = await createSubscriptionWithOrder({
+          item,
+          userId,
+          finalPaymentMethodId,
+          formData,
+          paymentSnapshot,
+          shippingInfo,
+          todayStr,
+          nowIsoString,
+        });
         results.push(result);
       }
 
-      // --- 4. 成功後導頁 ---
+      // 成功後導頁
       const subIds = results.map((sub) => sub.id).join(',');
 
       // 清理購物車
       for (const item of enrichedCartItems) {
         await api.delete(`/cart_items/${item.id}`);
       }
-      if (cartMain?.id) await api.delete(`/carts/${cartMain.id}`);
+      if (cart?.id) await api.delete(`/carts/${cart.id}`);
 
       clearCart();
       navigate(`/cartFinish?sub_ids=${subIds}`, { replace: true, state: { showSuccess: true } });
     } catch (error) {
       console.error('結帳失敗:', error);
-      message.error({ content: '處理失敗，請稍後再試。', key: 'checkout', duration: 3 });
-      setIsSubmitting(false);
+      message.error({
+        content: '處理失敗，如已扣款請勿重複送出，請重新整理頁面後再試，如有疑慮請聯繫客服。',
+        key: 'checkout',
+        duration: 3,
+      });
     }
   };
 
@@ -344,47 +249,9 @@ function CartCheckout() {
   const cities = Object.keys(taiwanData['台灣']);
   const districts = currentCity ? Object.keys(taiwanData['台灣'][currentCity]) : [];
 
-  // 金額
-  const subTotal = enrichedCartItems.reduce(
-    (sum, item) => sum + (item.plan?.discountPrice || 0) * item.quantity,
-    0,
-  );
-  const discountTotal = cartMain?.discountTotal || 0;
-  const finalTotal = Math.max(0, subTotal - discountTotal);
-  const displayCartMain = {
-    ...cartMain,
-    subTotal,
-    discountTotal,
-    finalTotal,
-  };
-
   const handleCardNumberChange = (e) => {
     const formattedValue = formatCardNumber(e.target.value);
     setValue('cardNumber', formattedValue, { shouldValidate: true });
-  };
-
-  // 訂閱備註字數
-  const currentNote = watch('note', '');
-
-  //訂閱備註快選
-  const quickNoteChips = [
-    '請在下午送達。',
-    '請直接放門口。',
-    '請放管理室。',
-    '請提前來電。',
-    '對堅果過敏。',
-    '對花生過敏。',
-  ];
-
-  const toggleChip = (chip) => {
-    const currentText = getValues('note') || '';
-    if (selectedChips.includes(chip)) {
-      setSelectedChips(selectedChips.filter((item) => item !== chip));
-      setValue('note', currentText.replace(chip, ''), { shouldValidate: true });
-    } else {
-      setSelectedChips([...selectedChips, chip]);
-      setValue('note', currentText + chip, { shouldValidate: true });
-    }
   };
 
   return (
@@ -515,7 +382,7 @@ function CartCheckout() {
                 {/* 訂單明細 */}
                 <OrderSummary
                   cartItems={enrichedCartItems}
-                  displayCartMain={displayCartMain}
+                  displayCart={displayCart}
                   isSubmitting={isSubmitting}
                   isLoading={isLoading}
                 />

@@ -1,7 +1,12 @@
+import { Controller } from 'react-hook-form';
+
+// components
 import Input from '../Input';
 import Select from '../Select';
 import FormError from '../FormError';
-import { Controller } from 'react-hook-form';
+
+// utils
+import { stripNonDigits } from '../../utils/inputHelpers';
 
 function ReceiverSection({
   register,
@@ -67,11 +72,8 @@ function ReceiverSection({
             message: '至少 6 碼。',
           },
         }}
-        // ...rest 部分
         maxLength={10}
-        onInput={(e) => {
-          e.target.value = e.target.value.replace(/\D/g, ''); // 強制過濾非數字字元
-        }}
+        onInput={stripNonDigits}
       />
       <div>
         <label htmlFor="city" className="form-label px-2">

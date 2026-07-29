@@ -1,4 +1,4 @@
-function OrderSummary({ cartItems, displayCartMain, isSubmitting, isLoading }) {
+function OrderSummary({ cartItems = [], displayCart, isSubmitting, isLoading }) {
   return (
     <section className="cart-panel py-4 px-3 p-lg-8 mb-2 mb-lg-6">
       <h2 className="cart-section-title mb-3 mb-lg-6">訂單明細</h2>
@@ -10,7 +10,7 @@ function OrderSummary({ cartItems, displayCartMain, isSubmitting, isLoading }) {
                 <img
                   className="order-img rounded-2 bg-secondary d-inline-block"
                   src={item.theme?.images?.square}
-                  alt={item.theme?.title}
+                  alt={item.theme?.title || '甜點盒商品圖'}
                 />
               </div>
               <div className="px-2 flex-grow-1 d-flex flex-column justify-content-center">
@@ -36,19 +36,19 @@ function OrderSummary({ cartItems, displayCartMain, isSubmitting, isLoading }) {
         <div className="lh-base pb-6 mb-6 border-bottom border-neutral-400">
           <p className="d-flex justify-content-between align-items-center mb-2">
             <span>小計</span>
-            <span>NT${displayCartMain?.subTotal?.toLocaleString() || 0}</span>
+            <span>NT${displayCart?.subTotal?.toLocaleString() || 0}</span>
           </p>
           <p className="d-flex justify-content-between align-items-center">
             <span>折扣</span>
             <span className="text-cta-200">
-              - NT${displayCartMain?.discountTotal?.toLocaleString() || 0}
+              - NT${displayCart?.discountTotal?.toLocaleString() || 0}
             </span>
           </p>
         </div>
         <p className="d-flex justify-content-between align-items-center lh-sm ls-1 fw-bold">
           <span>合計</span>
           <span className="fs-5 lh-base ls-1">
-            NT${displayCartMain?.finalTotal?.toLocaleString() || 0}
+            NT${displayCart?.finalTotal?.toLocaleString() || 0}
           </span>
         </p>
       </div>

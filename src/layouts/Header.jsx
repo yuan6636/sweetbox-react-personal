@@ -10,7 +10,7 @@ import { useAuth } from '../contexts/auth';
 function Header() {
   // Context hook
   const { user, logout } = useAuth();
-  const { cartMain, clearCart } = useCart();
+  const { cart, clearCart } = useCart();
   // 自訂義 hook
   const userNameRef = useTooltip(user);
 
@@ -20,7 +20,7 @@ function Header() {
     navigate('/');
   };
 
-  const cartCount = cartMain?.cart_items?.length || 0;
+  const cartCount = cart?.cart_items?.length || 0;
 
   useEffect(() => {
     // 使用者未登入，清空購物車
