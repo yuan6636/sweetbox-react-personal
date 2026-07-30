@@ -22,22 +22,37 @@ function Footer() {
           <li className="footer-nav-item">
             <NavLink to="/theme">主題一覽</NavLink>
           </li>
-          {user?.isAdmin ? (
-            <li className="footer-nav-item">
-              <NavLink to="/admin/subscribe">後台管理</NavLink>
-            </li>
-          ) : (
-            <li className="footer-nav-item disabled">
-              <span>會員中心</span>
-            </li>
-          )}
+          {
+            user?.isAdmin ? (
+              <li className="footer-nav-item">
+                <NavLink to="/admin/subscribe">後台管理</NavLink>
+              </li>
+            ) : user ? (
+              // 一般會員會顯示訂閱管理
+              <li className="footer-nav-item">
+                <NavLink to="/subscription">訂閱管理</NavLink>
+              </li>
+            ) : null // 訪客不顯示
+          }
         </ul>
         <ul className="d-flex gap-6">
           <li>
-            <Icon className="social-link" icon="fluent:mail-24-filled" width="48" height="48" />
+            <Icon
+              className="social-link"
+              icon="fluent:mail-24-filled"
+              width="48"
+              height="48"
+              aria-hidden="true"
+            />
           </li>
           <li>
-            <Icon className="social-link" icon="mdi:facebook" width="48" height="48" />
+            <Icon
+              className="social-link"
+              icon="mdi:facebook"
+              width="48"
+              height="48"
+              aria-hidden="true"
+            />
           </li>
           <li>
             <Icon
@@ -45,6 +60,7 @@ function Footer() {
               icon="ant-design:instagram-filled"
               width="48"
               height="48"
+              aria-hidden="true"
             />
           </li>
         </ul>
