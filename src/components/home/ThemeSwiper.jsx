@@ -11,18 +11,14 @@ import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 
 // Themes
-const themesTitleMap = {
-  1: { src: './images/Home_Page/feature.svg', alt: '精選甜點標題' },
-  2: { src: './images/Home_Page/season.svg', alt: '季節限定標題' },
-  3: { src: './images/Home_Page/local.svg', alt: '在地甜點標題' },
-};
+const themesTitleMap = [
+  { src: './images/Home_Page/feature.svg', alt: '精選甜點標題' },
+  { src: './images/Home_Page/season.svg', alt: '季節限定標題' },
+  { src: './images/Home_Page/local.svg', alt: '在地甜點標題' },
+];
 
 // theme title highlight
-const highlightMap = {
-  1: '最值得期待',
-  2: '陪你過日子',
-  3: '熟悉中遇見驚喜',
-};
+const highlightMap = ['最值得期待', '陪你過日子', '熟悉中遇見驚喜'];
 
 function ThemeSwiper() {
   const [themes, setThemes] = useState([]);
@@ -72,7 +68,7 @@ function ThemeSwiper() {
           >
             {/* Additional required wrapper */}
             {/* Slides */}
-            {themes.map((theme) => (
+            {themes.map((theme, index) => (
               <SwiperSlide key={theme.id} className="swiper-slide position-relative">
                 <div className="d-flex">
                   <div className="row">
@@ -91,13 +87,10 @@ function ThemeSwiper() {
                         </p>
                         <h3 className="mb-9">
                           <span className="visually-hidden">{theme.title}</span>
-                          <img
-                            src={themesTitleMap[theme.id].src}
-                            alt={themesTitleMap[theme.id].alt}
-                          />
+                          <img src={themesTitleMap[index].src} alt={themesTitleMap[index].alt} />
                         </h3>
                         <h4 className="fs-6 fw-bold ls-1 mb-2">
-                          {highlightText(theme.subtitle, highlightMap[theme.id])}
+                          {highlightText(theme.subtitle, highlightMap[index])}
                         </h4>
                         <p className="fs-6 fs-5">{theme.description}</p>
                       </div>
@@ -127,14 +120,14 @@ function ThemeSwiper() {
         </div>
         {/* mobile:card */}
         <ul className="card-themeOpts d-lg-none">
-          {themes.map((theme) => (
+          {themes.map((theme, index) => (
             <li key={theme.id} className="card text-center bg-transparent border-0 py-4 mb-9">
               <div className="card-body px-0">
                 <p className="en-font card-subtitle text-primary text-capitalize mb-3 ls-1 fs-7 fw-bold">
                   {theme.titleEn}
                 </p>
                 <h3 className="card-title">
-                  <img src={themesTitleMap[theme.id].src} alt={themesTitleMap[theme.id].alt} />
+                  <img src={themesTitleMap[index].src} alt={themesTitleMap[index].alt} />
                 </h3>
                 <img
                   className="w-100 h-auto my-6"
@@ -142,7 +135,7 @@ function ThemeSwiper() {
                   alt={`${theme.title}圖片`}
                 />
                 <h4 className="fs-6 fw-bold ls-1 mb-2 mb-lg-0">
-                  {highlightText(theme.subtitle, highlightMap[theme.id])}
+                  {highlightText(theme.subtitle, highlightMap[index])}
                 </h4>
                 <p className="card-text mb-6">{theme.description}</p>
                 <NavLink
