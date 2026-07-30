@@ -24,12 +24,8 @@ function Header() {
 
   useEffect(() => {
     // 使用者未登入，清空購物車
-    const resetCartCount = () => {
-      clearCart();
-    };
-
     if (!user) {
-      resetCartCount();
+      clearCart();
     }
   }, [user, clearCart]);
 
@@ -197,7 +193,7 @@ function Header() {
             )}
 
             <li className="dropdown-item-wrapper">
-              <button type="button" className="btn border-0 dropdown-item" aria-expanded="true">
+              <button type="button" className="btn border-0 dropdown-item">
                 <Icon icon="material-symbols:close" width="32" height="32" />
               </button>
             </li>
