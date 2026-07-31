@@ -1,6 +1,9 @@
 import { Icon } from '@iconify/react';
 import { NavLink } from 'react-router-dom';
 
+// constants
+import { DEFAULT_THEME_ID } from '../../constants/theme';
+
 function HeroBanner() {
   return (
     <section className="hero-banner bg-neutral-200">
@@ -20,7 +23,7 @@ function HeroBanner() {
             幫你安排一場好吃又不膩的甜點旅程
           </p>
         </div>
-        <NavLink to="/themedetail/1" className="btn-primary-icon">
+        <NavLink to={`/themedetail/${DEFAULT_THEME_ID}`} className="btn-primary-icon">
           立刻訂閱
           <Icon className="ms-2" icon="tdesign:swap-right" width="24" height="24" />
         </NavLink>

@@ -1,6 +1,9 @@
 import { Icon } from '@iconify/react';
 import { NavLink } from 'react-router-dom';
 
+// constants
+import { DEFAULT_THEME_ID } from '../../constants/theme';
+
 const steps = [
   {
     id: 1,
@@ -70,7 +73,7 @@ function SubscriptionSteps() {
         </ul>
         <div className="d-lg-flex d-none justify-content-center">
           <NavLink
-            to="/themedetail/1"
+            to={`/themedetail/${DEFAULT_THEME_ID}`}
             className="btn-primary-icon ls-1 lh-sm fs-6 fw-bold d-flex align-items-center"
           >
             立刻訂閱
