@@ -65,17 +65,13 @@ function BrandsSwiper() {
             Partners
           </p>
           <h2>
-            <span className="visually-hidden">好評分享</span>
+            <span className="visually-hidden">合作夥伴</span>
             <picture>
               <source
                 media="(max-width: 576px)"
                 srcSet="./images/Home_Page/title_section07_mobile.png"
               />
-              <img
-                className="brands-img"
-                src="./images/Home_Page/title_section07.svg"
-                alt="partners"
-              />
+              <img className="brands-img" src="./images/Home_Page/title_section07.svg" alt="" />
             </picture>
           </h2>
         </div>
@@ -97,7 +93,7 @@ function BrandsSwiper() {
           >
             {desktopBrandsRow1.map((img, index) => (
               <SwiperSlide key={index} className="swiper-slide">
-                <img src={img} alt="" className="align-bottom" />
+                <img src={img} alt={`合作品牌 Logo`} className="align-bottom" />
               </SwiperSlide>
             ))}
           </Swiper>
@@ -117,7 +113,7 @@ function BrandsSwiper() {
           >
             {desktopBrandsRow2.map((img, index) => (
               <SwiperSlide key={index} className="swiper-slide">
-                <img src={img} alt="" className="align-bottom" />
+                <img src={img} alt={`合作品牌 Logo`} className="align-bottom" />
               </SwiperSlide>
             ))}
           </Swiper>
@@ -137,7 +133,7 @@ function BrandsSwiper() {
           >
             {mobileBrandsRow1.map((img, index) => (
               <SwiperSlide key={index} className="swiper-slide">
-                <img src={img} alt="" className="align-bottom" />
+                <img src={img} alt={`合作品牌 Logo`} className="align-bottom" />
               </SwiperSlide>
             ))}
           </Swiper>
@@ -155,7 +151,7 @@ function BrandsSwiper() {
           >
             {mobileBrandsRow2.map((img, index) => (
               <SwiperSlide key={index} className="swiper-slide">
-                <img src={img} alt="" className="align-bottom" />
+                <img src={img} alt={`合作品牌 Logo`} className="align-bottom" />
               </SwiperSlide>
             ))}
           </Swiper>
@@ -172,7 +168,7 @@ function BrandsSwiper() {
           >
             {mobileBrandsRow3.map((img, index) => (
               <SwiperSlide key={index} className="swiper-slide">
-                <img src={img} alt="" className="align-bottom" />
+                <img src={img} alt={`合作品牌 Logo`} className="align-bottom" />
               </SwiperSlide>
             ))}
           </Swiper>

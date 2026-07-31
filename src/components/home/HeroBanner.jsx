@@ -10,7 +10,7 @@ function HeroBanner() {
           <img
             className="title-hero mb-6 mb-sm-9"
             src="./images/Home_Page/title_hero_mobile.svg"
-            alt="選擇障礙救星標題"
+            alt=""
           />
         </h1>
         <div className="mb-10 mb-sm-9">

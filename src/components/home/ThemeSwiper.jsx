@@ -12,9 +12,9 @@ import 'swiper/css/pagination';
 
 // Themes
 const themesTitleMap = [
-  { src: './images/Home_Page/feature.svg', alt: '精選甜點標題' },
-  { src: './images/Home_Page/season.svg', alt: '季節限定標題' },
-  { src: './images/Home_Page/local.svg', alt: '在地甜點標題' },
+  { src: './images/Home_Page/feature.svg' },
+  { src: './images/Home_Page/season.svg' },
+  { src: './images/Home_Page/local.svg' },
 ];
 
 // theme title highlight
@@ -87,7 +87,7 @@ function ThemeSwiper() {
                         </p>
                         <h3 className="mb-9">
                           <span className="visually-hidden">{theme.title}</span>
-                          <img src={themesTitleMap[index].src} alt={themesTitleMap[index].alt} />
+                          <img src={themesTitleMap[index].src} alt="" />
                         </h3>
                         <h4 className="fs-6 fw-bold ls-1 mb-2">
                           {highlightText(theme.subtitle, highlightMap[index])}
@@ -127,7 +127,8 @@ function ThemeSwiper() {
                   {theme.titleEn}
                 </p>
                 <h3 className="card-title">
-                  <img src={themesTitleMap[index].src} alt={themesTitleMap[index].alt} />
+                  <span className="visually-hidden">{theme.title}</span>
+                  <img src={themesTitleMap[index].src} alt="" />
                 </h3>
                 <img
                   className="w-100 h-auto my-6"
@@ -155,14 +156,14 @@ function ThemeSwiper() {
         height="244"
         width="272"
         src="./images/Home_Page/bg_cake.svg"
-        alt="bg_cake"
+        alt=""
       />
       <img
         className="position-absolute dessert-img z-n1  d-none d-lg-block"
         height="335"
         width="325"
         src="./images/Home_Page/bg_dessert.svg"
-        alt="bg_dessert"
+        alt=""
       />
     </section>
   );
