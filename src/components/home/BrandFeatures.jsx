@@ -40,7 +40,7 @@ function BrandFeatures() {
         width="584"
       />
       <div className="container pt-lg-12 pb-lg-11 py-10">
-        <div className="mb-lg-10 mb-9 text-center text-lg-start">
+        <div className="mb-lg-10 mb-9 text-center text-lg-start" data-aos="fade-right">
           <p className="en-font text-primary-600 fs-7 fs-lg-6 ls-1 fw-bold mb-lg-6 mb-3">
             Sweet in box
           </p>
@@ -54,7 +54,12 @@ function BrandFeatures() {
         </div>
         <ul className="row card-custom">
           {features.map((feature) => (
-            <li key={feature.id} className="col-lg-3 p-lg-6 p-4 text-center text-lg-start">
+            <li
+              key={feature.id}
+              className="col-lg-3 p-lg-6 p-4 text-center text-lg-start"
+              data-aos="fade-up"
+              data-aos-delay={feature.delay}
+            >
               <img className="mb-lg-3 mb-2" src={feature.img.src} alt="" width="120" height="120" />
               <h3 className="fs-lg-4 fs-6 ls-1 fw-bold text-neutral-800 mb-lg-3 mb-2">
                 {feature.title}

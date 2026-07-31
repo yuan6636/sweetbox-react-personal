@@ -52,7 +52,7 @@ const feedbackData = [
 
 function FeedbackSwiper() {
   return (
-    <section className="bg-neutral-200 position-relative">
+    <section className="bg-neutral-200 position-relative" data-aos="fade-up">
       <div className="container py-lg-11 py-10">
         <div className="mb-9 mb-lg-10 text-center position-relative z-1">
           <p className="en-font fs-7 fs-lg-5 ls-1 fw-bold mb-lg-6 mb-3 text-primary-600">

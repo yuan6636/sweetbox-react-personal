@@ -56,7 +56,7 @@ const mobileBrandsRow3 = [
 
 function BrandsSwiper() {
   return (
-    <section className="bg-neutral-200 position-relative">
+    <section className="bg-neutral-200 position-relative" data-aos="fade-up">
       <div className="container brands-partner">
         {/* 上半部-partners合作夥伴字樣&圖 */}
         <div className="mb-9 mb-lg-10 text-center position-relative z-1">

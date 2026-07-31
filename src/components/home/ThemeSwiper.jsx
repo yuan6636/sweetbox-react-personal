@@ -49,7 +49,7 @@ function ThemeSwiper() {
   };
 
   return (
-    <section className="position-relative">
+    <section className="position-relative" data-aos="fade-up">
       <div className="container py-md-11 py-10">
         {isError ? (
           <div

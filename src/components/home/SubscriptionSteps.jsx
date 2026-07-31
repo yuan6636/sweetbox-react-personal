@@ -39,7 +39,7 @@ function SubscriptionSteps() {
         width="880"
       />
       <div className="container py-lg-11 py-10">
-        <div className="mb-lg-10 mb-9 text-center position-relative z-1">
+        <div className="mb-lg-10 mb-9 text-center position-relative z-1" data-aos="fade-up">
           <p className="en-font text-primary-600 fs-7 fs-lg-5 ls-1 fw-bold mb-lg-6 mb-3">
             How to subscribe
           </p>
@@ -55,8 +55,13 @@ function SubscriptionSteps() {
           </h2>
         </div>
         <ul className="row card-custom mb-13 position-relative z-1">
-          {steps.map((step) => (
-            <li key={step.id} className="col-lg-4 p-lg-6 p-4 text-center">
+          {steps.map((step, index) => (
+            <li
+              key={step.id}
+              className="col-lg-4 p-lg-6 p-4 text-center"
+              data-aos="fade-right"
+              data-aos-delay={index * 200}
+            >
               <img
                 className="mb-lg-6 mb-2"
                 src={step.image}
@@ -75,6 +80,7 @@ function SubscriptionSteps() {
           <NavLink
             to={`/themedetail/${DEFAULT_THEME_ID}`}
             className="btn-primary-icon ls-1 lh-sm fs-6 fw-bold d-flex align-items-center"
+            data-aos="zoom-in"
           >
             立刻訂閱
             <Icon className="ms-2" icon="tdesign:swap-right" width="24" height="24" />
