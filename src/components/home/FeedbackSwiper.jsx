@@ -4,7 +4,6 @@ import { Autoplay } from 'swiper/modules';
 // 載入 swiper 樣式
 import 'swiper/css';
 import 'swiper/css/navigation';
-import 'swiper/css/pagination';
 
 const feedbackData = [
   {
@@ -53,7 +52,7 @@ const feedbackData = [
 
 function FeedbackSwiper() {
   return (
-    <section className="bg-neutral-200 position-relative">
+    <section className="bg-neutral-200 position-relative" data-aos="fade-up">
       <div className="container py-lg-11 py-10">
         <div className="mb-9 mb-lg-10 text-center position-relative z-1">
           <p className="en-font fs-7 fs-lg-5 ls-1 fw-bold mb-lg-6 mb-3 text-primary-600">
@@ -66,7 +65,7 @@ function FeedbackSwiper() {
               <img
                 className="feedback-img"
                 src="./images/Home_Page/title_section06_mobile.png"
-                alt="feedback"
+                alt=""
               />
             </picture>
           </h2>
@@ -84,7 +83,11 @@ function FeedbackSwiper() {
           {feedbackData.map((feedback, index) => (
             <SwiperSlide key={index} className="swiper-slide" style={{ width: '300px' }}>
               <div className="card bg border-light bg-neutral-200 feedback-card w-100">
-                <img src={feedback.img} className="card-img-top w-100" alt="..." />
+                <img
+                  src={feedback.img}
+                  className="card-img-top w-100"
+                  alt={`${feedback.author || '客戶'}分享的甜點盒開箱照`}
+                />
                 <div className="card-body d-flex flex-column justify-content-between">
                   <div className="content">
                     <p className="star-number ls-1 text-neutral-800">
@@ -95,7 +98,7 @@ function FeedbackSwiper() {
                   </div>
                   <div className="author d-flex align-items-center justify-content-end">
                     <p className="me-2">{feedback.author}</p>
-                    <img src={feedback.avatar} alt="author-img" className="" />
+                    <img src={feedback.avatar} alt="客戶頭像" className="" />
                   </div>
                 </div>
               </div>

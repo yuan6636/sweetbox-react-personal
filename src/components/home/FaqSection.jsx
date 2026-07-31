@@ -110,7 +110,7 @@ const faqTabs = [
 
 function FaqSection() {
   return (
-    <section className="bg-neutral-300 position-relative faq-wave">
+    <section className="bg-neutral-300 position-relative faq-wave" data-aos="fade-up">
       <div className="container py-9 py-lg-11">
         <div className="faq-bg rounded-panel ">
           <div className="px-lg-9 py-lg-10 py-9">

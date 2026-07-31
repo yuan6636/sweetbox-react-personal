@@ -4,7 +4,6 @@ import { Autoplay } from 'swiper/modules';
 // 載入 swiper 樣式
 import 'swiper/css';
 import 'swiper/css/navigation';
-import 'swiper/css/pagination';
 
 // Desktop
 const desktopBrands = [
@@ -57,7 +56,7 @@ const mobileBrandsRow3 = [
 
 function BrandsSwiper() {
   return (
-    <section className="bg-neutral-200 position-relative">
+    <section className="bg-neutral-200 position-relative" data-aos="fade-up">
       <div className="container brands-partner">
         {/* 上半部-partners合作夥伴字樣&圖 */}
         <div className="mb-9 mb-lg-10 text-center position-relative z-1">
@@ -65,17 +64,13 @@ function BrandsSwiper() {
             Partners
           </p>
           <h2>
-            <span className="visually-hidden">好評分享</span>
+            <span className="visually-hidden">合作夥伴</span>
             <picture>
               <source
                 media="(max-width: 576px)"
                 srcSet="./images/Home_Page/title_section07_mobile.png"
               />
-              <img
-                className="brands-img"
-                src="./images/Home_Page/title_section07.svg"
-                alt="partners"
-              />
+              <img className="brands-img" src="./images/Home_Page/title_section07.svg" alt="" />
             </picture>
           </h2>
         </div>
@@ -97,7 +92,7 @@ function BrandsSwiper() {
           >
             {desktopBrandsRow1.map((img, index) => (
               <SwiperSlide key={index} className="swiper-slide">
-                <img src={img} alt="" className="align-bottom" />
+                <img src={img} alt={`合作品牌 Logo`} className="align-bottom" />
               </SwiperSlide>
             ))}
           </Swiper>
@@ -117,7 +112,7 @@ function BrandsSwiper() {
           >
             {desktopBrandsRow2.map((img, index) => (
               <SwiperSlide key={index} className="swiper-slide">
-                <img src={img} alt="" className="align-bottom" />
+                <img src={img} alt={`合作品牌 Logo`} className="align-bottom" />
               </SwiperSlide>
             ))}
           </Swiper>
@@ -137,7 +132,7 @@ function BrandsSwiper() {
           >
             {mobileBrandsRow1.map((img, index) => (
               <SwiperSlide key={index} className="swiper-slide">
-                <img src={img} alt="" className="align-bottom" />
+                <img src={img} alt={`合作品牌 Logo`} className="align-bottom" />
               </SwiperSlide>
             ))}
           </Swiper>
@@ -155,7 +150,7 @@ function BrandsSwiper() {
           >
             {mobileBrandsRow2.map((img, index) => (
               <SwiperSlide key={index} className="swiper-slide">
-                <img src={img} alt="" className="align-bottom" />
+                <img src={img} alt={`合作品牌 Logo`} className="align-bottom" />
               </SwiperSlide>
             ))}
           </Swiper>
@@ -172,7 +167,7 @@ function BrandsSwiper() {
           >
             {mobileBrandsRow3.map((img, index) => (
               <SwiperSlide key={index} className="swiper-slide">
-                <img src={img} alt="" className="align-bottom" />
+                <img src={img} alt={`合作品牌 Logo`} className="align-bottom" />
               </SwiperSlide>
             ))}
           </Swiper>
