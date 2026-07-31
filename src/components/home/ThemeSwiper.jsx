@@ -8,7 +8,6 @@ import { useState, useEffect } from 'react';
 // 載入 swiper 樣式
 import 'swiper/css';
 import 'swiper/css/navigation';
-import 'swiper/css/pagination';
 
 // Themes
 const themesTitleMap = [

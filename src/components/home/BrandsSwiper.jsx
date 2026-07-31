@@ -4,7 +4,6 @@ import { Autoplay } from 'swiper/modules';
 // 載入 swiper 樣式
 import 'swiper/css';
 import 'swiper/css/navigation';
-import 'swiper/css/pagination';
 
 // Desktop
 const desktopBrands = [
