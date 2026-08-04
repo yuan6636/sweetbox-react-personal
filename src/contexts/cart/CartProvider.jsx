@@ -1,9 +1,12 @@
 import { useState, useEffect, useCallback, useReducer } from 'react';
 
+// hooks
 import { useAuth } from '../auth';
 
+// api
 import api from '../../api';
 
+// contexts
 import { CartContext } from './CartContext';
 import { CartReducer } from './CartReducer';
 
@@ -71,6 +74,46 @@ export function CartProvider({ children }) {
     }
   }, [user, fetchCartData, setCart, clearCart]);
 
+  const addPlanToCart = useCallback(
+    async (planId, quantity) => {
+      if (!user) throw new Error('請先登入會員');
+      // 先檢查購物車是否存在，不存在就建立購物車
+      let currentCart = cart;
+      if (!currentCart) {
+        const newCartRes = await api.post('/carts', {
+          userId: user.id,
+          createdAt: new Date().toISOString(),
+        });
+        // 更新 cart 狀態
+        currentCart = { ...newCartRes.data, cart_items: [] };
+        setCart(currentCart);
+      }
+
+      // 是否有相同方案，若有更新方案數量，沒有就新增
+      const existingItem = (currentCart?.cart_items || []).find((item) => item.planId === planId);
+
+      if (existingItem) {
+        // 更新方案數量
+        const patch = { quantity: existingItem.quantity + quantity };
+        await api.patch(`/cart_items/${existingItem.id}`, patch);
+        updateCartItem(existingItem.id, patch);
+      } else {
+        // 新增方案
+        const cartItemRes = await api.post('/cart_items', {
+          cartId: currentCart.id,
+          planId,
+          quantity,
+        });
+        addCartItem(cartItemRes.data);
+      }
+      // 更新購物車時間
+      const updatedAt = new Date().toISOString();
+      await api.patch(`/carts/${currentCart.id}`, { updatedAt });
+      updateCartMeta({ updatedAt });
+    },
+    [cart, user, setCart, updateCartItem, addCartItem, updateCartMeta],
+  );
+
   useEffect(() => {
     // 避免 isLogin/user 短時間內連續變化時（如快速切換帳號），
     // 較舊的請求較晚回來、蓋掉較新的購物車資料。
@@ -127,6 +170,7 @@ export function CartProvider({ children }) {
         addCartItem,
         updateCartItem,
         removeCoupon,
+        addPlanToCart,
       }}
     >
       {children}
