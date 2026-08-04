@@ -137,26 +137,6 @@ function ReviewItem({ review, renderStars }) {
                   width="20"
                   height="20"
                 />
-                {/* <div
-                                  className="d-flex justify-content-center align-items-center"
-                                  style={{ width: '20px', height: '20px' }}
-                                >
-                                  <svg
-                                    id="toggleIcon"
-                                    width="10"
-                                    height="5"
-                                    viewBox="0 0 10 5"
-                                    fill="none"
-                                    xmlns="http://www.w3.org/2000/svg"
-                                  >
-                                    <path
-                                      fillRule="evenodd"
-                                      clipRule="evenodd"
-                                      d="M1.077 0.244642C1.23327 0.0884159 1.44519 0.000652941 1.66616 0.000652941C1.88713 0.000652941 2.09906 0.0884159 2.25533 0.244642L4.9995 2.98881L7.74366 0.244642C7.82054 0.16505 7.91249 0.101564 8.01416 0.0578901C8.11583 0.0142159 8.22518 -0.00877265 8.33583 -0.00973416C8.44648 -0.0106957 8.55621 0.0103897 8.65862 0.0522904C8.76104 0.0941912 8.85408 0.156069 8.93233 0.234313C9.01057 0.312557 9.07245 0.4056 9.11435 0.508013C9.15625 0.610427 9.17733 0.72016 9.17637 0.830809C9.17541 0.941458 9.15242 1.05081 9.10875 1.15248C9.06507 1.25415 9.00159 1.3461 8.922 1.42297L5.58866 4.75631C5.43239 4.91253 5.22047 5.0003 4.9995 5.0003C4.77853 5.0003 4.5666 4.91253 4.41033 4.75631L1.077 1.42297C0.920771 1.2667 0.833008 1.05478 0.833008 0.833808C0.833008 0.612838 0.920771 0.400915 1.077 0.244642Z"
-                                      fill="#5F7C9C"
-                                    />
-                                  </svg>
-                                </div> */}
               </button>
             </div>
           )}
@@ -170,7 +150,7 @@ function ReviewItem({ review, renderStars }) {
       <div className="align-self-lg-start align-self-end flex-grow-1" style={{ width: '200px' }}>
         <div
           className="d-flex justify-content-end align-items-center p-3 me-lg-5 me-0 vote-box"
-          onClick={() => handleLikes()}
+          onClick={handleLikes}
         >
           <Icon
             className="icon-swap me-1"
@@ -178,7 +158,7 @@ function ReviewItem({ review, renderStars }) {
             width="20"
             height="20"
           ></Icon>
-          <p className="fs-8 text-nowrap noto_sans" data-count="3">
+          <p className="fs-8 text-nowrap noto_sans">
             {likeCounts < 1 ? '此評論有幫助' : `${likeCounts} 人認為此評論有幫助`}
           </p>
         </div>

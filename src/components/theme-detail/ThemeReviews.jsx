@@ -151,7 +151,7 @@ function ThemeReviews() {
         <div className="d-flex flex-column mb-lg-17 mb-15 position-relative z-1">
           {reviews.map((review, index) => (
             <Fragment key={review.id}>
-              <ReviewItem key={review.id} review={review} renderStars={renderStars} />
+              <ReviewItem review={review} renderStars={renderStars} />
               {index !== reviews.length - 1 && (
                 <hr className="border-neutral-500 border-1 my-lg-4 my-3" />
               )}
