@@ -1,25 +1,35 @@
 // 外部工具
-import { useState, Fragment } from 'react';
+import { useState, Fragment, useEffect, useMemo } from 'react';
 import { Icon } from '@iconify/react';
 
 // 內部元件
 import Pagination from '../../components/Pagination';
 import Dropdown from '../../components/Dropdown';
 import ReviewItem from '../../components/theme-detail/ReviewItem';
+import Loading from '../../components/Loading';
 
 // data
-import {
-  ratingDistribution,
-  desktopCategories,
-  desktopSortOptions,
-  mobileCategories,
-  mobileSortOptions,
-  reviews,
-} from './mockData';
+import { ratingDistribution, desktopSortOptions, mobileSortOptions } from './mockData';
+
+// api
+import api from '../../api';
 
 function ThemeReviews() {
   const [selectedCategory, setSelectedCategory] = useState('');
   const [sortOption, setSortOption] = useState('desc');
+  const [reviews, setReviews] = useState([]);
+  const [themes, setThemes] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [isError, setIsError] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+
+  const categoryOptions = useMemo(() => {
+    const categories = themes.map((theme) => ({
+      label: theme.title,
+      value: theme.id,
+    }));
+    return [{ label: '全部主題', value: '' }, ...categories];
+  }, [themes]);
 
   // 渲染評價星星
   const renderStars = (rating, size = 24) => {
@@ -34,13 +44,55 @@ function ThemeReviews() {
     ));
   };
 
-  const handleCategoryChange = (category) => {
-    setSelectedCategory(category);
+  const handleCategoryChange = (themeId) => {
+    setSelectedCategory(themeId);
+    setCurrentPage(1);
   };
 
   const handleSortChange = (option) => {
     setSortOption(option);
   };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [themesRes, reviewsRes] = await Promise.all([
+          api.get('/themes'),
+          api.get('/reviews'),
+        ]);
+        setThemes(themesRes.data);
+        setReviews(reviewsRes.data);
+      } catch (error) {
+        console.error('取得評論失敗', error);
+        setIsError(true);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchData();
+  }, []);
+
+  const filteredAndSortedReviews = useMemo(() => {
+    let result = reviews;
+
+    // 篩選主題
+    if (selectedCategory) {
+      result = result.filter((review) => review.themeId === selectedCategory);
+    }
+
+    // 排序
+    result = [...result].sort((a, b) =>
+      sortOption === 'asc' ? a.rating - b.rating : b.rating - a.rating,
+    );
+
+    return result;
+  }, [reviews, selectedCategory, sortOption]);
+
+  const pagedReviews = useMemo(() => {
+    const itemsPerPage = 5;
+    const start = (currentPage - 1) * itemsPerPage;
+    return filteredAndSortedReviews.slice(start, start + itemsPerPage);
+  }, [currentPage, filteredAndSortedReviews]);
 
   return (
     <section className="py-lg-11 py-17 bg-neutral-400 position-relative review-section">
@@ -99,73 +151,88 @@ function ThemeReviews() {
             ))}
           </div>
         </div>
-        {/* 評論類別與排序 - desktop */}
-        <div className="d-none d-lg-flex justify-content-between align-items-center mb-17">
-          <ul className="d-flex gap-2">
-            {desktopCategories.map((category) => (
-              <li key={category.label}>
-                <button
-                  type="button"
-                  className={`btn btn-tag ${selectedCategory === category.value ? 'active' : ''}`}
-                  onClick={() => handleCategoryChange(category.value)}
-                >
-                  {category.label} ({category.count})
-                </button>
-              </li>
-            ))}
-          </ul>
-          <ul className="d-flex align-items-center">
-            {desktopSortOptions.map((option, index) => (
-              <Fragment key={option.value}>
-                {index !== 0 && <li className="sortOption-divider"></li>}
-                <li>
-                  <button
-                    type="button"
-                    className={`btn-text ${sortOption === option.value ? 'active' : ''} p-3 fs-8`}
-                    onClick={() => handleSortChange(option.value)}
-                  >
-                    {option.label} {option.direction}
-                  </button>
-                </li>
-              </Fragment>
-            ))}
-          </ul>
-        </div>
-        {/* 評論類別與排序 - mobile */}
-        <div className="d-flex d-lg-none justify-content-end gap-2 mb-6">
-          <Dropdown
-            options={mobileCategories}
-            width="auto"
-            value={selectedCategory}
-            onChange={handleCategoryChange}
-            buttonClass="text-neutral-800"
-          />
-          <Dropdown
-            options={mobileSortOptions}
-            value={sortOption}
-            onChange={handleSortChange}
-            buttonClass="text-neutral-800"
-          />
-        </div>
-        {/* 評論區 */}
-        <div className="d-flex flex-column mb-lg-17 mb-15 position-relative z-1">
-          {reviews.map((review, index) => (
-            <Fragment key={review.id}>
-              <ReviewItem review={review} renderStars={renderStars} />
-              {index !== reviews.length - 1 && (
-                <hr className="border-neutral-500 border-1 my-lg-4 my-3" />
-              )}
-            </Fragment>
-          ))}
-        </div>
-        {/* 分頁 */}
-        <div className="d-flex justify-content-center">
-          <Pagination
-            currentPage={1}
-            totalItems={reviews.length} // 評論總數
-            itemsPerPage={5} // 每頁顯示幾筆
-          />
-        </div>
+        {isLoading ? (
+          <Loading text="甜點主題評論載入中..." />
+        ) : isError ? (
+          <div className="d-flex justify-content-center align-items-center vh-100">
+            <p className="text-center text-danger fs-6 fs-lg-5">
+              甜點主題評論載入失敗，請稍後重新整理頁面
+            </p>
+          </div>
+        ) : (
+          <>
+            {/* 評論類別與排序 - desktop */}
+            <div className="d-none d-lg-flex justify-content-between align-items-center mb-17">
+              <ul className="d-flex gap-2">
+                {categoryOptions.map((category) => (
+                  <li key={category.label}>
+                    <button
+                      type="button"
+                      className={`btn btn-tag ${selectedCategory === category.value ? 'active' : ''}`}
+                      onClick={() => {
+                        handleCategoryChange(category.value);
+                      }}
+                    >
+                      {category.label}
+                    </button>
+                  </li>
+                ))}
+              </ul>
+              <ul className="d-flex align-items-center">
+                {desktopSortOptions.map((option, index) => (
+                  <Fragment key={option.value}>
+                    {index !== 0 && <li className="sortOption-divider"></li>}
+                    <li>
+                      <button
+                        type="button"
+                        className={`btn-text ${sortOption === option.value ? 'active' : ''} p-3 fs-8`}
+                        onClick={() => handleSortChange(option.value)}
+                      >
+                        {option.label} {option.direction}
+                      </button>
+                    </li>
+                  </Fragment>
+                ))}
+              </ul>
+            </div>
+            {/* 評論類別與排序 - mobile */}
+            <div className="d-flex d-lg-none justify-content-end gap-2 mb-6">
+              <Dropdown
+                options={categoryOptions}
+                width="auto"
+                value={selectedCategory}
+                onChange={handleCategoryChange}
+                buttonClass="text-neutral-800"
+              />
+              <Dropdown
+                options={mobileSortOptions}
+                value={sortOption}
+                onChange={handleSortChange}
+                buttonClass="text-neutral-800"
+              />
+            </div>
+            {/* 評論區 */}
+            <div className="d-flex flex-column mb-lg-17 mb-15 position-relative z-1">
+              {pagedReviews.map((review, index) => (
+                <Fragment key={review.id}>
+                  <ReviewItem review={review} renderStars={renderStars} />
+                  {index !== pagedReviews.length - 1 && (
+                    <hr className="border-neutral-500 border-1 my-lg-4 my-3" />
+                  )}
+                </Fragment>
+              ))}
+            </div>
+            {/* 分頁 */}
+            <div className="d-flex justify-content-center">
+              <Pagination
+                currentPage={currentPage}
+                totalItems={filteredAndSortedReviews.length} // 評論總數
+                itemsPerPage={5} // 每頁顯示幾筆
+                onChangePage={setCurrentPage}
+              />
+            </div>
+          </>
+        )}
       </div>
     </section>
   );
