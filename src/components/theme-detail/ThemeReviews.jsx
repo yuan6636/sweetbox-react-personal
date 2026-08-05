@@ -1,5 +1,5 @@
 // 外部工具
-import { useState, Fragment, useEffect, useMemo } from 'react';
+import { useState, Fragment, useEffect, useMemo, useRef } from 'react';
 import { Icon } from '@iconify/react';
 
 // 內部元件
@@ -22,6 +22,8 @@ function ThemeReviews() {
   const [currentPage, setCurrentPage] = useState(1);
   const [isError, setIsError] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+
+  const reviewSectionRef = useRef(null);
 
   const categoryOptions = useMemo(() => {
     const categories = themes.map((theme) => ({
@@ -51,6 +53,12 @@ function ThemeReviews() {
 
   const handleSortChange = (option) => {
     setSortOption(option);
+  };
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+    // 滾動到評論區上方
+    reviewSectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   };
 
   useEffect(() => {
@@ -95,7 +103,10 @@ function ThemeReviews() {
   }, [currentPage, filteredAndSortedReviews]);
 
   return (
-    <section className="py-lg-11 py-17 bg-neutral-400 position-relative review-section">
+    <section
+      ref={reviewSectionRef}
+      className="py-lg-11 py-17 bg-neutral-400 position-relative review-section"
+    >
       <div className="container">
         {/* 標題 */}
         <div className="text-center mb-lg-14 mb-15">
@@ -228,7 +239,7 @@ function ThemeReviews() {
                 currentPage={currentPage}
                 totalItems={filteredAndSortedReviews.length} // 評論總數
                 itemsPerPage={5} // 每頁顯示幾筆
-                onChangePage={setCurrentPage}
+                onChangePage={handlePageChange}
               />
             </div>
           </>
