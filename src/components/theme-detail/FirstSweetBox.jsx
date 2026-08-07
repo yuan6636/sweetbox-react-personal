@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { firstSweetBox } from './mockData';
+import { firstSweetBox } from '../../assets/utils/mockData';
 
 function FirstSweetBox() {
   const [isExpanded, setIsExpanded] = useState(false);

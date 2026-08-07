@@ -22,7 +22,7 @@ import { useCart } from '../../contexts/cart';
 import { useAuth } from '../../contexts/auth';
 
 // data
-import { usageTips } from './mockData';
+import { usageTips } from '../../assets/utils/mockData';
 
 // utils
 import { calculateDiscount } from '../../utils/priceHelpers';

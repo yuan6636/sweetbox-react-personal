@@ -9,7 +9,11 @@ import ReviewItem from '../../components/theme-detail/ReviewItem';
 import Loading from '../../components/Loading';
 
 // data
-import { ratingDistribution, desktopSortOptions, mobileSortOptions } from './mockData';
+import {
+  ratingDistribution,
+  desktopSortOptions,
+  mobileSortOptions,
+} from '../../assets/utils/mockData';
 
 // api
 import api from '../../api';
