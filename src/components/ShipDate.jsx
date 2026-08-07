@@ -1,7 +1,6 @@
 import { Icon } from '@iconify/react';
 import { DatePicker, ConfigProvider } from 'antd';
 import dayjs from 'dayjs';
-import 'antd/dist/reset.css';
 
 const isMobile = window.innerWidth < 992;
 
