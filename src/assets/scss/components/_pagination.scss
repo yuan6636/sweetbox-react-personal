@@ -23,6 +23,10 @@
   &.disabled {
     background-color: transparent;
   }
+
+  &-static {
+    pointer-events: none;
+  }
 }
 
 .sub-pagination .page-item .page-link {

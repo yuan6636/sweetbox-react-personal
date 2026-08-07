@@ -87,6 +87,34 @@
     margin-top: 0;
   }
 
+  &-page {
+    width: 320px;
+    border-radius: 24px;
+    box-shadow: 0 2px 4px 0 rgba($black, 0.06);
+
+    &-header {
+      padding: 16px;
+      border-bottom: 1px solid $neutral-400;
+      line-height: 1.2;
+      font-weight: bold;
+      letter-spacing: 0.1rem;
+    }
+
+    .dropdown-menu-page-scroll {
+      max-height: 240px;
+      overflow-y: auto;
+      margin: 0 8px 8px; /* 讓 scrollbar 不要貼著圓角 */
+    }
+
+    .dropdown-menu-page-scroll::-webkit-scrollbar {
+      width: 4px;
+    }
+
+    .dropdown-menu-page-scroll::-webkit-scrollbar-thumb {
+      background-color: $neutral-200;
+    }
+  }
+
   .dropdown-item {
     padding: 12px 0;
 
@@ -97,11 +125,6 @@
 
     &.active {
       color: $primary-600;
-    }
-
-    button {
-      padding-top: 33px;
-      padding-bottom: 33px;
     }
   }
 }

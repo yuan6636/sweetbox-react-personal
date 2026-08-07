@@ -70,21 +70,42 @@ function Pagination({ currentPage, totalItems, itemsPerPage, onChangePage }) {
           )}
 
           <li className="page-item">
-            <button className="page-link border border-1" type="button">
-              {currentPage}
-            </button>
+            <div className="dropdown dropdown-center">
+              <button
+                type="button"
+                className="page-link border border-1"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+              >
+                {currentPage}
+              </button>
+              <ul className="dropdown-menu dropdown-menu-page">
+                <li className="dropdown-menu-page-header">
+                  第 {currentPage} / {totalPages} 頁
+                </li>
+                <li className="dropdown-menu-page-scroll">
+                  <ul className="dropdown-menu-page-list">
+                    {Array.from({ length: totalPages }, (_, i) => (
+                      <li key={i}>
+                        <button className="dropdown-item" onClick={() => handleClick(i + 1)}>
+                          第{i + 1}頁
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                </li>
+              </ul>
+            </div>
           </li>
 
-          <li className="page-item disabled">
-            <button className="page-link" type="button">
+          <li className="page-item page-item-static">
+            <span className="page-link">
               <Icon icon="iconoir:slash" width="16" height="16" />
-            </button>
+            </span>
           </li>
 
-          <li className="page-item disabled">
-            <button className="page-link" type="button">
-              {totalPages}
-            </button>
+          <li className="page-item page-item-static">
+            <span className="page-link">{totalPages}</span>
           </li>
 
           {/* 只有不是最後一頁才顯示右箭頭 */}
