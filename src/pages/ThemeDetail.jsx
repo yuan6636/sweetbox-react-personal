@@ -7,7 +7,7 @@ import ThemeReviews from '../components/theme-detail/ThemeReviews';
 function ThemeDetail() {
   return (
     <>
-      <main className="main overflow-hidden">
+      <main className="main">
         {/* section1 主題menu + 訂閱方案 */}
         <ThemePlans />
         {/* section2 甜點盒裡有甚麼 */}

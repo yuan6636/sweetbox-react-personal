@@ -83,14 +83,16 @@
     }
   }
 
-  &[data-bs-popper] {
-    margin-top: 0;
-  }
-
   &-page {
-    width: 320px;
+    width: 240px;
+    max-width: calc(100vw - 32px);
     border-radius: 24px;
     box-shadow: 0 2px 4px 0 rgba($black, 0.06);
+
+    &.show {
+      left: 50%;
+      transform: translateX(-50%);
+    }
 
     &-header {
       padding: 16px;
