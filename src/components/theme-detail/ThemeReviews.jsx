@@ -177,7 +177,7 @@ function ThemeReviews() {
         ) : (
           <>
             {/* 評論類別與排序 - desktop */}
-            <div className="d-none d-lg-flex justify-content-between align-items-center mb-17">
+            <div className="d-none d-xl-flex justify-content-between align-items-center mb-17">
               <ul className="d-flex gap-2">
                 {categoryOptions.map((category) => (
                   <li key={category.label}>
@@ -211,7 +211,7 @@ function ThemeReviews() {
               </ul>
             </div>
             {/* 評論類別與排序 - mobile */}
-            <div className="d-flex d-lg-none justify-content-end gap-2 mb-6">
+            <div className="d-flex d-xl-none justify-content-end gap-2 mb-6">
               <Dropdown
                 options={categoryOptions}
                 width="auto"
