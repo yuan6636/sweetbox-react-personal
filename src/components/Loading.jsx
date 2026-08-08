@@ -6,7 +6,7 @@ function Loading({ text = '載入中...' }) {
         src="./images/Home_Page/sweetBox_logo_3.svg"
         alt="一盒甜logo"
       />
-      <p className="text-neutral-700 fs-6">{text}</p>
+      <p className="text-neutral-700 fs-6 mb-0">{text}</p>
     </div>
   );
 }

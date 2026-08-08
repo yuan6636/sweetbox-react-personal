@@ -304,7 +304,7 @@
 .moreCards {
   border: 1.5px solid $neutral-400;
   border-radius: 100px;
-  padding: 12px 145px;
+  padding: 12px 24px;
   color: $neutral-700;
   background-color: $neutral-200;
   font-weight: bold;
@@ -325,7 +325,10 @@
 }
 
 .rate-left {
-  width: 354px;
+  width: 100%;
+  @media (min-width: 992px) {
+    width: 354px;
+  }
 }
 
 .rating-divider {

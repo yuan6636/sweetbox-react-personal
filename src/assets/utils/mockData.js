@@ -109,90 +109,15 @@ export const ratingDistribution = [
   { star: 1, count: 7, percent: '1%' },
 ];
 
-// 評論分享選單
-export const desktopCategories = [
-  { label: '全部', count: 3452, value: '' },
-  { label: '精選甜點', count: 1280, value: 'select' },
-  { label: '異國風味', count: 742, value: 'global' },
-  { label: '季節限定', count: 598, value: 'seasonal' },
-  { label: '無負擔甜點', count: 410, value: 'guilt-free' },
-  { label: '在地甜點', count: 230, value: 'local' },
-  { label: '素食甜點', count: 192, value: 'veggie' },
-];
-
 export const desktopSortOptions = [
   { label: '評價由高至低', direction: '↓', value: 'desc' },
   { label: '評價由低至高', direction: '↑', value: 'asc' },
-];
-
-export const mobileCategories = [
-  { label: '全部主題', value: '' },
-  { label: '精選甜點', value: 'select' },
-  { label: '異國風味', value: 'global' },
-  { label: '季節限定', value: 'seasonal' },
-  { label: '無負擔甜點', value: 'guilt-free' },
-  { label: '在地甜點', value: 'local' },
-  { label: '素食甜點', value: 'veggie' },
 ];
 
 export const mobileSortOptions = [
   { label: '預設排序', value: '' },
   { label: '評價最高', value: 'desc' },
   { label: '評價最低', value: 'asc' },
-];
-
-// 評論區
-export const reviews = [
-  {
-    id: 1,
-    avatar: './images/Theme_Detail/Feature/custom-1.jpg',
-    name: '奶茶抹太厚',
-    date: '2025/9/27',
-    rating: 5,
-    products: '精選甜點盒 (12個月)、在地甜點盒(3個月)',
-    title: '終於不用再開甜點單選半天了',
-    body: `以前每天滑社群軟體收藏各種甜點照片，看到漂亮的蛋糕、餅乾、布丁就會想試試看，但真的要下單時卻又猶豫半天，最後常常什麼都沒買，收藏清單越來越長卻始終沒動作。有時候甚至會因為選項太多，反而覺得壓力很大，乾脆放棄不買🙈。\n後來開始訂「一盒甜」之後，真的完全解決了我的選擇障礙！每個月的主題都超用心💝，從包裝設計到甜點搭配都很有驚喜感✨。打開盒子的瞬間，就像在拆生日禮物一樣療癒，會忍不住拍照分享給朋友。\n而且最重要的是，吃了好幾個月下來，每次都覺得品質很穩定，完全沒有踩過雷，每個品項都好吃又有特色😍，常常讓我發現新的喜好。現在已經養成習慣，變成每月最期待的小確幸🥰！`,
-    images: [
-      './images/Theme_Detail/Feature/pic_review 01 (2).jpg',
-      './images/Theme_Detail/Feature/pic_review 01 (1).jpg',
-      './images/Theme_Detail/Feature/pic_review 01 (3).jpg',
-      './images/Theme_Detail/Feature/pic_review 01 (5).jpg',
-      './images/Theme_Detail/Feature/pic_review 01 (4).jpg',
-      './images/Theme_Detail/Feature/pic_review 01 (2).jpg',
-      './images/Theme_Detail/Feature/pic_review 01 (1).jpg',
-      './images/Theme_Detail/Feature/pic_review 01 (3).jpg',
-      './images/Theme_Detail/Feature/pic_review 01 (5).jpg',
-    ],
-    initialLikeCount: 3,
-  },
-  {
-    id: 2,
-    avatar: './images/Theme_Detail/Feature/custom-2.jpg',
-    name: '焦糖人生好焦慮',
-    date: '2025/9/20',
-    rating: 5,
-    products: '精選甜點盒 (6個月)、異國風味甜點盒(3個月)',
-    title: '我媽一開始說浪費錢，現在都比我還期待開箱',
-    body: '本來是我自己訂的，結果有次甜點分享給家人吃後，我媽居然主動問我「這個月什麼時候送來？」！甜點的品質很好，而且會搭配保存方式與建議食用方式，真的很貼心。',
-    images: [
-      './images/Theme_Detail/Feature/pic_review 02 (1).jpg',
-      './images/Theme_Detail/Feature/pic_review 02 (2).jpg',
-      './images/Theme_Detail/Feature/pic_review 02 (3).jpg',
-    ],
-    initialLikeCount: 0,
-  },
-  {
-    id: 3,
-    avatar: './images/Theme_Detail/Feature/custom-3.jpg',
-    name: '胖到掉渣女神',
-    date: '2025/9/13',
-    rating: 4,
-    products: '精選甜點盒 (3個月)、無負擔甜點盒(3個月)、季節限定甜點盒(12個月)',
-    title: '愛吃甜點也很省腦，一盒甜是我的快樂密碼',
-    body: '不是我在誇，一盒甜都懂甜點控在想什麼。不只每次內容都有驚喜，還能吃到那種限時聯名，有種 VIP 搶先嚐的爽感，連同事看到我午茶的甜點都問哪裡買！',
-    images: [],
-    initialLikeCount: 0,
-  },
 ];
 
 // 甜點特色

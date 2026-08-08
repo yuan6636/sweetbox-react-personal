@@ -9,13 +9,9 @@ import 'swiper/css/thumbs';
 import { useEffect, useState, useRef } from 'react';
 import { useParams, NavLink, useNavigate } from 'react-router-dom';
 import { Icon } from '@iconify/react';
-import dayjs from 'dayjs';
-import utc from 'dayjs/plugin/utc';
-import timezone from 'dayjs/plugin/timezone';
 import { message } from 'antd';
 
 // 內部元件
-import api from '../../api';
 import SideMenuFloat from '../../components/SideMenuFloat';
 import Loading from '../../components/Loading';
 import ThemeDesktopSwiper from './ThemeDesktopSwiper';
@@ -23,22 +19,23 @@ import ThemeDesktopSwiper from './ThemeDesktopSwiper';
 // hook
 import useThemeData from '../../hooks/useThemeData';
 import { useCart } from '../../contexts/cart';
+import { useAuth } from '../../contexts/auth';
 
 // data
-import { usageTips } from './mockData';
+import { usageTips } from '../../assets/utils/mockData';
 
-// 台灣時間
-dayjs.extend(utc);
-dayjs.extend(timezone);
-dayjs.tz.setDefault('Asia/Taipei');
+// utils
+import { calculateDiscount } from '../../utils/priceHelpers';
 
 function ThemePlans() {
   const { id } = useParams();
   const [activePlan, setActivePlan] = useState(null);
   const [quantity, setQuantity] = useState(1);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
   const { themes, currentTheme, isLoading } = useThemeData(id, setActivePlan);
-  const { refreshCart } = useCart();
+  const { refreshCart, addPlanToCart } = useCart();
+  const { user } = useAuth();
 
   const mainSwiperRef = useRef(null);
   const thumbsSwiperRef = useRef(null);
@@ -47,72 +44,24 @@ function ThemePlans() {
 
   const handleSubscribe = async () => {
     if (!activePlan || !currentTheme) return;
+    // 防止按鈕重複點擊
+    setIsSubmitting(true);
 
     try {
-      // 取得使用者資料
-      const userData = localStorage.getItem('user');
-      const userObj = userData ? JSON.parse(userData) : null;
-
-      if (!userObj) {
+      if (!user) {
         message.warning('請先登入或註冊會員！');
         navigate('/login');
         return;
       }
-      // 先抓購物車
-      const res = await api.get('/carts');
-      let cart = res.data.find((c) => c.userId === userObj.id);
 
-      // 如果沒有購物車，建立一筆新的
-      if (!cart) {
-        cart = {
-          userId: userObj.id,
-          createdAt: new Date().toISOString(),
-        };
-
-        const cartRes = await api.post('/carts', cart);
-        cart = cartRes.data;
-      }
-
-      // 取得 cart_items
-      const itemsRes = await api.get('/cart_items');
-      const cartItems = itemsRes.data.filter((item) => item.cartId === cart.id);
-
-      const existingItem = cartItems.find((item) => item.planId === activePlan.id);
-
-      let updatedCart;
-      if (existingItem) {
-        const updatedItem = {
-          ...existingItem,
-          quantity: existingItem.quantity + quantity,
-        };
-
-        await api.put(`/cart_items/${existingItem.id}`, updatedItem);
-
-        updatedCart = {
-          ...cart,
-          updatedAt: dayjs().format('YYYY-MM-DDTHH:mm:ss.SSSZ'),
-        };
-      } else {
-        const newCartItem = {
-          cartId: cart.id,
-          planId: activePlan.id,
-          quantity,
-        };
-
-        await api.post('/cart_items', newCartItem);
-
-        updatedCart = {
-          ...cart,
-          updatedAt: dayjs().format('YYYY-MM-DDTHH:mm:ss.SSSZ'),
-        };
-      }
-
-      await api.put(`/carts/${cart.id}`, updatedCart);
-
+      await addPlanToCart(activePlan.id, quantity);
       await refreshCart();
       navigate('/cart');
-    } catch (err) {
-      console.error('錯誤:', err);
+    } catch (error) {
+      console.error('加入購物車失敗', error);
+      message.error('加入購物車失敗，請稍後再試！');
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -171,7 +120,7 @@ function ThemePlans() {
               >
                 {currentTheme?.images.detail.map((image, index) => (
                   <SwiperSlide key={index}>
-                    <img src={image} alt={`${currentTheme.title}圖片}`} />
+                    <img src={image} alt={`${currentTheme.title}圖片`} />
                   </SwiperSlide>
                 ))}
               </Swiper>
@@ -236,7 +185,10 @@ function ThemePlans() {
                     <ul className="my-6">
                       {currentTheme?.plans?.map((plan, idx) => {
                         // 原始價 - 優惠價，算出節省金額
-                        const savedAmount = plan.originalPrice - plan.discountPrice;
+                        const savedAmount = calculateDiscount(
+                          plan.originalPrice,
+                          plan.discountPrice,
+                        );
 
                         return (
                           <li key={plan.id} className="mb-3">
@@ -305,7 +257,7 @@ function ThemePlans() {
                         {/* 節省金額 */}
                         <p className="mb-1 fs-9 text-cta-200">
                           {activePlan
-                            ? `節省 $${(activePlan.originalPrice - activePlan.discountPrice) * quantity}`
+                            ? `節省 $${calculateDiscount(activePlan.originalPrice, activePlan.discountPrice) * quantity}`
                             : ''}
                         </p>
                         {/* 總金額 */}
@@ -318,10 +270,28 @@ function ThemePlans() {
                           type="button"
                           className="btn-primary-icon align-items-center ls-1 lh-sm"
                           onClick={handleSubscribe}
-                          disabled={!activePlan}
+                          disabled={!activePlan || isSubmitting} // 沒有選擇方案或提交中禁止點擊
                         >
-                          立刻訂閱
-                          <Icon className="ms-2" icon="tdesign:swap-right" width="24" height="24" />
+                          {isSubmitting ? (
+                            <>
+                              <span
+                                className="spinner-border spinner-border-sm me-2"
+                                role="status"
+                                aria-hidden="true"
+                              ></span>
+                              處理中...
+                            </>
+                          ) : (
+                            <>
+                              立刻訂閱
+                              <Icon
+                                className="ms-2"
+                                icon="tdesign:swap-right"
+                                width="24"
+                                height="24"
+                              />
+                            </>
+                          )}
                         </button>
                       </div>
                     </div>
