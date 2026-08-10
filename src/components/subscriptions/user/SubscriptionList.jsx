@@ -66,6 +66,7 @@ function SubscriptionList({ subscriptions, fetchSubscriptions }) {
     type: null,
     subscription: null,
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const paymentModalRef = useRef(null);
   const cancelReminderModalRef = useRef(null);
@@ -165,6 +166,9 @@ function SubscriptionList({ subscriptions, fetchSubscriptions }) {
         handleModalState={(type, subscription) => setModalState({ type, subscription })}
         subscription={modalState.subscription}
         fetchSubscriptions={fetchSubscriptions}
+        isSubmitting={isSubmitting}
+        onSubmitStart={() => setIsSubmitting(true)}
+        onSubmitEnd={() => setIsSubmitting(false)}
       />
       {subscriptions.map((item) => {
         const { id, subscriptionNumber, theme, plan, orders } = item;
