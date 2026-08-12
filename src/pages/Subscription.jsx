@@ -11,6 +11,9 @@ import Tab from '../components/subscriptions/user/Tab';
 import SubscriptionList from '../components/subscriptions/user/SubscriptionList';
 import EmptySubscription from '../components/subscriptions/user/EmptySubscription';
 
+// contexts
+import { useAuth } from '../contexts/auth';
+
 const themeOptions = [
   { label: '全部主題', value: null },
   { label: '精選甜點', value: 1 },
@@ -37,14 +40,16 @@ function Subscription() {
 
   const navigate = useNavigate();
 
+  const { user } = useAuth();
+
   const currentPage = Number(searchParams.get('page')) || 1;
 
   const fetchSubscriptions = useCallback(async () => {
     try {
       setIsLoading(true);
 
-      const user = JSON.parse(localStorage.getItem('user'));
-      const userId = user.id;
+      const userId = user?.id;
+      if (!userId) return;
       // 取得篩選條件
       const themeId = searchParams.get('themeId');
       const status = searchParams.get('status');
@@ -61,10 +66,18 @@ function Subscription() {
         url += `&status=${status}`;
       }
 
-      const [itemsRes, ordersRes] = await Promise.all([
-        api.get(url),
-        api.get('/orders?_sort=createdAt&_order=desc'),
-      ]);
+      // 取得訂閱
+      const itemsRes = await api.get(url);
+      const totalCount = Number(itemsRes.headers.get('x-Total-Count'));
+
+      // 取得當前頁數所有訂閱的訂單
+      const subscriptionIds = itemsRes.data.map((item) => item.id);
+
+      let ordersRes = { data: [] };
+      if (subscriptionIds.length) {
+        const ordersQuery = subscriptionIds.map((id) => `subscriptionId=${id}`).join('&');
+        ordersRes = await api.get(`/orders?${ordersQuery}&_sort=createdAt&_order=desc`);
+      }
 
       // 訂單的資料預處理
       const groupByOrders = (map, order) => {
@@ -76,7 +89,6 @@ function Subscription() {
         return map;
       };
       // 取得所有訂閱
-      const totalCount = Number(itemsRes.headers.get('x-Total-Count'));
 
       const ordersMap = ordersRes.data.reduce(groupByOrders, new Map());
 
@@ -98,7 +110,7 @@ function Subscription() {
         setIsLoading(false);
       }, 300);
     }
-  }, [navigate, searchParams]);
+  }, [navigate, searchParams, user?.id]);
 
   // 組合訂閱列表和主題資料
   useEffect(() => {
