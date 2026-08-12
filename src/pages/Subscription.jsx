@@ -122,25 +122,13 @@ function Subscription() {
     return <h1 className="d-flex justify-content-center align-items-center vh-100">{error}</h1>;
   }
 
-  const handelThemeChange = (value) => {
+  const handleParamChange = (key, value) => {
     const params = new URLSearchParams(searchParams);
 
     if (value) {
-      params.set('themeId', value);
+      params.set(key, value);
     } else {
-      params.delete('themeId');
-    }
-    params.set('page', 1);
-    setSearchParams(params);
-  };
-
-  const handelStatusChange = (value) => {
-    const params = new URLSearchParams(searchParams);
-
-    if (value) {
-      params.set('status', value);
-    } else {
-      params.delete('status');
+      params.delete(key);
     }
     params.set('page', 1);
     setSearchParams(params);
@@ -168,13 +156,13 @@ function Subscription() {
               <Dropdown
                 options={themeOptions}
                 width="108px"
-                onChange={handelThemeChange}
+                onChange={(value) => handleParamChange('themeId', value)}
                 value={searchParams.get('themeId') || ''}
               />
               <Dropdown
                 options={statusOptions}
                 width="136px"
-                onChange={handelStatusChange}
+                onChange={(value) => handleParamChange('status', value)}
                 value={searchParams.get('status') || ''}
               />
             </div>
