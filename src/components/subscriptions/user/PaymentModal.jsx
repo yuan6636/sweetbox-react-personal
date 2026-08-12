@@ -222,6 +222,18 @@ function PaymentModal({
     Modal.getOrCreateInstance(confirmModal).hide();
   };
 
+  //計算信用卡是否過期
+  const isCardExpired = (expiryYear, expiryMonth) => {
+    const now = new Date();
+    const currentYear = now.getFullYear();
+    const currentMonth = now.getMonth() + 1; // getMonth() 從 0 開始，轉成 1-based month 與 creditCardMonths 對齊
+
+    if (currentYear > Number(expiryYear)) return true;
+    if (currentYear === Number(expiryYear) && currentMonth > Number(expiryMonth)) return true;
+
+    return false;
+  };
+
   return (
     <>
       <div
@@ -340,17 +352,10 @@ function PaymentModal({
                                   validate: (val) => {
                                     if (!val) return '請選擇有效期限';
 
-                                    const currentYear = getValues('expiryYear');
-                                    if (!currentYear) return true;
+                                    const expiryYear = getValues('expiryYear');
+                                    if (!expiryYear) return true;
 
-                                    const now = new Date();
-                                    const expiration = new Date(
-                                      Number(currentYear),
-                                      Number(val),
-                                      1,
-                                    );
-
-                                    if (now >= expiration) {
+                                    if (isCardExpired(expiryYear, val)) {
                                       return '信用卡已過期';
                                     }
 
