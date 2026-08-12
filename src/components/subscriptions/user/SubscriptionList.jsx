@@ -95,12 +95,12 @@ function SubscriptionList({ subscriptions, fetchSubscriptions }) {
         ref.current?.removeEventListener('hide.bs.modal', handleHide);
       });
     };
-  }, [modalState]);
+  }, []);
 
   // 切換 accordion
   const handleToggleAccordion = (id) => {
     setExpandedIds((prev) =>
-      expandedIds.includes(id) ? prev.filter((expandedId) => expandedId !== id) : [...prev, id],
+      prev.includes(id) ? prev.filter((expandedId) => expandedId !== id) : [...prev, id],
     );
   };
 
@@ -248,7 +248,6 @@ function SubscriptionList({ subscriptions, fetchSubscriptions }) {
                 {/* 付款方式 */}
                 <div className="flex-equal py-0 py-xl-2">
                   <button
-                    id={id}
                     className="accordion-button d-xl-flex justify-content-end align-items-center d-none"
                     type="button"
                     aria-expanded="false"
@@ -289,7 +288,7 @@ function SubscriptionList({ subscriptions, fetchSubscriptions }) {
                     </div>
                   </div>
                   {/* Modal */}
-                  <div className={`${item.status !== 'active' && 'd-none'}`}>
+                  <div className={`${item.status !== 'active' ? 'd-none' : ''}`}>
                     {/* 付款管理 Modal button*/}
                     <button
                       type="button"
