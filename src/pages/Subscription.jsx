@@ -2,7 +2,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import api from '../api';
-import { BeatLoader } from 'react-spinners';
 
 // 元件區
 import Dropdown from '../components/Dropdown';
@@ -10,6 +9,7 @@ import Pagination from '../components/Pagination';
 import Tab from '../components/subscriptions/user/Tab';
 import SubscriptionList from '../components/subscriptions/user/SubscriptionList';
 import EmptySubscription from '../components/subscriptions/user/EmptySubscription';
+import Loading from '../components/Loading';
 
 // contexts
 import { useAuth } from '../contexts/auth';
@@ -170,28 +170,31 @@ function Subscription() {
         </div>
         {/* 訂閱列表 */}
         {isLoading ? (
-          <div className="d-flex justify-content-center gap-2 vh-100">
-            <BeatLoader size={20} />
-            <p className="text-center">載入訂閱中...</p>
-          </div>
+          <Loading text="載入訂閱中..." className="py-10" />
         ) : subscriptions.length ? (
-          <SubscriptionList subscriptions={subscriptions} fetchSubscriptions={fetchSubscriptions} />
+          <>
+            <SubscriptionList
+              subscriptions={subscriptions}
+              fetchSubscriptions={fetchSubscriptions}
+            />
+            {/* 分頁 */}
+            {totalItems > 0 && (
+              <div className="d-flex justify-content-center">
+                <Pagination
+                  currentPage={currentPage}
+                  totalItems={totalItems}
+                  itemsPerPage={5}
+                  onChangePage={handlePageChange}
+                />
+              </div>
+            )}
+          </>
         ) : hasFilters ? (
-          <p className="h3 text-center">目前篩選條件下沒有訂閱紀錄</p>
+          <div className="empty-subscription d-flex justify-content-center align-items-center">
+            <p className="h3 text-center">目前篩選條件下沒有訂閱紀錄</p>
+          </div>
         ) : (
           <EmptySubscription />
-        )}
-
-        {/* 分頁 */}
-        {totalItems > 0 && (
-          <div className="d-flex justify-content-center">
-            <Pagination
-              currentPage={currentPage}
-              totalItems={totalItems}
-              itemsPerPage={5}
-              onChangePage={handlePageChange}
-            />
-          </div>
         )}
       </main>
     </div>

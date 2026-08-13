@@ -1,6 +1,8 @@
-function Loading({ text = '載入中...' }) {
+function Loading({ text = '載入中...', className = 'vh-100' }) {
   return (
-    <div className="loading-box d-flex justify-content-center align-items-center gap-2 vh-100">
+    <div
+      className={`loading-box d-flex justify-content-center align-items-center gap-2 ${className}`}
+    >
       <img
         className="loading-box-icon"
         src="./images/Home_Page/sweetBox_logo_3.svg"
