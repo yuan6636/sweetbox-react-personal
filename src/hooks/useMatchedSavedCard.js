@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 
 // utils
-import { getCardType } from '../assets/utils/paymentUtils';
+import { getCardType } from '../utils/payment';
 
 export function useMatchedSavedCard({ watch, savedCards }) {
   const [cardNumber, expiryMonth, expiryYear, cardOwner] = watch([

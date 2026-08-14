@@ -4,7 +4,7 @@ import * as bootstrap from 'bootstrap';
 import { useState, useEffect, useRef } from 'react';
 
 // 元件區
-import PaymentModal from './PaymentModal';
+import PaymentModal from './modal/PaymentModal';
 import CancelReminderModal from './CancelReminderModal';
 import CancelConfirmModal from './CancelConfirmModal';
 

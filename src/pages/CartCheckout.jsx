@@ -11,7 +11,7 @@ import timezone from 'dayjs/plugin/timezone';
 // utils
 import taiwanData from '../assets/utils/taiwanDistricts.json';
 import { creditCardYears, creditCardMonths } from '../assets/utils/formOptions';
-import { formatCardNumber, getCardType } from '../assets/utils/paymentUtils';
+import { formatCardNumber, getCardType } from '../utils/payment';
 import { calculateDisplayCart, allocateDiscountToItems } from '../utils/checkoutHelpers';
 
 // components

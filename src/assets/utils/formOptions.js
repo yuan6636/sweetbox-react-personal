@@ -12,5 +12,3 @@ export const invoiceOpts = [
   { label: '公司戶發票(開立抬頭)', value: 'business' },
   { label: '捐贈發票', value: 'donation' },
 ];
-
-//-------購物車區-------
