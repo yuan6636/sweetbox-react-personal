@@ -1,12 +1,13 @@
 // 外部工具
 import { Icon } from '@iconify/react';
-import * as bootstrap from 'bootstrap';
+import { Modal } from 'bootstrap';
 import { useState, useEffect, useRef } from 'react';
 
 // 元件區
-import PaymentModal from './PaymentModal';
+import PaymentModal from './modal/PaymentModal';
 import CancelReminderModal from './CancelReminderModal';
 import CancelConfirmModal from './CancelConfirmModal';
+import AccordionItem from './AccordionItem';
 
 // 信用卡 icon 樣式
 const cardIcons = {
@@ -22,29 +23,6 @@ const subStatusMap = {
   cancelled: '已取消',
 };
 
-const paymentStatusMap = {
-  pending: '未付款',
-  paid: '已付款',
-  failed: '付款失敗',
-};
-
-const shippingStatusMap = {
-  pending: '待出貨',
-  shipped: '已出貨',
-  on_hold: '處理中',
-  not_required: '無須出貨',
-};
-
-// 狀態樣式
-const paymentStatusClassMap = {
-  pending: 'text-neutral-700',
-  failed: 'text-semantic-error',
-};
-
-const shippingStatusClassMap = {
-  pending: 'text-neutral-700',
-};
-
 const statusBadgeMap = {
   active: 'badge-in-progress',
   completed: 'badge-completed',
@@ -57,8 +35,6 @@ const statusDateMap = {
   cancelled: (date) => (date ? `已於 ${date} 取消訂閱` : '--'),
 };
 
-const { Modal } = bootstrap;
-
 function SubscriptionList({ subscriptions, fetchSubscriptions }) {
   const [isAdd, setIsAdd] = useState(false);
   const [expandedIds, setExpandedIds] = useState([]); // 已展開的訂閱 Id
@@ -66,6 +42,7 @@ function SubscriptionList({ subscriptions, fetchSubscriptions }) {
     type: null,
     subscription: null,
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const paymentModalRef = useRef(null);
   const cancelReminderModalRef = useRef(null);
@@ -94,12 +71,12 @@ function SubscriptionList({ subscriptions, fetchSubscriptions }) {
         ref.current?.removeEventListener('hide.bs.modal', handleHide);
       });
     };
-  }, [modalState]);
+  }, []);
 
   // 切換 accordion
   const handleToggleAccordion = (id) => {
     setExpandedIds((prev) =>
-      expandedIds.includes(id) ? prev.filter((expandedId) => expandedId !== id) : [...prev, id],
+      prev.includes(id) ? prev.filter((expandedId) => expandedId !== id) : [...prev, id],
     );
   };
 
@@ -165,6 +142,9 @@ function SubscriptionList({ subscriptions, fetchSubscriptions }) {
         handleModalState={(type, subscription) => setModalState({ type, subscription })}
         subscription={modalState.subscription}
         fetchSubscriptions={fetchSubscriptions}
+        isSubmitting={isSubmitting}
+        onSubmitStart={() => setIsSubmitting(true)}
+        onSubmitEnd={() => setIsSubmitting(false)}
       />
       {subscriptions.map((item) => {
         const { id, subscriptionNumber, theme, plan, orders } = item;
@@ -244,7 +224,6 @@ function SubscriptionList({ subscriptions, fetchSubscriptions }) {
                 {/* 付款方式 */}
                 <div className="flex-equal py-0 py-xl-2">
                   <button
-                    id={id}
                     className="accordion-button d-xl-flex justify-content-end align-items-center d-none"
                     type="button"
                     aria-expanded="false"
@@ -285,7 +264,7 @@ function SubscriptionList({ subscriptions, fetchSubscriptions }) {
                     </div>
                   </div>
                   {/* Modal */}
-                  <div className={`${item.status !== 'active' && 'd-none'}`}>
+                  <div className={`${item.status !== 'active' ? 'd-none' : ''}`}>
                     {/* 付款管理 Modal button*/}
                     <button
                       type="button"
@@ -335,137 +314,7 @@ function SubscriptionList({ subscriptions, fetchSubscriptions }) {
               </div>
             </div>
             {/* 手風琴下拉內容 */}
-            <div
-              id={`collapse-${id}`}
-              className={`accordion-collapse collapse ${expandedIds.includes(id) ? 'show' : ''}`}
-            >
-              {/* 手風琴下拉 table */}
-              <div className="accordion-body p-0 d-none d-xl-block">
-                <table className="table table-borderless rounded-5 overflow-hidden subscription-table align-middle">
-                  <thead>
-                    <tr className="table-neutral-200">
-                      <th scope="col">訂單編號</th>
-                      <th scope="col">期數</th>
-                      <th scope="col">帳單日期</th>
-                      <th scope="col">金額</th>
-                      <th scope="col">付款狀態</th>
-                      <th scope="col">出貨狀態</th>
-                      <th scope="col">發票</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {orders.map((order) => {
-                      const {
-                        id,
-                        orderNo,
-                        cycle,
-                        paymentDate,
-                        amount,
-                        paymentStatus,
-                        shippingStatus,
-                      } = order;
-
-                      return (
-                        <tr key={id}>
-                          <th scope="row">{orderNo}</th>
-                          <td>{cycle ?? '-'}</td>
-                          <td>{paymentDate}</td>
-                          <td>{`NT$${amount}`}</td>
-                          <td
-                            className={`
-                            ${paymentStatusClassMap[paymentStatus]}
-                            `}
-                          >
-                            {paymentStatusMap[paymentStatus] ?? '-'}
-                          </td>
-                          <td
-                            className={`
-                            ${shippingStatusClassMap[shippingStatus]}
-                            `}
-                          >
-                            {shippingStatusMap[shippingStatus] ?? '-'}
-                          </td>
-                          <td>
-                            <button type="button" className="btn border-0 me-3">
-                              <Icon icon="tabler:eye" width="20" height="20" />
-                            </button>
-                            <button type="button" className="btn border-0">
-                              <Icon
-                                icon="material-symbols:download-rounded"
-                                width="20"
-                                height="20"
-                              />
-                            </button>
-                          </td>
-                        </tr>
-                      );
-                    })}
-                  </tbody>
-                </table>
-              </div>
-              {/* 手風琴 mobile 下拉卡片 */}
-              <div className="accordion-body p-0 d-xl-none d-block d-flex flex-column gap-4">
-                {orders.map((order) => (
-                  <div
-                    key={order.id}
-                    className="rounded-5 border border-neutral-400 p-6 d-flex flex-column gap-4"
-                  >
-                    <div className="d-flex flex-column gap-6">
-                      {/* 訂單編號與狀態 */}
-                      <div>
-                        <div className="mb-3">
-                          <h3 className="mb-1 fs-9 ls-1 text-neutral-600">訂單編號</h3>
-                          <p className="h5">{order.orderNo}</p>
-                        </div>
-                        <div>
-                          <span className="badge-resolved me-3">
-                            {paymentStatusMap[order.paymentStatus]}
-                          </span>
-                          <span className="badge-resolved">
-                            {shippingStatusMap[order.shippingStatus]}
-                          </span>
-                        </div>
-                      </div>
-                      {/* 訂單詳細內容 */}
-                      <div className="d-flex flex-column gap-2">
-                        <div className="subscription-info-divider"></div>
-                        <div className="d-flex">
-                          <div className="flex-grow-1 small">
-                            <p className="mb-1 text-neutral-600">金額</p>
-                            <p>NT${order.amount}</p>
-                          </div>
-                          <div className="flex-grow-1 small">
-                            <p className="mb-1 text-neutral-600">期數</p>
-                            <p>{order.cycle}</p>
-                          </div>
-                          <div className="flex-grow-1 small">
-                            <p className="mb-1 text-neutral-600">付款日期</p>
-                            <p>{order.paymentDate}</p>
-                          </div>
-                        </div>
-                        <div className="subscription-info-divider"></div>
-                      </div>
-
-                      {/* 訂單發票按鈕 */}
-                      <div className="d-flex gap-3">
-                        <button
-                          type="button"
-                          className="btn btn-md btn-neutral-300 flex-grow-1 rounded-pill"
-                        >
-                          查看發票
-                        </button>
-                        <button
-                          type="button"
-                          className="btn btn-md btn-neutral-300 flex-grow-1 rounded-pill"
-                        >
-                          下載發票
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
+            <AccordionItem id={id} orders={orders} isExpanded={expandedIds.includes(id)} />
           </div>
         );
       })}

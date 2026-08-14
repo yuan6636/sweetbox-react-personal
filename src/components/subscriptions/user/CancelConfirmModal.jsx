@@ -1,5 +1,11 @@
 import { Icon } from '@iconify/react';
+import { message } from 'antd';
+
+// api
 import api from '../../../api';
+
+// helpers
+import { calculatePenalty } from '../../../utils/subscriptionHelpers';
 
 // 信用卡 icon 樣式
 const cardIcons = {
@@ -29,6 +35,9 @@ function CancelConfirmModal({
   handleModalState,
   subscription,
   fetchSubscriptions,
+  isSubmitting,
+  onSubmitStart,
+  onSubmitEnd,
 }) {
   if (!subscription) return null;
 
@@ -47,11 +56,7 @@ function CancelConfirmModal({
   };
 
   // 計算罰金與已訂閱期數
-  const deliveredCount = Math.max(...subscription.orders.map((order) => order.cycle));
-  const { discountPrice, originalPrice } = subscription.plan;
-  const difference = Math.abs(discountPrice - originalPrice);
-
-  const penalty = deliveredCount * difference;
+  const { difference, deliveredCount, penalty } = calculatePenalty(subscription);
 
   const { id } = subscription;
 
@@ -86,9 +91,26 @@ function CancelConfirmModal({
         status: 'cancelled',
         nextPaymentDate: formatDate(currentTime),
       });
+      return true;
     } catch (error) {
-      console.error('取消訂閱失敗:', error?.message || '請稍後再試！');
+      console.error('取消訂閱失敗:', error);
+      message.error('取消訂閱失敗，請稍後再試！');
+      return false;
     }
+  };
+
+  const handleCancelConfirm = async () => {
+    onSubmitStart();
+
+    const isSuccess = await handelCancelSubscription(id);
+
+    if (isSuccess) {
+      handleCloseModal();
+      handleModalState(null, null);
+      fetchSubscriptions();
+    }
+
+    onSubmitEnd();
   };
 
   return (
@@ -126,7 +148,7 @@ function CancelConfirmModal({
                         <li>
                           <p className="mb-1 text-label">已配送期數</p>
                           <p className="small">
-                            {deliveredCount}/{subscription.durationMonths}期
+                            {deliveredCount}/{subscription.durationMonths} 期
                           </p>
                         </li>
                         <li>
@@ -190,11 +212,11 @@ function CancelConfirmModal({
                     <div className="subscription-summary d-flex flex-column gap-1 mb-4">
                       <p className="subscription-summary-item">
                         <span>單期原價</span>
-                        <span>${subscription.plan.originalPrice}</span>
+                        <span>${subscription.plan.originalPrice * subscription.quantity}</span>
                       </p>
                       <p className="subscription-summary-item">
                         <span>訂閱優惠價</span>
-                        <span>${subscription.plan.discountPrice}</span>
+                        <span>${subscription.plan.discountPrice * subscription.quantity}</span>
                       </p>
                       <div className="subscription-info-divider"></div>
                       <p className="subscription-summary-item">
@@ -218,14 +240,21 @@ function CancelConfirmModal({
                     <button
                       type="button"
                       className="btn btn-semantic-error rounded-pill px-6 py-3 ls-1 lh-sm"
-                      onClick={async () => {
-                        await handelCancelSubscription(subscription.id);
-                        handleCloseModal();
-                        handleModalState(null, null);
-                        fetchSubscriptions();
-                      }}
+                      disabled={isSubmitting}
+                      onClick={handleCancelConfirm}
                     >
-                      確認扣款 NT${penalty} ，並取消訂閱
+                      {isSubmitting ? (
+                        <>
+                          <span
+                            className="spinner-border spinner-border-sm me-2"
+                            role="status"
+                            aria-hidden="true"
+                          ></span>
+                          處理中...
+                        </>
+                      ) : (
+                        `確認扣款 NT$${penalty} ，並取消訂閱`
+                      )}
                     </button>
                     <button
                       type="button"
@@ -288,7 +317,7 @@ function CancelConfirmModal({
                   </div>
                 </div>
               </div>
-              {/* 取消訂閱確認 Modal 行動板下方按鈕 */}
+              {/* 取消訂閱確認 Modal 行動版下方按鈕 */}
               <div className="payment-button-container d-flex gap-3 d-sm-none">
                 <button
                   className="btn w-100 border-0 py-3 fs-8 text-neutral-700"
@@ -301,14 +330,21 @@ function CancelConfirmModal({
                 </button>
                 <button
                   className="btn btn-semantic-error btn-action py-3 w-100"
-                  onClick={async () => {
-                    await handelCancelSubscription(subscription.id);
-                    handleCloseModal();
-                    handleModalState(null, null);
-                    fetchSubscriptions();
-                  }}
+                  disabled={isSubmitting}
+                  onClick={handleCancelConfirm}
                 >
-                  扣款並取消訂閱
+                  {isSubmitting ? (
+                    <>
+                      <span
+                        className="spinner-border spinner-border-sm me-2"
+                        role="status"
+                        aria-hidden="true"
+                      ></span>
+                      處理中...
+                    </>
+                  ) : (
+                    '扣款並取消訂閱'
+                  )}
                 </button>
               </div>
             </div>

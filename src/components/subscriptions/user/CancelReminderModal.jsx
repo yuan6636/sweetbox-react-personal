@@ -1,5 +1,8 @@
 import { Icon } from '@iconify/react';
 
+// helpers
+import { calculatePenalty } from '../../../utils/subscriptionHelpers';
+
 function CancelReminderModal({
   cancelReminderModalRef,
   handleModalState,
@@ -8,15 +11,7 @@ function CancelReminderModal({
 }) {
   if (!subscription) return null;
 
-  const deliveredCount = Math.max(...subscription.orders.map((order) => order.cycle));
-  const calculatePenalty = (subscription) => {
-    const { discountPrice, originalPrice } = subscription.plan;
-    const difference = Math.abs(discountPrice - originalPrice);
-
-    return deliveredCount * difference;
-  };
-
-  const penalty = calculatePenalty(subscription);
+  const { unitDifference, deliveredCount, penalty } = calculatePenalty(subscription);
 
   return (
     <div
@@ -74,7 +69,7 @@ function CancelReminderModal({
                   {/* 右側說明 */}
                   <div className="modal-info-card">
                     <p className="mb-8">
-                      {`您的「${subscription.durationMonths}個月${subscription.theme.title}」已享有連續 ${deliveredCount} 期的優惠折扣。若現在終止訂閱，將失去 $${penalty}/盒
+                      {`您的「${subscription.durationMonths}個月${subscription.theme.title}」已享有連續 ${deliveredCount} 期的優惠折扣。若現在終止訂閱，將失去 $${unitDifference}/盒
                       的優惠折扣，並需補足先前 ${deliveredCount} 期的差額共：`}
                     </p>
                     <p className="d-flex gap-4 align-items-end">
