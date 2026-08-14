@@ -109,53 +109,48 @@ function PaymentModalContent({
           <>
             {/* 信用卡圖片 */}
             <div className="mb-4">
-              {currentCard ? (
-                <>
-                  <h2 className="p-2 py-lg-3 small ls-1 text-neutral-600 mb-2 mb-lg-1">
-                    目前付款方式
-                  </h2>
-                  <div className="credit-card-image d-flex flex-column justify-content-between">
-                    <div className="d-flex justify-content-between">
-                      <div
-                        className="bg-neutral-600 opacity-70 rounded-2"
-                        style={{
-                          width: '48px',
-                          height: '36px',
-                        }}
-                      ></div>
-                      <div className="px-2 rounded-1 bg-neutral-100 align-self-start">
-                        <Icon
-                          icon={cardIcons[currentCard.cardBrand] || 'logos:visaelectron'}
-                          width="28"
-                          height="16"
-                        />
-                      </div>
-                    </div>
+              <h2 className="p-2 py-lg-3 small ls-1 text-neutral-600 mb-2 mb-lg-1">目前付款方式</h2>
+              <div className="credit-card-image d-flex flex-column justify-content-between">
+                <div className="d-flex justify-content-between">
+                  <div
+                    className="bg-neutral-600 opacity-70 rounded-2"
+                    style={{
+                      width: '48px',
+                      height: '36px',
+                    }}
+                  ></div>
+                  <div className="px-2 rounded-1 bg-neutral-100 align-self-start">
+                    <Icon
+                      icon={cardIcons?.[currentCard?.cardBrand] ?? 'logos:visaelectron'}
+                      width="28"
+                      height="16"
+                    />
+                  </div>
+                </div>
+                <div>
+                  <p className="mb-6 text-neutral-100 h6 ls-1 credit-card-number gap-6">
+                    <span className="masked-number">••••</span>
+                    <span className="masked-number">••••</span>
+                    <span className="masked-number">••••</span>
+                    {currentCard?.lastFour ?? '••••'}
+                  </p>
+                  <div className="d-flex justify-content-between text-neutral-100">
                     <div>
-                      <p className="mb-6 text-neutral-100 h6 ls-1 credit-card-number gap-6">
-                        <span className="masked-number">••••</span>
-                        <span className="masked-number">••••</span>
-                        <span className="masked-number">••••</span>
-                        {currentCard.lastFour}
+                      <p className="text-neutral-600 fs-9">CARD HOLDER</p>
+                      <p className="fs-8">
+                        {formatToUpperCase(currentCard?.cardOwner) || '\u00A0'}
                       </p>
-                      <div className="d-flex justify-content-between text-neutral-100">
-                        <div>
-                          <p className="text-neutral-600 fs-9">CARD HOLDER</p>
-                          <p className="fs-8">{formatToUpperCase(currentCard.cardOwner)}</p>
-                        </div>
-                        <div className="text-end">
-                          <p className="text-neutral-600 fs-9">EXPIRES</p>
-                          <p className="fs-8">
-                            {formatExpiryDate(currentCard.expiryMonth, currentCard.expiryYear)}
-                          </p>
-                        </div>
-                      </div>
+                    </div>
+                    <div className="text-end">
+                      <p className="text-neutral-600 fs-9">EXPIRES</p>
+                      <p className="fs-8">
+                        {formatExpiryDate(currentCard?.expiryMonth, currentCard?.expiryYear) ||
+                          '\u00A0'}
+                      </p>
                     </div>
                   </div>
-                </>
-              ) : (
-                <div>...Loading</div>
-              )}
+                </div>
+              </div>
             </div>
             {/* 信用卡列表 */}
             <div className="d-flex justify-content-between align-items-center mb-0 mb-lg-1 px-2 pb-2">

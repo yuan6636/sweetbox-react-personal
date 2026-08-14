@@ -14,11 +14,13 @@ export const getCardType = (number) => {
 };
 
 export const formatToUpperCase = (name) => {
-  return name.toUpperCase();
+  return name?.toUpperCase() ?? '';
 };
 
 // 格式化信用卡效期
-export const formatExpiryDate = (month = '', year = '') => {
+export const formatExpiryDate = (month, year) => {
+  if (!month || !year) return '';
+
   return `${String(month).padStart(2, '0')}/${String(year).slice(-2)}`;
 };
 
