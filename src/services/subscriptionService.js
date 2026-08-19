@@ -11,6 +11,7 @@ export const createSubscriptionWithOrder = async ({
   finalPaymentMethodId,
   formData,
   paymentSnapshot,
+  couponSnapshot,
   shippingInfo,
   todayStr,
   nowIsoString,
@@ -69,6 +70,7 @@ export const createSubscriptionWithOrder = async ({
     shippingStatus: 'pending',
     shippingDate: null,
     paymentSnapshot,
+    couponSnapshot,
     invoice: {
       number: `AB-${Math.floor(Math.random() * 100000000)}`,
       date: nowIsoString,

@@ -20,6 +20,7 @@ import ReceiverSection from '../components/cart/ReceiverSection';
 import PaymentSection from '../components/cart/PaymentSection';
 import OrderSummary from '../components/cart/OrderSummary';
 
+// api
 import api from '../api';
 
 // hooks
@@ -27,6 +28,7 @@ import { useCart } from '../contexts/cart';
 import { useAuth } from '../contexts/auth';
 import { useMatchedSavedCard } from '../hooks/useMatchedSavedCard';
 import { useQuickNotes } from '../hooks/useQuickNotes';
+import { useAppliedCoupon } from '../hooks/useAppliedCoupon';
 
 // services
 import { createSubscriptionWithOrder } from '../services/subscriptionService';
@@ -56,7 +58,7 @@ function CartCheckout() {
   const [savedCards, setSavedCards] = useState([]);
 
   const { user } = useAuth();
-  const { cart, setCart, clearCart } = useCart();
+  const { cart, setCart, clearCart, updateCartMeta } = useCart();
   const matchedSavedCard = useMatchedSavedCard({ watch, savedCards });
   const { selectedChips, currentNote, quickNoteChips, toggleChip } = useQuickNotes({
     watch,
@@ -64,8 +66,19 @@ function CartCheckout() {
     setValue,
   });
 
+  const subTotal = enrichedCartItems.reduce(
+    (sum, item) => sum + (item.plan?.discountPrice || 0) * item.quantity,
+    0,
+  );
+
+  const { appliedCoupon, discountTotal, isCouponValid } = useAppliedCoupon({
+    cart,
+    subTotal,
+    updateCartMeta,
+  });
+
   // 金額
-  const { subTotal, discountTotal, displayCart } = calculateDisplayCart(cart, enrichedCartItems);
+  const { displayCart } = calculateDisplayCart(subTotal, discountTotal);
 
   useEffect(() => {
     if (!user) return;
@@ -118,6 +131,12 @@ function CartCheckout() {
       navigate('/cartEmpty');
       return;
     }
+    // 若優惠券失效，中斷結帳
+    if (appliedCoupon && !isCouponValid) {
+      message.error('您的優惠券已不符合使用資格，請重新確認購物車金額。');
+      return;
+    }
+
     setIsSubmitting(true); //UX優化
     message.loading({ content: '安全連線中，正在處理訂閱...', key: 'checkout' });
 
@@ -184,12 +203,23 @@ function CartCheckout() {
       // 使用迴圈依序執行(json server 不支援同時寫入)
       const results = [];
       for (const item of preCalculatedItems) {
+        const couponSnapshot =
+          appliedCoupon && isCouponValid
+            ? {
+                code: appliedCoupon.code,
+                type: appliedCoupon.type,
+                discountValue: appliedCoupon.discountValue,
+                appliedDiscountAmount: item.itemDiscount,
+              }
+            : null;
+
         const result = await createSubscriptionWithOrder({
           item,
           userId,
           finalPaymentMethodId,
           formData,
           paymentSnapshot,
+          couponSnapshot,
           shippingInfo,
           todayStr,
           nowIsoString,

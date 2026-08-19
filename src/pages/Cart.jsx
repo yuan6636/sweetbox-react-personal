@@ -12,6 +12,7 @@ import api from '../api';
 // hooks
 import { useAuth } from '../contexts/auth';
 import { useCart } from '../contexts/cart';
+import { useAppliedCoupon } from '../hooks/useAppliedCoupon';
 
 // 台灣時間
 dayjs.extend(utc);
@@ -35,11 +36,8 @@ function Cart() {
   const [themes, setThemes] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [couponCode, setCouponCode] = useState('');
-  const [discountTotal, setDiscountTotal] = useState(0);
-  const [couponId, setCouponId] = useState(null);
   const [isRemoving, setIsRemoving] = useState(false);
   const [error, setError] = useState('');
-  const [success, setSuccess] = useState(false);
   const [openDropdownId, setOpenDropdownId] = useState(null);
 
   const cartItems = useMemo(() => cart?.cart_items ?? [], [cart]);
@@ -54,14 +52,6 @@ function Cart() {
       return;
     }
   }, [isLogin, navigate]);
-
-  // 更新購物車的折扣和優惠券 ID
-  useEffect(() => {
-    if (!cart) return;
-
-    setDiscountTotal(cart.discountTotal || 0);
-    setCouponId(cart.couponId || null);
-  }, [cart]);
 
   useEffect(() => {
     const timers = timerRefs.current;
@@ -107,12 +97,23 @@ function Cart() {
     });
   }, [plansMap, themesMap, cartItems]);
 
-  // 計算及時金額
+  // 計算即時金額
   const subTotal = enrichedItems.reduce(
     (sum, item) => sum + (item.plan?.discountPrice || 0) * item.quantity,
     0,
   );
+
+  const { appliedCoupon, isCouponValid, discountTotal, setAppliedCoupon } = useAppliedCoupon({
+    cart,
+    subTotal,
+    updateCartMeta,
+  });
+
   const finalTotal = Math.max(0, subTotal - discountTotal);
+
+  const success = !!appliedCoupon && isCouponValid;
+
+  const hasAppliedCoupon = !!appliedCoupon;
 
   // 移除商品
   const handleRemove = async (itemId) => {
@@ -222,49 +223,31 @@ function Cart() {
 
       if (!coupon || !coupon.isActive) {
         setError('此優惠代碼無效。');
-        setSuccess(false);
-        setDiscountTotal(0);
-        setCouponId(null);
+        setAppliedCoupon(null);
         return;
       }
 
       if (new Date(coupon.expiryDate) < new Date()) {
         setError('此優惠代碼已過期。');
-        setSuccess(false);
-        setDiscountTotal(0);
-        setCouponId(null);
+        setAppliedCoupon(null);
         return;
       }
 
       if (subTotal < coupon.minSpend) {
         setError(`需滿 ${coupon.minSpend} 元才能使用此代碼。`);
-        setSuccess(false);
-        setDiscountTotal(0);
-        setCouponId(null);
+        setAppliedCoupon(null);
         return;
       }
 
-      // 計算折扣金額
-      let discount = 0;
-      if (coupon.type === 'fixed') {
-        discount = coupon.discountValue;
-      } else if (coupon.type === 'percentage') {
-        discount = subTotal * coupon.discountValue;
-      }
-
-      const finalDiscount = Math.round(discount);
       const now = dayjs().format('YYYY-MM-DDTHH:mm:ss.SSSZ');
 
       await api.patch(`/carts/${cart.id}`, {
         couponId: coupon.id,
         updatedAt: now,
       });
-      // 本地 state + 全域 state 一起操作
-      setDiscountTotal(Math.round(discount));
-      setCouponId(coupon.id);
-      setSuccess(true);
+      setAppliedCoupon(coupon);
       setError('');
-      updateCartMeta({ couponId: coupon.id, discountTotal: finalDiscount });
+      updateCartMeta({ couponId: coupon.id });
     } catch (err) {
       console.error('優惠代碼驗證失敗。', err);
       setError('驗證過程發生錯誤。');
@@ -283,9 +266,7 @@ function Cart() {
       });
 
       setCouponCode('');
-      setDiscountTotal(0);
-      setCouponId(null);
-      setSuccess(false);
+      setAppliedCoupon(null);
       setError('');
       removeCoupon(now);
     } catch (err) {
@@ -299,8 +280,7 @@ function Cart() {
     if (!cart || cartItems.length === 0) return;
     try {
       await api.patch(`/carts/${cart.id}`, {
-        ...(couponId && { couponId }),
-        discountTotal,
+        ...(appliedCoupon && { couponId: appliedCoupon.id }),
         updatedAt: dayjs().format('YYYY-MM-DDTHH:mm:ss.SSSZ'),
       });
       navigate('/cartCheckout');
@@ -497,17 +477,17 @@ function Cart() {
                       aria-label="優惠代碼"
                       aria-describedby="button-addon2"
                       name="discount_number"
-                      value={couponCode}
+                      value={appliedCoupon ? appliedCoupon.code : couponCode}
                       onChange={(e) => setCouponCode(e.target.value)}
                       onKeyDown={(e) => {
                         if (e.key === 'Enter') {
                           handleApplyCoupon();
                         }
                       }}
-                      disabled={success}
+                      disabled={hasAppliedCoupon}
                     />
                     {/* 👈 動態渲染按鈕：依據 success 狀態切換「取消」與「套用」 */}
-                    {success ? (
+                    {hasAppliedCoupon ? (
                       <button
                         className="btn d-block border-0 text-neutral-600"
                         type="button"
@@ -526,6 +506,19 @@ function Cart() {
                       </button>
                     )}
                   </div>
+
+                  {appliedCoupon && !isCouponValid && (
+                    <div className="px-2 error-message text-semantic-error">
+                      <Icon
+                        className="me-2"
+                        icon="gridicons:notice-outline"
+                        width="16"
+                        height="16"
+                      />
+                      您的購物車金額已低於優惠門檻 (需滿 NT${appliedCoupon.minSpend}
+                      )，優惠券已暫時取消套用
+                    </div>
+                  )}
 
                   {error && (
                     <div className="px-2 error-message text-semantic-error">
@@ -572,7 +565,9 @@ function Cart() {
                       <p className="d-flex justify-content-between align-items-center">
                         <span>
                           折扣
-                          {success && <span className="ms-2 text-cta-200">{couponCode}</span>}
+                          {success && (
+                            <span className="ms-2 text-cta-200">{appliedCoupon?.code}</span>
+                          )}
                         </span>
                         <span className="text-cta-200">- NT${discountTotal}</span>
                       </p>
