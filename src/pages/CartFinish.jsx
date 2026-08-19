@@ -2,8 +2,16 @@ import { Link, Navigate, useSearchParams, useLocation } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { message } from 'antd';
 import { Icon } from '@iconify/react';
+import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
+import timezone from 'dayjs/plugin/timezone';
 
 import api from '../api';
+
+// 台灣時間
+dayjs.extend(utc);
+dayjs.extend(timezone);
+dayjs.tz.setDefault('Asia/Taipei');
 
 // 信用卡 icon 樣式
 const cardIcons = {
@@ -103,7 +111,7 @@ function CartFinish() {
   const representSub = subscriptions[0];
   // 將 YYYY-MM-DD 轉換為 YYYY/MM/DD 的格式顯示
   const startDate = representSub?.startDate?.replace(/-/g, '/') || '';
-  const deductionDay = representSub?.startDate ? new Date(representSub.startDate).getDate() : '';
+  const deductionDay = representSub?.startDate ? dayjs(representSub.startDate).tz().date() : '';
   const paymentInfo = representSub?.paymentSnapshot;
   const totalOriginalAmount = subscriptions.reduce(
     (sum, sub) => sum + sub.discountedPrice * sub.quantity,
@@ -155,7 +163,7 @@ function CartFinish() {
                 <table className="w-100">
                   <tbody>
                     {subscriptions.map((sub) => (
-                      <tr key={sub.subscriptionNumber} className="align-top">
+                      <tr key={sub.id} className="align-top">
                         <td className="text-nowrap py-2">
                           # <span>{sub.subscriptionNumber}</span>
                         </td>
