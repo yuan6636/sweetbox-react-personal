@@ -5,7 +5,7 @@ import { invoiceOpts } from '../assets/utils/formOptions';
 import Input from './Input';
 import FormError from './FormError';
 
-const InvoiceSection = ({ register, control, errors, watch, setValue }) => {
+const InvoiceSection = ({ register, control, errors, watch, setValue, clearErrors }) => {
   const currentInvoiceType = watch('type', 'default');
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef(null);
@@ -67,6 +67,15 @@ const InvoiceSection = ({ register, control, errors, watch, setValue }) => {
                           setValue('companyName', '', { shouldValidate: false });
                           setValue('taxId', '', { shouldValidate: false });
                           setValue('companyEmail', '', { shouldValidate: false });
+
+                          // 清除不相關欄位的錯誤狀態
+                          clearErrors([
+                            'carrier',
+                            'donateCode',
+                            'companyName',
+                            'taxId',
+                            'companyEmail',
+                          ]);
                         }}
                       >
                         {opt.label}
@@ -102,7 +111,7 @@ const InvoiceSection = ({ register, control, errors, watch, setValue }) => {
             rules={{
               required: '請輸入手機條碼',
               pattern: {
-                value: /^\/[0-9A-Z+-.]{7}$/, // 第一碼必須是 /，後面接 7 碼大寫英文、數字或特定符號
+                value: /^\/[0-9A-Z+\-.]{7}$/, // 第一碼必須是 /，後面接 7 碼大寫英文、數字或特定符號
                 message: '長度應為8碼，開頭為/（例：/ABC1234）',
               },
             }}

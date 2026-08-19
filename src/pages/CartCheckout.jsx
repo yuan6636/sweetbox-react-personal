@@ -49,6 +49,7 @@ function CartCheckout() {
     getValues,
     control,
     trigger,
+    clearErrors,
     formState: { errors },
   } = useForm({ mode: 'onTouched' });
 
@@ -353,6 +354,7 @@ function CartCheckout() {
                     errors={errors}
                     watch={watch}
                     setValue={setValue}
+                    clearErrors={clearErrors}
                   />
                 </section>
 
