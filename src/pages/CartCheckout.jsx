@@ -257,6 +257,12 @@ function CartCheckout() {
 
         setValue('name', userData.name, { shouldValidate: true });
         setValue('phone', userData.phone, { shouldValidate: true });
+
+        if (!userData.address) {
+          message.error('會員資料不完整，請手動填寫收件地址。');
+          return;
+        }
+
         setValue('city', userData.address.city, { shouldValidate: true });
         setValue('district', userData.address.district, { shouldValidate: true });
         setValue('street', userData.address.street, { shouldValidate: true });
