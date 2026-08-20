@@ -14,6 +14,9 @@ import { useAuth } from '../contexts/auth';
 import { useCart } from '../contexts/cart';
 import { useAppliedCoupon } from '../hooks/useAppliedCoupon';
 
+// constants
+import { MAX_QUANTITY } from '../constants/cart';
+
 // 台灣時間
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -36,14 +39,13 @@ function Cart() {
   const [themes, setThemes] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [couponCode, setCouponCode] = useState('');
-  const [isRemoving, setIsRemoving] = useState(false);
+  const [removingItemIds, setRemovingItemIds] = useState(new Set());
   const [error, setError] = useState('');
   const [openDropdownId, setOpenDropdownId] = useState(null);
 
   const cartItems = useMemo(() => cart?.cart_items ?? [], [cart]);
 
   const timerRefs = useRef({});
-  const deletingItemsRef = useRef(new Set());
 
   // 載入購物車
   useEffect(() => {
@@ -117,12 +119,11 @@ function Cart() {
 
   // 移除商品
   const handleRemove = async (itemId) => {
-    if (isRemoving || deletingItemsRef.current.has(itemId)) {
+    if (removingItemIds.has(itemId)) {
       console.warn(`重複點擊或正在刪除中，itemId: ${itemId} 執行緒被攔截`);
       return;
     }
-    setIsRemoving(true);
-    deletingItemsRef.current.add(itemId);
+    setRemovingItemIds((prev) => new Set(prev).add(itemId));
 
     const removedIndex = cartItems.findIndex((item) => item.id === itemId);
     const removedItem = cartItems[removedIndex];
@@ -139,8 +140,11 @@ function Cart() {
       console.error(`刪除 itemId: ${itemId} 失敗，錯誤詳細資訊:`, err);
     } finally {
       setTimeout(() => {
-        deletingItemsRef.current.delete(itemId);
-        setIsRemoving(false);
+        setRemovingItemIds((prev) => {
+          const next = new Set(prev);
+          next.delete(itemId);
+          return next;
+        });
       }, 100);
     }
   };
@@ -391,9 +395,9 @@ function Cart() {
                           <h2 className="fs-7 lh-sm fw-bold ls-1">{item.theme?.title}甜點盒</h2>
                           <button
                             type="button"
-                            className={`btn p-0 btn-remove ${isRemoving ? 'opacity-50' : ''}`}
+                            className={`btn p-0 btn-remove ${removingItemIds.has(item.id) ? 'opacity-50' : ''}`}
                             onClick={() => handleRemove(item.id)}
-                            disabled={isRemoving}
+                            disabled={removingItemIds.has(item.id)}
                           >
                             移除
                           </button>
@@ -453,6 +457,7 @@ function Cart() {
                               type="button"
                               className="btn-plus"
                               onClick={() => handleQuantityChange(item.id, +1)}
+                              disabled={item.quantity >= MAX_QUANTITY}
                             >
                               <Icon icon="tabler:plus" width="24" height="24" />
                             </button>
