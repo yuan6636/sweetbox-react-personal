@@ -52,15 +52,18 @@ function CartFinish() {
     const fetchCompleteData = async () => {
       try {
         const subIdsArray = subIdsParam.split(',');
-        const subsRes = await Promise.all(subIdsArray.map((id) => api.get(`/subscriptions/${id}`)));
+        // 重組 subscriptions 和 orders 的 query
+        const subIdsQuery = subIdsArray.map((id) => `id=${id}`).join('&');
+        const ordersQuery = subIdsArray.map((id) => `subscriptionId=${id}`).join('&');
 
-        const subsData = subsRes.map((res) => res.data);
-
-        const [plansRes, themesRes, ordersRes] = await Promise.all([
+        const [subsRes, plansRes, themesRes, ordersRes] = await Promise.all([
+          api.get(`/subscriptions?${subIdsQuery}`),
           api.get('/plans'),
           api.get('/themes'),
-          api.get('/orders'),
+          api.get(`/orders?${ordersQuery}`),
         ]);
+
+        const subsData = subsRes.data;
 
         // 組合資料
         const enrichedSubs = subsData.map((sub) => {

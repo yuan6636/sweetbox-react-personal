@@ -59,7 +59,7 @@ function CartCheckout() {
   const [savedCards, setSavedCards] = useState([]);
 
   const { user } = useAuth();
-  const { cart, setCart, clearCart, updateCartMeta } = useCart();
+  const { cart, clearCart, updateCartMeta } = useCart();
   const matchedSavedCard = useMatchedSavedCard({ watch, savedCards });
   const { selectedChips, currentNote, quickNoteChips, toggleChip } = useQuickNotes({
     watch,
@@ -83,17 +83,14 @@ function CartCheckout() {
 
   useEffect(() => {
     if (!user) return;
+    if (!isLoading) return;
     const fetchData = async () => {
       try {
-        const cartRes = await api.get(`/carts?userId=${user.id}&_embed=cart_items`);
-        const userCart = cartRes.data[0];
-
         // 防呆：如果沒有購物車 or 購物車空的，導回 '/cart'
-        if (!userCart || !userCart.cart_items || userCart.cart_items.length === 0) {
+        if (!cart || !cart.cart_items || cart.cart_items.length === 0) {
           navigate('/cart');
           return;
         }
-        setCart(userCart);
 
         const [themesRes, plansRes, savedCardsRes] = await Promise.all([
           api.get('/themes'),
@@ -104,7 +101,7 @@ function CartCheckout() {
         const themesData = themesRes.data;
 
         // 結帳當下重新組合商品明細（含 plan、theme 詳細資料）並鎖定為價格快照
-        const enrichedItems = userCart.cart_items.map((item) => {
+        const enrichedItems = cart.cart_items.map((item) => {
           const planDetail = plansData.find((p) => p.id === item.planId);
           const themeDetail = themesData.find((t) => t.id === planDetail?.themeId);
           return {
@@ -124,7 +121,7 @@ function CartCheckout() {
       }
     };
     fetchData();
-  }, [navigate, user, setCart]);
+  }, [navigate, user, cart, isLoading]);
 
   const onSubmit = async (formData) => {
     if (!enrichedCartItems || enrichedCartItems.length === 0) {
