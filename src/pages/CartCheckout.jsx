@@ -246,6 +246,8 @@ function CartCheckout() {
         key: 'checkout',
         duration: 3,
       });
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
