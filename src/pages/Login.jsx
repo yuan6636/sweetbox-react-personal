@@ -33,7 +33,7 @@ function Login() {
           setErrorMsg('帳號密碼錯誤');
           return;
         }
-        const user = userRes.data[0];
+        const { password, ...user } = userRes.data[0];
         const token = 'token_' + Date.now();
         login(user, token);
         navigate('/');
