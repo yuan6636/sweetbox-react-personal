@@ -120,7 +120,7 @@ function Cart() {
   // 移除商品
   const handleRemove = async (itemId) => {
     if (removingItemIds.has(itemId)) {
-      console.warn(`重複點擊或正在刪除中，itemId: ${itemId} 執行緒被攔截`);
+      console.warn(`itemId: ${itemId} 正在刪除中，忽略此次重複請求`);
       return;
     }
     setRemovingItemIds((prev) => new Set(prev).add(itemId));
