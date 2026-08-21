@@ -8,6 +8,7 @@ import FormError from '../FormError';
 
 // utils
 import { stripNonDigits } from '../../utils/inputHelpers';
+import { isCardExpired } from '../../utils/payment';
 
 function PaymentSection({
   register,
@@ -86,10 +87,7 @@ function PaymentSection({
                       const currentYear = getValues('expiryYear');
                       if (!currentYear) return true;
 
-                      const now = new Date();
-                      const expiration = new Date(Number(currentYear), Number(val), 1);
-
-                      if (now >= expiration) {
+                      if (isCardExpired(currentYear, val)) {
                         return '信用卡已過期';
                       }
 

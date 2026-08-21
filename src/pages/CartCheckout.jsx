@@ -20,6 +20,7 @@ import ReceiverSection from '../components/cart/ReceiverSection';
 import PaymentSection from '../components/cart/PaymentSection';
 import OrderSummary from '../components/cart/OrderSummary';
 
+// api
 import api from '../api';
 
 // hooks
@@ -27,6 +28,7 @@ import { useCart } from '../contexts/cart';
 import { useAuth } from '../contexts/auth';
 import { useMatchedSavedCard } from '../hooks/useMatchedSavedCard';
 import { useQuickNotes } from '../hooks/useQuickNotes';
+import { useAppliedCoupon } from '../hooks/useAppliedCoupon';
 
 // services
 import { createSubscriptionWithOrder } from '../services/subscriptionService';
@@ -47,6 +49,7 @@ function CartCheckout() {
     getValues,
     control,
     trigger,
+    clearErrors,
     formState: { errors },
   } = useForm({ mode: 'onTouched' });
 
@@ -56,7 +59,7 @@ function CartCheckout() {
   const [savedCards, setSavedCards] = useState([]);
 
   const { user } = useAuth();
-  const { cart, setCart, clearCart } = useCart();
+  const { cart, clearCart, updateCartMeta } = useCart();
   const matchedSavedCard = useMatchedSavedCard({ watch, savedCards });
   const { selectedChips, currentNote, quickNoteChips, toggleChip } = useQuickNotes({
     watch,
@@ -64,22 +67,30 @@ function CartCheckout() {
     setValue,
   });
 
+  const subTotal = enrichedCartItems.reduce(
+    (sum, item) => sum + (item.plan?.discountPrice || 0) * item.quantity,
+    0,
+  );
+
+  const { appliedCoupon, discountTotal, isCouponValid } = useAppliedCoupon({
+    cart,
+    subTotal,
+    updateCartMeta,
+  });
+
   // 金額
-  const { subTotal, discountTotal, displayCart } = calculateDisplayCart(cart, enrichedCartItems);
+  const { displayCart } = calculateDisplayCart(subTotal, discountTotal);
 
   useEffect(() => {
     if (!user) return;
+    if (!isLoading) return;
     const fetchData = async () => {
       try {
-        const cartRes = await api.get(`/carts?userId=${user.id}&_embed=cart_items`);
-        const userCart = cartRes.data[0];
-
         // 防呆：如果沒有購物車 or 購物車空的，導回 '/cart'
-        if (!userCart || !userCart.cart_items || userCart.cart_items.length === 0) {
+        if (!cart || !cart.cart_items || cart.cart_items.length === 0) {
           navigate('/cart');
           return;
         }
-        setCart(userCart);
 
         const [themesRes, plansRes, savedCardsRes] = await Promise.all([
           api.get('/themes'),
@@ -90,7 +101,7 @@ function CartCheckout() {
         const themesData = themesRes.data;
 
         // 結帳當下重新組合商品明細（含 plan、theme 詳細資料）並鎖定為價格快照
-        const enrichedItems = userCart.cart_items.map((item) => {
+        const enrichedItems = cart.cart_items.map((item) => {
           const planDetail = plansData.find((p) => p.id === item.planId);
           const themeDetail = themesData.find((t) => t.id === planDetail?.themeId);
           return {
@@ -110,7 +121,7 @@ function CartCheckout() {
       }
     };
     fetchData();
-  }, [navigate, user, setCart]);
+  }, [navigate, user, cart, isLoading]);
 
   const onSubmit = async (formData) => {
     if (!enrichedCartItems || enrichedCartItems.length === 0) {
@@ -118,6 +129,12 @@ function CartCheckout() {
       navigate('/cartEmpty');
       return;
     }
+    // 若優惠券失效，中斷結帳
+    if (appliedCoupon && !isCouponValid) {
+      message.error('您的優惠券已不符合使用資格，請重新確認購物車金額。');
+      return;
+    }
+
     setIsSubmitting(true); //UX優化
     message.loading({ content: '安全連線中，正在處理訂閱...', key: 'checkout' });
 
@@ -184,12 +201,23 @@ function CartCheckout() {
       // 使用迴圈依序執行(json server 不支援同時寫入)
       const results = [];
       for (const item of preCalculatedItems) {
+        const couponSnapshot =
+          appliedCoupon && isCouponValid
+            ? {
+                code: appliedCoupon.code,
+                type: appliedCoupon.type,
+                discountValue: appliedCoupon.discountValue,
+                appliedDiscountAmount: item.itemDiscount,
+              }
+            : null;
+
         const result = await createSubscriptionWithOrder({
           item,
           userId,
           finalPaymentMethodId,
           formData,
           paymentSnapshot,
+          couponSnapshot,
           shippingInfo,
           todayStr,
           nowIsoString,
@@ -215,6 +243,8 @@ function CartCheckout() {
         key: 'checkout',
         duration: 3,
       });
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -227,6 +257,12 @@ function CartCheckout() {
 
         setValue('name', userData.name, { shouldValidate: true });
         setValue('phone', userData.phone, { shouldValidate: true });
+
+        if (!userData.address) {
+          message.error('會員資料不完整，請手動填寫收件地址。');
+          return;
+        }
+
         setValue('city', userData.address.city, { shouldValidate: true });
         setValue('district', userData.address.district, { shouldValidate: true });
         setValue('street', userData.address.street, { shouldValidate: true });
@@ -323,6 +359,7 @@ function CartCheckout() {
                     errors={errors}
                     watch={watch}
                     setValue={setValue}
+                    clearErrors={clearErrors}
                   />
                 </section>
 

@@ -5,20 +5,14 @@ export const generateSubNumber = (abbr, durationMonths) => {
   return `${abbr || 'XX'}${durationStr}${randomStr}`;
 };
 
-export const calculateDisplayCart = (cart, enrichedCartItems) => {
-  const subTotal = enrichedCartItems.reduce(
-    (sum, item) => sum + (item.plan?.discountPrice || 0) * item.quantity,
-    0,
-  );
-  const discountTotal = cart?.discountTotal || 0;
+export const calculateDisplayCart = (subTotal, discountTotal) => {
   const finalTotal = Math.max(0, subTotal - discountTotal);
   const displayCart = {
-    ...cart,
     subTotal,
     discountTotal,
     finalTotal,
   };
-  return { subTotal, discountTotal, displayCart };
+  return { displayCart };
 };
 
 export const allocateDiscountToItems = ({ enrichedCartItems, subTotal, discountTotal }) => {
