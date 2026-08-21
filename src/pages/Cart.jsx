@@ -136,7 +136,6 @@ function Cart() {
       if (removedItem) {
         addCartItem(removedItem, removedIndex);
       }
-      console.error('刪除失敗', err);
       console.error(`刪除 itemId: ${itemId} 失敗，錯誤詳細資訊:`, err);
     } finally {
       setTimeout(() => {
