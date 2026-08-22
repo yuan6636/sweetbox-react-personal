@@ -1,9 +1,16 @@
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import Input from '../components/Input';
 import { Icon } from '@iconify/react';
 import { useNavigate } from 'react-router-dom';
+import { message } from 'antd';
+
+// api
 import api from '../api';
+
+// components
+import Input from '../components/Input';
+
+// contexts
 import { useAuth } from '../contexts/auth';
 
 function Login() {
@@ -23,6 +30,7 @@ function Login() {
   // 切換登入/註冊時，清空表格
   const toggleMode = (mode) => {
     setAuthMode(mode);
+    setErrorMsg('');
     reset();
   };
 
@@ -50,14 +58,10 @@ function Login() {
         const emailRes = await api.get(`/users?email=${data.registerEmail}`);
         // 確認email
         if (emailRes.data.length > 0) {
-          alert('email已被註冊過');
+          setErrorMsg('email已被註冊過');
           return;
         }
-        // password跟confirmPassword是否一樣
-        if (data.registerPassword !== data.registerConfirmPassword) {
-          alert('確認密碼與密碼不一致');
-          return;
-        }
+
         await api.post(`/users`, {
           name: data.registerName,
           email: data.registerEmail,
@@ -73,7 +77,7 @@ function Login() {
             street: '',
           },
         });
-        alert('註冊成功');
+        message.success('註冊成功');
         setAuthMode('login');
       } catch (error) {
         console.error(error);
@@ -148,7 +152,6 @@ function Login() {
                       }}
                       onInput={handleEmailInput}
                     />
-                    <p>{errorMsg}</p>
                     <Input
                       id="password"
                       register={register}
@@ -186,7 +189,6 @@ function Login() {
                         </button>
                       }
                     />
-                    <p>{errorMsg}</p>
                   </>
                 ) : (
                   <>
@@ -305,9 +307,10 @@ function Login() {
                     />
                   </>
                 )}
+                <p className="text-semantic-error text-center mb-1">{errorMsg}</p>
                 <button
                   type="submit"
-                  className="btn-primary-icon align-items-center ls-1 lh-sm w-100 mt-6"
+                  className="btn-primary-icon align-items-center ls-1 lh-sm w-100"
                   disabled={isSubmitting}
                 >
                   {isSubmitting ? '處理中...' : authMode === 'login' ? '立即登入' : '完成註冊'}
