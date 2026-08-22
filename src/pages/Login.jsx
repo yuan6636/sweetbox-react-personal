@@ -9,6 +9,7 @@ import { useAuth } from '../contexts/auth';
 function Login() {
   const [authMode, setAuthMode] = useState('login');
   const [errorMsg, setErrorMsg] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
   const { login } = useAuth();
   const {
@@ -26,6 +27,8 @@ function Login() {
   };
 
   const onSubmit = async (data) => {
+    // 防止按鈕重複點擊
+    setIsSubmitting(true);
     if (authMode === 'login') {
       try {
         const userRes = await api.get(`/users?email=${data.email}`);
@@ -39,6 +42,8 @@ function Login() {
         navigate('/');
       } catch (error) {
         console.error(error);
+      } finally {
+        setIsSubmitting(false);
       }
     } else {
       try {
@@ -72,6 +77,8 @@ function Login() {
         setAuthMode('login');
       } catch (error) {
         console.error(error);
+      } finally {
+        setIsSubmitting(false);
       }
     }
   };
@@ -301,11 +308,14 @@ function Login() {
                 <button
                   type="submit"
                   className="btn-primary-icon align-items-center ls-1 lh-sm w-100 mt-6"
+                  disabled={isSubmitting}
                 >
-                  {authMode === 'login' ? '立即登入' : '完成註冊'}
-                  <svg className="ms-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                    <path fill="currentColor" d="M15 7.586L22.414 15H2v-2h15.586l-4-4z" />
-                  </svg>
+                  {isSubmitting ? '處理中...' : authMode === 'login' ? '立即登入' : '完成註冊'}
+                  {!isSubmitting && (
+                    <svg className="ms-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                      <path fill="currentColor" d="M15 7.586L22.414 15H2v-2h15.586l-4-4z" />
+                    </svg>
+                  )}
                 </button>
               </form>
             </div>
