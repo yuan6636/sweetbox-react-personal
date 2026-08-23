@@ -13,17 +13,14 @@ import PasswordInput from '../components/login/PasswordInput';
 // contexts
 import { useAuth } from '../contexts/auth';
 
-// constants
-import { PASSWORD_PATTERN } from '../constants/login';
-
 const passwordRules = {
   required: {
     value: true,
     message: '請輸入密碼',
   },
-  pattern: {
-    value: PASSWORD_PATTERN,
-    message: '密碼為 6-14 字元',
+  minLength: {
+    value: 8,
+    message: '密碼至少需要 8 個字元',
   },
 };
 
@@ -188,9 +185,9 @@ function Login() {
                           value: true,
                           message: '請輸入真實姓名。',
                         },
-                        pattern: {
-                          value: /^[\u4e00-\u9fa5a-zA-Z\s.-]+$/,
-                          message: '姓名僅限中英文、空格與點號',
+                        maxLength: {
+                          value: 50,
+                          message: '姓名最多輸入 50 個字元。',
                         },
                         setValueAs: (v) => v.trim(),
                       }}

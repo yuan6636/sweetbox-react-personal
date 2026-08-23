@@ -4,15 +4,8 @@ import { Icon } from '@iconify/react';
 // components
 import Input from '../../components/Input';
 
-// constants
-import { PASSWORD_INVALID_CHARS } from '../../constants/login';
-
 function PasswordInput({ id, register, errors, labelText, placeholderText, ariaLabel, rules }) {
   const [isVisible, setIsVisible] = useState(false);
-
-  const handlePasswordInput = (e) => {
-    e.target.value = e.target.value.replace(/\s+/g, '').replace(PASSWORD_INVALID_CHARS, '');
-  };
 
   return (
     <Input
@@ -24,10 +17,8 @@ function PasswordInput({ id, register, errors, labelText, placeholderText, ariaL
       placeholderText={placeholderText}
       ariaLabel={ariaLabel}
       iconName="mdi:password-outline"
-      minLength={6}
-      maxLength={14}
+      minLength={8}
       rules={rules}
-      onInput={handlePasswordInput}
       labelRight={
         <button
           type="button"
