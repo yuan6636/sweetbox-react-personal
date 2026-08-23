@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { Icon } from '@iconify/react';
 import { useNavigate } from 'react-router-dom';
 import { message } from 'antd';
 
@@ -9,16 +8,30 @@ import api from '../api';
 
 // components
 import Input from '../components/Input';
+import PasswordInput from '../components/login/PasswordInput';
 
 // contexts
 import { useAuth } from '../contexts/auth';
+
+// constants
+import { PASSWORD_PATTERN } from '../constants/login';
+
+const passwordRules = {
+  required: {
+    value: true,
+    message: '請輸入密碼',
+  },
+  pattern: {
+    value: PASSWORD_PATTERN,
+    message: '密碼為 6-14 字元',
+  },
+};
 
 function Login() {
   const [authMode, setAuthMode] = useState('login');
   const [errorMsg, setErrorMsg] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
-  const { login } = useAuth();
   const {
     register,
     handleSubmit,
@@ -26,6 +39,8 @@ function Login() {
     reset,
     formState: { errors },
   } = useForm({ mode: 'onTouched' });
+
+  const { login } = useAuth();
 
   // 切換登入/註冊時，清空表格
   const toggleMode = (mode) => {
@@ -87,14 +102,9 @@ function Login() {
     }
   };
 
-  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
-
   //欄位字元過濾
   const handleEmailInput = (e) => {
     e.target.value = e.target.value.replace(/\s+/g, '').replace(/[^A-Za-z0-9._%+-@]/g, '');
-  };
-  const handlePasswordInput = (e) => {
-    e.target.value = e.target.value.replace(/\s+/g, '').replace(/[^a-zA-Z0-9._%+-~&]/g, '');
   };
 
   return (
@@ -152,42 +162,14 @@ function Login() {
                       }}
                       onInput={handleEmailInput}
                     />
-                    <Input
+                    <PasswordInput
                       id="password"
                       register={register}
                       errors={errors}
                       labelText="密碼"
-                      type={isPasswordVisible ? 'text' : 'password'}
                       placeholderText="請輸入密碼"
                       ariaLabel="密碼"
-                      iconName="mdi:password-outline"
-                      minLength={6}
-                      maxLength={14}
-                      rules={{
-                        required: {
-                          value: true,
-                          message: '請輸入密碼',
-                        },
-                        pattern: {
-                          value: /^[a-zA-Z0-9._%+-~&]{6,14}$/,
-                          message: '密碼為 6-14 字元',
-                        },
-                      }}
-                      onInput={handlePasswordInput}
-                      labelRight={
-                        <button
-                          type="button"
-                          className="btn-simple-icon mb-2 me-2"
-                          style={{ zIndex: 5, cursor: 'pointer' }}
-                          onClick={() => setIsPasswordVisible(!isPasswordVisible)}
-                        >
-                          {isPasswordVisible ? (
-                            <Icon icon="mdi:eye" width="16" height="16" />
-                          ) : (
-                            <Icon icon="mdi:hide" width="16" height="16" />
-                          )}
-                        </button>
-                      }
+                      rules={passwordRules}
                     />
                   </>
                 ) : (
@@ -234,54 +216,22 @@ function Login() {
                       }}
                       onInput={handleEmailInput}
                     />
-                    <Input
+                    <PasswordInput
                       id="registerPassword"
                       register={register}
                       errors={errors}
                       labelText="密碼"
-                      type={isPasswordVisible ? 'text' : 'password'}
                       placeholderText="請輸入密碼"
                       ariaLabel="密碼"
-                      iconName="mdi:password-outline"
-                      minLength={6}
-                      maxLength={14}
-                      rules={{
-                        required: {
-                          value: true,
-                          message: '請輸入密碼',
-                        },
-                        pattern: {
-                          value: /^[a-zA-Z0-9._%+-~&]{6,14}$/,
-                          message: '密碼為 6-14 字元',
-                        },
-                      }}
-                      onInput={handlePasswordInput}
-                      labelRight={
-                        <button
-                          type="button"
-                          className="btn-simple-icon mb-2 me-2"
-                          style={{ zIndex: 5, cursor: 'pointer' }}
-                          onClick={() => setIsPasswordVisible(!isPasswordVisible)}
-                        >
-                          {isPasswordVisible ? (
-                            <Icon icon="mdi:eye" width="16" height="16" />
-                          ) : (
-                            <Icon icon="mdi:hide" width="16" height="16" />
-                          )}
-                        </button>
-                      }
+                      rules={passwordRules}
                     />
-                    <Input
+                    <PasswordInput
                       id="registerConfirmPassword"
                       register={register}
                       errors={errors}
                       labelText="確認密碼"
-                      type={isPasswordVisible ? 'text' : 'password'}
                       placeholderText="請再次輸入密碼"
                       ariaLabel="確認密碼"
-                      iconName="mdi:password-outline"
-                      minLength={6}
-                      maxLength={14}
                       rules={{
                         required: {
                           value: true,
@@ -289,21 +239,6 @@ function Login() {
                         },
                         validate: (value) => value === watch('registerPassword') || '密碼不一致',
                       }}
-                      onInput={handlePasswordInput}
-                      labelRight={
-                        <button
-                          type="button"
-                          className="btn-simple-icon mb-2 me-2"
-                          style={{ zIndex: 5, cursor: 'pointer' }}
-                          onClick={() => setIsPasswordVisible(!isPasswordVisible)}
-                        >
-                          {isPasswordVisible ? (
-                            <Icon icon="mdi:eye" width="16" height="16" />
-                          ) : (
-                            <Icon icon="mdi:hide" width="16" height="16" />
-                          )}
-                        </button>
-                      }
                     />
                   </>
                 )}
