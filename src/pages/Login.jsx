@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import { message } from 'antd';
@@ -32,12 +32,23 @@ function Login() {
   const {
     register,
     handleSubmit,
-    watch,
     reset,
     formState: { errors },
+    getValues,
+    trigger,
+    watch,
   } = useForm({ mode: 'onTouched' });
 
   const { login } = useAuth();
+
+  const registerPasswordValue = watch('registerPassword');
+
+  // 註冊表單：密碼變動時重新驗證已輸入的確認密碼
+  useEffect(() => {
+    if (getValues('registerConfirmPassword')) {
+      trigger('registerConfirmPassword');
+    }
+  }, [getValues, registerPasswordValue, trigger]);
 
   // 切換登入/註冊時，清空表格
   const toggleMode = (mode) => {
@@ -234,7 +245,8 @@ function Login() {
                           value: true,
                           message: '請再次輸入密碼',
                         },
-                        validate: (value) => value === watch('registerPassword') || '密碼不一致',
+                        validate: (value) =>
+                          value === getValues('registerPassword') || '密碼不一致',
                       }}
                     />
                   </>
