@@ -3,9 +3,9 @@ import { NavLink } from 'react-router-dom';
 function NotFound() {
   return (
     <div className="d-flex flex-column align-items-center justify-content-center vh-100 text-center">
-      <h1 className="display-1 fw-bold text-primary">404</h1>
-      <p className="fs-4 text-muted mb-4">頁面還未製作</p>
-      <NavLink to="/" className="btn btn-primary btn-lg">
+      <img className="notfound-img" src="./images/Not_Found_page/404.png" alt="404 找不到頁面" />
+      <p className="fs-5 text-muted mt-0 mb-4">很抱歉，您造訪的頁面不存在</p>
+      <NavLink to="/" className="btn-primary-icon">
         回首頁
       </NavLink>
     </div>

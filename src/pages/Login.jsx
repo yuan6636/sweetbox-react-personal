@@ -1,31 +1,65 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
-import Input from '../components/Input';
-import { Icon } from '@iconify/react';
 import { useNavigate } from 'react-router-dom';
+import { message } from 'antd';
+
+// api
 import api from '../api';
+
+// components
+import Input from '../components/Input';
+import PasswordInput from '../components/login/PasswordInput';
+
+// contexts
 import { useAuth } from '../contexts/auth';
+
+const passwordRules = {
+  required: {
+    value: true,
+    message: '請輸入密碼',
+  },
+  minLength: {
+    value: 8,
+    message: '密碼至少需要 8 個字元',
+  },
+};
 
 function Login() {
   const [authMode, setAuthMode] = useState('login');
   const [errorMsg, setErrorMsg] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
-  const { login } = useAuth();
   const {
     register,
     handleSubmit,
-    watch,
     reset,
     formState: { errors },
+    getValues,
+    trigger,
+    watch,
   } = useForm({ mode: 'onTouched' });
+
+  const { login } = useAuth();
+
+  const registerPasswordValue = watch('registerPassword');
+
+  // 註冊表單：密碼變動時重新驗證已輸入的確認密碼
+  useEffect(() => {
+    if (getValues('registerConfirmPassword')) {
+      trigger('registerConfirmPassword');
+    }
+  }, [getValues, registerPasswordValue, trigger]);
 
   // 切換登入/註冊時，清空表格
   const toggleMode = (mode) => {
     setAuthMode(mode);
+    setErrorMsg('');
     reset();
   };
 
   const onSubmit = async (data) => {
+    // 防止按鈕重複點擊
+    setIsSubmitting(true);
     if (authMode === 'login') {
       try {
         const userRes = await api.get(`/users?email=${data.email}`);
@@ -33,26 +67,24 @@ function Login() {
           setErrorMsg('帳號密碼錯誤');
           return;
         }
-        const user = userRes.data[0];
+        const { password, ...user } = userRes.data[0];
         const token = 'token_' + Date.now();
         login(user, token);
         navigate('/');
       } catch (error) {
         console.error(error);
+      } finally {
+        setIsSubmitting(false);
       }
     } else {
       try {
         const emailRes = await api.get(`/users?email=${data.registerEmail}`);
         // 確認email
         if (emailRes.data.length > 0) {
-          alert('email已被註冊過');
+          setErrorMsg('email已被註冊過');
           return;
         }
-        // password跟confirmPassword是否一樣
-        if (data.registerPassword !== data.registerConfirmPassword) {
-          alert('確認密碼與密碼不一致');
-          return;
-        }
+
         await api.post(`/users`, {
           name: data.registerName,
           email: data.registerEmail,
@@ -68,22 +100,19 @@ function Login() {
             street: '',
           },
         });
-        alert('註冊成功');
+        message.success('註冊成功');
         setAuthMode('login');
       } catch (error) {
         console.error(error);
+      } finally {
+        setIsSubmitting(false);
       }
     }
   };
 
-  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
-
   //欄位字元過濾
   const handleEmailInput = (e) => {
     e.target.value = e.target.value.replace(/\s+/g, '').replace(/[^A-Za-z0-9._%+-@]/g, '');
-  };
-  const handlePasswordInput = (e) => {
-    e.target.value = e.target.value.replace(/\s+/g, '').replace(/[^a-zA-Z0-9._%+-~&]/g, '');
   };
 
   return (
@@ -141,45 +170,15 @@ function Login() {
                       }}
                       onInput={handleEmailInput}
                     />
-                    <p>{errorMsg}</p>
-                    <Input
+                    <PasswordInput
                       id="password"
                       register={register}
                       errors={errors}
                       labelText="密碼"
-                      type={isPasswordVisible ? 'text' : 'password'}
                       placeholderText="請輸入密碼"
                       ariaLabel="密碼"
-                      iconName="mdi:password-outline"
-                      minLength={6}
-                      maxLength={14}
-                      rules={{
-                        required: {
-                          value: true,
-                          message: '請輸入密碼',
-                        },
-                        pattern: {
-                          value: /^[a-zA-Z0-9._%+-~&]{6,14}$/,
-                          message: '密碼為 6-14 字元',
-                        },
-                      }}
-                      onInput={handlePasswordInput}
-                      labelRight={
-                        <button
-                          type="button"
-                          className="btn-simple-icon mb-2 me-2"
-                          style={{ zIndex: 5, cursor: 'pointer' }}
-                          onClick={() => setIsPasswordVisible(!isPasswordVisible)}
-                        >
-                          {isPasswordVisible ? (
-                            <Icon icon="mdi:eye" width="16" height="16" />
-                          ) : (
-                            <Icon icon="mdi:hide" width="16" height="16" />
-                          )}
-                        </button>
-                      }
+                      rules={passwordRules}
                     />
-                    <p>{errorMsg}</p>
                   </>
                 ) : (
                   <>
@@ -197,9 +196,9 @@ function Login() {
                           value: true,
                           message: '請輸入真實姓名。',
                         },
-                        pattern: {
-                          value: /^[\u4e00-\u9fa5a-zA-Z\s.-]+$/,
-                          message: '姓名僅限中英文、空格與點號',
+                        maxLength: {
+                          value: 50,
+                          message: '姓名最多輸入 50 個字元。',
                         },
                         setValueAs: (v) => v.trim(),
                       }}
@@ -225,87 +224,45 @@ function Login() {
                       }}
                       onInput={handleEmailInput}
                     />
-                    <Input
+                    <PasswordInput
                       id="registerPassword"
                       register={register}
                       errors={errors}
                       labelText="密碼"
-                      type={isPasswordVisible ? 'text' : 'password'}
                       placeholderText="請輸入密碼"
                       ariaLabel="密碼"
-                      iconName="mdi:password-outline"
-                      minLength={6}
-                      maxLength={14}
-                      rules={{
-                        required: {
-                          value: true,
-                          message: '請輸入密碼',
-                        },
-                        pattern: {
-                          value: /^[a-zA-Z0-9._%+-~&]{6,14}$/,
-                          message: '密碼為 6-14 字元',
-                        },
-                      }}
-                      onInput={handlePasswordInput}
-                      labelRight={
-                        <button
-                          type="button"
-                          className="btn-simple-icon mb-2 me-2"
-                          style={{ zIndex: 5, cursor: 'pointer' }}
-                          onClick={() => setIsPasswordVisible(!isPasswordVisible)}
-                        >
-                          {isPasswordVisible ? (
-                            <Icon icon="mdi:eye" width="16" height="16" />
-                          ) : (
-                            <Icon icon="mdi:hide" width="16" height="16" />
-                          )}
-                        </button>
-                      }
+                      rules={passwordRules}
                     />
-                    <Input
+                    <PasswordInput
                       id="registerConfirmPassword"
                       register={register}
                       errors={errors}
                       labelText="確認密碼"
-                      type={isPasswordVisible ? 'text' : 'password'}
                       placeholderText="請再次輸入密碼"
                       ariaLabel="確認密碼"
-                      iconName="mdi:password-outline"
-                      minLength={6}
-                      maxLength={14}
                       rules={{
                         required: {
                           value: true,
                           message: '請再次輸入密碼',
                         },
-                        validate: (value) => value === watch('registerPassword') || '密碼不一致',
+                        validate: (value) =>
+                          value === getValues('registerPassword') || '密碼不一致',
                       }}
-                      onInput={handlePasswordInput}
-                      labelRight={
-                        <button
-                          type="button"
-                          className="btn-simple-icon mb-2 me-2"
-                          style={{ zIndex: 5, cursor: 'pointer' }}
-                          onClick={() => setIsPasswordVisible(!isPasswordVisible)}
-                        >
-                          {isPasswordVisible ? (
-                            <Icon icon="mdi:eye" width="16" height="16" />
-                          ) : (
-                            <Icon icon="mdi:hide" width="16" height="16" />
-                          )}
-                        </button>
-                      }
                     />
                   </>
                 )}
+                <p className="text-semantic-error text-center mb-1">{errorMsg}</p>
                 <button
                   type="submit"
-                  className="btn-primary-icon align-items-center ls-1 lh-sm w-100 mt-6"
+                  className="btn-primary-icon align-items-center ls-1 lh-sm w-100"
+                  disabled={isSubmitting}
                 >
-                  {authMode === 'login' ? '立即登入' : '完成註冊'}
-                  <svg className="ms-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                    <path fill="currentColor" d="M15 7.586L22.414 15H2v-2h15.586l-4-4z" />
-                  </svg>
+                  {isSubmitting ? '處理中...' : authMode === 'login' ? '立即登入' : '完成註冊'}
+                  {!isSubmitting && (
+                    <svg className="ms-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                      <path fill="currentColor" d="M15 7.586L22.414 15H2v-2h15.586l-4-4z" />
+                    </svg>
+                  )}
                 </button>
               </form>
             </div>
