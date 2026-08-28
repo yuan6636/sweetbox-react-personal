@@ -1,12 +1,18 @@
 import { Icon } from '@iconify/react';
 import { NavLink } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import StatusButton, { STATUS } from '../../components/StatusButton';
-import React from 'react';
 import { DatePicker, Button } from 'antd';
+
+// api
+import api from '../../api';
+
+// constants
+import { STATUS } from '../../constants/status';
+
+// components
+import StatusButton from '../../components/StatusButton';
 import Pagination from '../../components/Pagination';
 import Dropdown from '../../components/Dropdown';
-import api from '../../api';
 
 const { RangePicker } = DatePicker;
 
@@ -32,7 +38,6 @@ function Subscribe() {
     { label: '已處理', value: true },
   ];
   const [subData, setSubData] = useState([]);
-  const [userData, setUserData] = useState([]);
   const [subscriptionOrders, setSubscriptionOrders] = useState([]);
   const [searchText, setSearchText] = useState('');
   const [filterTheme, setFilterTheme] = useState('theme_all');
@@ -58,9 +63,6 @@ function Subscribe() {
       api.get('/orders'), // 注意：db.json 裡是 orders，不是 subscription_orders
     ])
       .then(([usersRes, themesRes, subsRes, ordersRes]) => {
-        // users
-        setUserData(usersRes.data);
-
         // themes
         const options = [
           { label: '全部主題', value: 'theme_all' },
@@ -93,7 +95,6 @@ function Subscribe() {
 
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
-  const paginatedData = subData.slice(startIndex, endIndex);
   // 計算篩選數量
   const filterCount =
     (dateRange.length > 0 ? 1 : 0) +
@@ -114,6 +115,7 @@ function Subscribe() {
     { label: '匯出資料', value: 'export_mode' },
     ...(filterCount > 0 ? [{ label: '清除篩選', value: 'clear_filter' }] : []),
   ];
+
   // 計算總數（符合篩選的 subData 數量）
   const filteredData = subData.filter(
     (item) =>
@@ -127,6 +129,7 @@ function Subscribe() {
         (new Date(item.startDate) >= dateRange[0].toDate() &&
           new Date(item.startDate) <= dateRange[1].toDate())),
   );
+  const paginatedData = filteredData.slice(startIndex, endIndex);
   const totalCount = filteredData.length;
   const selectedCount = selectedIds.length;
   return (
@@ -301,7 +304,7 @@ function Subscribe() {
           <div className="d-flex justify-content-center mb-11">
             <Pagination
               currentPage={currentPage}
-              totalItems={subData.length} // db.json subscriptions 筆數
+              totalItems={filteredData.length} // db.json subscriptions 筆數
               itemsPerPage={itemsPerPage} // 每頁顯示幾筆
               onChangePage={setCurrentPage}
             />
@@ -564,7 +567,7 @@ function Subscribe() {
         <div className="d-flex justify-content-center">
           <Pagination
             currentPage={currentPage}
-            totalItems={subData.length} // db.json subscriptions 筆數
+            totalItems={filteredData.length} // subscriptions 筆數
             itemsPerPage={itemsPerPage} // 每頁顯示幾筆
             onChangePage={setCurrentPage}
           />

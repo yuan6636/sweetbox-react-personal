@@ -25,7 +25,7 @@ api.interceptors.response.use(
       logout();
 
       // 導回登入頁
-      window.location.href = '/#/login';
+      window.location.href = `${import.meta.env.BASE_URL}#/login`;
     }
 
     return Promise.reject(error);

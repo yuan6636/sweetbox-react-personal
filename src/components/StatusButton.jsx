@@ -1,10 +1,4 @@
-// StatusButton.jsx
-import React from 'react';
-
-export const STATUS = {
-  UNPROCESSED: false,
-  PROCESSED: true,
-};
+import { STATUS } from '../constants/status';
 
 const StatusButton = ({ status, onClick, variant = 'desktop' }) => {
   const isProcessed = status === STATUS.PROCESSED;
