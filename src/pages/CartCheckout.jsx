@@ -1,5 +1,5 @@
 // 外部資源
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { Icon } from '@iconify/react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
@@ -58,6 +58,9 @@ function CartCheckout() {
   const [isLoading, setIsLoading] = useState(true);
   const [savedCards, setSavedCards] = useState([]);
 
+  // 避免 useEffect 重新取得購物車資料，跳轉到空的購物車頁
+  const hasCheckoutRef = useRef(false);
+
   const { user } = useAuth();
   const { cart, clearCart, updateCartMeta } = useCart();
   const matchedSavedCard = useMatchedSavedCard({ watch, savedCards });
@@ -83,10 +86,14 @@ function CartCheckout() {
 
   useEffect(() => {
     if (!user) return;
-    if (!isLoading) return;
+    // 結帳成功後，cart 變 null，也不重新抓資料，避免誤判並跳轉到 /cart
+    if (hasCheckoutRef.current) return;
+
+    let isIgnore = false;
     const fetchData = async () => {
+      setIsLoading(true); // 重新抓資料前才設定 isLoading 為 true
       try {
-        // 防呆：如果沒有購物車 or 購物車空的，導回 '/cart'
+        // 防呆：非結帳成功情境下，如果沒有購物車 or 購物車是空的，導回 '/cart'
         if (!cart || !cart.cart_items || cart.cart_items.length === 0) {
           navigate('/cart');
           return;
@@ -111,17 +118,22 @@ function CartCheckout() {
           };
         });
 
-        setSavedCards(savedCardsRes.data);
-        setEnrichedCartItems(enrichedItems);
+        if (!isIgnore) {
+          setSavedCards(savedCardsRes.data);
+          setEnrichedCartItems(enrichedItems);
+        }
       } catch (err) {
         console.error('資料讀取失敗', err);
-        message.error('無法取得訂單資訊');
+        if (!isIgnore) message.error('無法取得訂單資訊');
       } finally {
-        setIsLoading(false);
+        if (!isIgnore) setIsLoading(false);
       }
     };
     fetchData();
-  }, [navigate, user, cart, isLoading]);
+    return () => {
+      isIgnore = true;
+    };
+  }, [navigate, user, cart]);
 
   const onSubmit = async (formData) => {
     if (!enrichedCartItems || enrichedCartItems.length === 0) {
@@ -232,8 +244,11 @@ function CartCheckout() {
       for (const item of enrichedCartItems) {
         await api.delete(`/cart_items/${item.id}`);
       }
-      if (cart?.id) await api.delete(`/carts/${cart.id}`);
+      if (cart?.id) {
+        await api.delete(`/carts/${cart.id}`);
+      }
 
+      hasCheckoutRef.current = true;
       clearCart();
       navigate(`/cartFinish?sub_ids=${subIds}`, { replace: true, state: { showSuccess: true } });
     } catch (error) {
