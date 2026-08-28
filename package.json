@@ -10,7 +10,7 @@
     "preview": "vite preview",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d dist",
-    "server": "json-server --watch db.json"
+    "server": "json-server db.json"
   },
   "dependencies": {
     "@iconify/react": "^6.0.2",
