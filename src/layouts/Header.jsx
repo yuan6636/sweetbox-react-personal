@@ -35,12 +35,8 @@ function Header() {
         <div className="flex-equal">
           <NavLink to="/">
             <picture>
-              <source srcSet="./images/Home_Page/sweetBox_logo.svg" media="(min-width: 992px)" />
-              <img
-                className="logo-icon"
-                src="./images/Home_Page/sweetBox_logo_3.svg"
-                alt="一盒甜logo"
-              />
+              <source srcSet="./images/Home_Page/logo.svg" media="(min-width: 992px)" />
+              <img className="logo-icon" src="./images/Home_Page/logo-small.svg" alt="一盒甜logo" />
             </picture>
           </NavLink>
         </div>

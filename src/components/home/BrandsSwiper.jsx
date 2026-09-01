@@ -7,15 +7,15 @@ import 'swiper/css/navigation';
 
 // Desktop
 const desktopBrands = [
-  './images/Home_Page/brand/brand-1.png',
-  './images/Home_Page/brand/brand-2.png',
-  './images/Home_Page/brand/brand-3.png',
-  './images/Home_Page/brand/brand-4.png',
-  './images/Home_Page/brand/brand-5.png',
-  './images/Home_Page/brand/brand-6.png',
-  './images/Home_Page/brand/brand-7.png',
-  './images/Home_Page/brand/brand-8.png',
-  './images/Home_Page/brand/brand-9.png',
+  './images/Home_Page/brand/brand-01.png',
+  './images/Home_Page/brand/brand-02.png',
+  './images/Home_Page/brand/brand-03.png',
+  './images/Home_Page/brand/brand-04.png',
+  './images/Home_Page/brand/brand-05.png',
+  './images/Home_Page/brand/brand-06.png',
+  './images/Home_Page/brand/brand-07.png',
+  './images/Home_Page/brand/brand-08.png',
+  './images/Home_Page/brand/brand-09.png',
   './images/Home_Page/brand/brand-10.png',
   './images/Home_Page/brand/brand-11.png',
   './images/Home_Page/brand/brand-12.png',
@@ -30,28 +30,28 @@ const desktopBrandsRow2 = desktopBrands.slice(8, 16);
 
 // Mobile
 const mobileBrandsRow1 = [
-  './images/Home_Page/brand-mobile/01.png',
-  './images/Home_Page/brand-mobile/02.png',
-  './images/Home_Page/brand-mobile/16.png',
-  './images/Home_Page/brand-mobile/15.png',
-  './images/Home_Page/brand-mobile/03.png',
-  './images/Home_Page/brand-mobile/04.png',
+  './images/Home_Page/brand-mobile/brand-mobile-01.png',
+  './images/Home_Page/brand-mobile/brand-mobile-02.png',
+  './images/Home_Page/brand-mobile/brand-mobile-16.png',
+  './images/Home_Page/brand-mobile/brand-mobile-15.png',
+  './images/Home_Page/brand-mobile/brand-mobile-03.png',
+  './images/Home_Page/brand-mobile/brand-mobile-04.png',
 ];
 
 const mobileBrandsRow2 = [
-  './images/Home_Page/brand-mobile/05.png',
-  './images/Home_Page/brand-mobile/11.png',
-  './images/Home_Page/brand-mobile/12.png',
-  './images/Home_Page/brand-mobile/06.png',
-  './images/Home_Page/brand-mobile/13.png',
+  './images/Home_Page/brand-mobile/brand-mobile-05.png',
+  './images/Home_Page/brand-mobile/brand-mobile-11.png',
+  './images/Home_Page/brand-mobile/brand-mobile-12.png',
+  './images/Home_Page/brand-mobile/brand-mobile-06.png',
+  './images/Home_Page/brand-mobile/brand-mobile-13.png',
 ];
 
 const mobileBrandsRow3 = [
-  './images/Home_Page/brand-mobile/09.png',
-  './images/Home_Page/brand-mobile/10.png',
-  './images/Home_Page/brand-mobile/14.png',
-  './images/Home_Page/brand-mobile/07.png',
-  './images/Home_Page/brand-mobile/08.png',
+  './images/Home_Page/brand-mobile/brand-mobile-09.png',
+  './images/Home_Page/brand-mobile/brand-mobile-10.png',
+  './images/Home_Page/brand-mobile/brand-mobile-14.png',
+  './images/Home_Page/brand-mobile/brand-mobile-07.png',
+  './images/Home_Page/brand-mobile/brand-mobile-08.png',
 ];
 
 function BrandsSwiper() {
@@ -68,9 +68,9 @@ function BrandsSwiper() {
             <picture>
               <source
                 media="(max-width: 576px)"
-                srcSet="./images/Home_Page/title_section07_mobile.png"
+                srcSet="./images/Home_Page/title-brand-mobile.png"
               />
-              <img className="brands-img" src="./images/Home_Page/title_section07.svg" alt="" />
+              <img className="brands-img" src="./images/Home_Page/title-brand.svg" alt="" />
             </picture>
           </h2>
         </div>

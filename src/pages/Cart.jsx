@@ -326,7 +326,7 @@ function Cart() {
             <h1 className="cart-title p-3 py-lg-2 px-lg-4 cart-empty">購物車</h1>
             <div className="empty-cart-wrapper text-center">
               <div className="empty-cart-img mx-auto mb-6 mb-sm-8">
-                <img src="./images/Cart_Page/pic_empty.svg" alt="空的購物車圖片" />
+                <img src="./images/Cart_Page/pic-empty.svg" alt="空的購物車圖片" />
               </div>
               <h1 className="empty-cart-title mb-2">購物車裡還沒有甜點呢</h1>
               <p className="lh-base mb-6 mb-sm-8">快來挑選一盒，讓生活多一點甜</p>

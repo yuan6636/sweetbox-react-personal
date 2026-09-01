@@ -120,9 +120,12 @@ function ThemeReviews() {
           <picture>
             <source
               media="(max-width: 992px)"
-              srcSet="./images/Theme_Detail/Feature/Title_section04_mobile.svg"
+              srcSet="./images/Theme_Detail/Feature/title-review-mobile.svg"
             />
-            <img src="./images/Theme_Detail/Feature/Title_section04.svg" alt="Title_section04" />
+            <img
+              src="./images/Theme_Detail/Feature/title-review-desktop.svg"
+              alt="title-review-desktop"
+            />
           </picture>
         </div>
         {/* 主題評分區 */}

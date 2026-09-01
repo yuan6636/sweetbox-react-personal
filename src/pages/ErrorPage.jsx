@@ -34,7 +34,7 @@ function ErrorPage() {
     <main className="error-page d-flex align-items-center justify-content-center">
       <section className="error-card bg-white text-center">
         {/* 圖片 */}
-        <img src="./images/Error_Page/error-page-image.png" alt="" />
+        <img src="./images/Error_Page/pic-error.png" alt="" />
 
         <h1 className="title">發生了一點小意外...</h1>
 

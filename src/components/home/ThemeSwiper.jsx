@@ -11,9 +11,9 @@ import 'swiper/css/navigation';
 
 // Themes
 const themesTitleMap = [
-  { src: './images/Home_Page/feature.svg' },
-  { src: './images/Home_Page/season.svg' },
-  { src: './images/Home_Page/local.svg' },
+  { src: './images/Home_Page/title-select.svg' },
+  { src: './images/Home_Page/title-season.svg' },
+  { src: './images/Home_Page/title-local.svg' },
 ];
 
 // theme title highlight
@@ -174,14 +174,14 @@ function ThemeSwiper() {
         className="position-absolute cake-img z-n1"
         height="244"
         width="272"
-        src="./images/Home_Page/bg_cake.svg"
+        src="./images/Home_Page/deco-02.svg"
         alt=""
       />
       <img
         className="position-absolute dessert-img z-n1  d-none d-lg-block"
         height="335"
         width="325"
-        src="./images/Home_Page/bg_dessert.svg"
+        src="./images/Home_Page/deco-04.svg"
         alt=""
       />
     </section>

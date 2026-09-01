@@ -13,11 +13,11 @@ function WhatInTheBox() {
               <source
                 media="(max-width: 992px)"
                 srcSet="
-              ./images/Theme_Detail/Feature/Title_section02_mobile.svg
+              ./images/Theme_Detail/Feature/title-select-mobile.svg
             "
               />
               <img
-                src="./images/Theme_Detail/Feature/Title_section02.svg"
+                src="./images/Theme_Detail/Feature/title-select-desktop.svg"
                 alt="精選甜點盒裡有甚麼"
               />
             </picture>

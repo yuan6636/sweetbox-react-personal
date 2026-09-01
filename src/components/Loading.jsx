@@ -3,11 +3,7 @@ function Loading({ text = '載入中...', className = 'vh-100' }) {
     <div
       className={`loading-box d-flex justify-content-center align-items-center gap-2 ${className}`}
     >
-      <img
-        className="loading-box-icon"
-        src="./images/Home_Page/sweetBox_logo_3.svg"
-        alt="一盒甜logo"
-      />
+      <img className="loading-box-icon" src="./images/Home_Page/logo-small.svg" alt="一盒甜logo" />
       <p className="text-neutral-700 fs-6 mb-0">{text}</p>
     </div>
   );
