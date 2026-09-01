@@ -7,22 +7,22 @@ import 'swiper/css/navigation';
 
 // Desktop
 const desktopBrands = [
-  './images/Home_Page/brand/brand-01.png',
-  './images/Home_Page/brand/brand-02.png',
-  './images/Home_Page/brand/brand-03.png',
-  './images/Home_Page/brand/brand-04.png',
-  './images/Home_Page/brand/brand-05.png',
-  './images/Home_Page/brand/brand-06.png',
-  './images/Home_Page/brand/brand-07.png',
-  './images/Home_Page/brand/brand-08.png',
-  './images/Home_Page/brand/brand-09.png',
-  './images/Home_Page/brand/brand-10.png',
-  './images/Home_Page/brand/brand-11.png',
-  './images/Home_Page/brand/brand-12.png',
-  './images/Home_Page/brand/brand-13.png',
-  './images/Home_Page/brand/brand-14.png',
-  './images/Home_Page/brand/brand-15.png',
-  './images/Home_Page/brand/brand-16.png',
+  './images/home-page/brand/brand-01.png',
+  './images/home-page/brand/brand-02.png',
+  './images/home-page/brand/brand-03.png',
+  './images/home-page/brand/brand-04.png',
+  './images/home-page/brand/brand-05.png',
+  './images/home-page/brand/brand-06.png',
+  './images/home-page/brand/brand-07.png',
+  './images/home-page/brand/brand-08.png',
+  './images/home-page/brand/brand-09.png',
+  './images/home-page/brand/brand-10.png',
+  './images/home-page/brand/brand-11.png',
+  './images/home-page/brand/brand-12.png',
+  './images/home-page/brand/brand-13.png',
+  './images/home-page/brand/brand-14.png',
+  './images/home-page/brand/brand-15.png',
+  './images/home-page/brand/brand-16.png',
 ];
 
 const desktopBrandsRow1 = desktopBrands.slice(0, 8);
@@ -30,28 +30,28 @@ const desktopBrandsRow2 = desktopBrands.slice(8, 16);
 
 // Mobile
 const mobileBrandsRow1 = [
-  './images/Home_Page/brand-mobile/brand-mobile-01.png',
-  './images/Home_Page/brand-mobile/brand-mobile-02.png',
-  './images/Home_Page/brand-mobile/brand-mobile-16.png',
-  './images/Home_Page/brand-mobile/brand-mobile-15.png',
-  './images/Home_Page/brand-mobile/brand-mobile-03.png',
-  './images/Home_Page/brand-mobile/brand-mobile-04.png',
+  './images/home-page/brand-mobile/brand-mobile-01.png',
+  './images/home-page/brand-mobile/brand-mobile-02.png',
+  './images/home-page/brand-mobile/brand-mobile-16.png',
+  './images/home-page/brand-mobile/brand-mobile-15.png',
+  './images/home-page/brand-mobile/brand-mobile-03.png',
+  './images/home-page/brand-mobile/brand-mobile-04.png',
 ];
 
 const mobileBrandsRow2 = [
-  './images/Home_Page/brand-mobile/brand-mobile-05.png',
-  './images/Home_Page/brand-mobile/brand-mobile-11.png',
-  './images/Home_Page/brand-mobile/brand-mobile-12.png',
-  './images/Home_Page/brand-mobile/brand-mobile-06.png',
-  './images/Home_Page/brand-mobile/brand-mobile-13.png',
+  './images/home-page/brand-mobile/brand-mobile-05.png',
+  './images/home-page/brand-mobile/brand-mobile-11.png',
+  './images/home-page/brand-mobile/brand-mobile-12.png',
+  './images/home-page/brand-mobile/brand-mobile-06.png',
+  './images/home-page/brand-mobile/brand-mobile-13.png',
 ];
 
 const mobileBrandsRow3 = [
-  './images/Home_Page/brand-mobile/brand-mobile-09.png',
-  './images/Home_Page/brand-mobile/brand-mobile-10.png',
-  './images/Home_Page/brand-mobile/brand-mobile-14.png',
-  './images/Home_Page/brand-mobile/brand-mobile-07.png',
-  './images/Home_Page/brand-mobile/brand-mobile-08.png',
+  './images/home-page/brand-mobile/brand-mobile-09.png',
+  './images/home-page/brand-mobile/brand-mobile-10.png',
+  './images/home-page/brand-mobile/brand-mobile-14.png',
+  './images/home-page/brand-mobile/brand-mobile-07.png',
+  './images/home-page/brand-mobile/brand-mobile-08.png',
 ];
 
 function BrandsSwiper() {
@@ -68,9 +68,9 @@ function BrandsSwiper() {
             <picture>
               <source
                 media="(max-width: 576px)"
-                srcSet="./images/Home_Page/title-brand-mobile.png"
+                srcSet="./images/home-page/title-brand-mobile.png"
               />
-              <img className="brands-img" src="./images/Home_Page/title-brand.svg" alt="" />
+              <img className="brands-img" src="./images/home-page/title-brand.svg" alt="" />
             </picture>
           </h2>
         </div>

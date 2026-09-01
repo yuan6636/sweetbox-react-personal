@@ -4,7 +4,7 @@
   background-image: none;
 
   @media (min-width: 992px) {
-    background-image: url('/images/Theme_Detail/Feature/deco-01.svg');
+    background-image: url('/images/theme-detail/deco-01.svg');
     background-size: 576px auto;
     background-repeat: no-repeat;
     background-position: left bottom;
@@ -168,7 +168,7 @@
     content: '';
     width: 100%;
     height: 20px;
-    background-image: url('/images/Theme_Detail/Feature/deco-wave-mobile.svg');
+    background-image: url('/images/theme-detail/deco-wave-mobile.svg');
     background-position: center;
     background-size: cover;
     background-repeat: no-repeat;
@@ -178,7 +178,7 @@
     @media (min-width: 376px) {
       height: 80px;
       top: -80px;
-      background-image: url('/images/Theme_Detail/Feature/deco-wave-desktop.svg');
+      background-image: url('/images/theme-detail/deco-wave-desktop.svg');
     }
   }
 
@@ -187,7 +187,7 @@
     content: '';
     width: 100%;
     height: 20px;
-    background-image: url('/images/Theme_Detail/Feature/deco-wave-mobile.svg');
+    background-image: url('/images/theme-detail/deco-wave-mobile.svg');
     background-position: center;
     background-size: cover;
     background-repeat: no-repeat;
@@ -198,7 +198,7 @@
     @media (min-width: 376px) {
       height: 80px;
       bottom: -80px;
-      background-image: url('/images/Theme_Detail/Feature/deco-wave-desktop.svg');
+      background-image: url('/images/theme-detail/deco-wave-desktop.svg');
       transform: scaleY(-1);
     }
   }
@@ -208,7 +208,7 @@
 .theme-content {
   background-image:
     linear-gradient(rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.5)),
-    url('/images/Theme_Detail/Feature/bg-grid-desktop.svg');
+    url('/images/theme-detail/bg-grid-desktop.svg');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -217,7 +217,7 @@
     content: '';
     width: 100%;
     height: 20px;
-    background-image: url('/images/Theme_Detail/Feature/deco-wave-desktop.svg');
+    background-image: url('/images/theme-detail/deco-wave-desktop.svg');
     background-position: center;
     background-size: cover;
     background-repeat: no-repeat;
@@ -249,7 +249,7 @@
   align-items: center;
   justify-content: center;
   text-align: center;
-  background-image: url('/images/Theme_Detail/Feature/bg-grid-card.svg');
+  background-image: url('/images/theme-detail/bg-grid-card.svg');
   background-repeat: no-repeat;
   background-position: center;
   background-size: 100% 100%; /* 背景圖完全撐滿容器，不管比例 */
@@ -532,9 +532,9 @@
 
   @media (min-width: 992px) {
     background-image:
-      url('/images/Theme_Detail/Feature/deco-02.svg'),
-      url('/images/Theme_Detail/Feature/deco-03.svg'),
-      url('/images/Theme_Detail/Feature/deco-04.svg');
+      url('/images/theme-detail/deco-02.svg'),
+      url('/images/theme-detail/deco-03.svg'),
+      url('/images/theme-detail/deco-04.svg');
 
     background-repeat: no-repeat;
 
@@ -898,8 +898,8 @@
   background-image: none;
   @media (min-width: 576px) {
     background-image:
-      url('./images/Cart_Page/deco-01.svg'), url('./images/Cart_Page/deco-02.svg'),
-      url('./images/Cart_Page/deco-03.svg'), url('./images/Cart_Page/deco-04.svg');
+      url('/images/cart-page/deco-01.svg'), url('/images/cart-page/deco-02.svg'),
+      url('/images/cart-page/deco-03.svg'), url('/images/cart-page/deco-04.svg');
     background-size: 25%, 25%, 25%, 22%;
     background-position:
       left bottom,

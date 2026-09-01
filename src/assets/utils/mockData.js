@@ -6,8 +6,8 @@ export const firstSweetBox = [
     enName: 'Butterly Cookies',
     desc: '鬆脆餅乾夾入濃郁奶油餡，層次豐富。酥香與滑順並存，入口充滿溫潤奶香。',
     img: {
-      mobile: './images/Theme_Detail/Feature/pic-cookie-mobile.jpg',
-      desktop: './images/Theme_Detail/Feature/pic-cookie-desktop.jpg',
+      mobile: './images/theme-detail/pic-cookie-mobile.jpg',
+      desktop: './images/theme-detail/pic-cookie-desktop.jpg',
     },
   },
   {
@@ -16,8 +16,8 @@ export const firstSweetBox = [
     enName: 'Choco & Mood',
     desc: '嚴選比利時 70% 黑巧克力與法國奶油，加入核桃與海鹽，甜中帶苦，層次迷人。',
     img: {
-      mobile: './images/Theme_Detail/Feature/pic-brownie-mobile.jpg',
-      desktop: './images/Theme_Detail/Feature/pic-brownie-desktop.jpg',
+      mobile: './images/theme-detail/pic-brownie-mobile.jpg',
+      desktop: './images/theme-detail/pic-brownie-desktop.jpg',
     },
   },
   {
@@ -26,8 +26,8 @@ export const firstSweetBox = [
     enName: 'Salt&Crust Bakery',
     desc: '外層撒上細緻椒鹽，酥脆中帶有鹹香，簡單卻耐吃，讓人一口接一口的經典小食。',
     img: {
-      mobile: './images/Theme_Detail/Feature/pic-pretzels-mobile.jpg',
-      desktop: './images/Theme_Detail/Feature/pic-pretzels-desktop.jpg',
+      mobile: './images/theme-detail/pic-pretzels-mobile.jpg',
+      desktop: './images/theme-detail/pic-pretzels-desktop.jpg',
     },
   },
   {
@@ -36,8 +36,8 @@ export const firstSweetBox = [
     enName: 'Pistachio Lane',
     desc: '以綿軟牛軋糖揉入滿滿開心果仁。堅果香脆與甜蜜嚼感，讓人愈嚼愈香。',
     img: {
-      mobile: './images/Theme_Detail/Feature/pic-candy-mobile.jpg',
-      desktop: './images/Theme_Detail/Feature/pic-candy-desktop.jpg',
+      mobile: './images/theme-detail/pic-candy-mobile.jpg',
+      desktop: './images/theme-detail/pic-candy-desktop.jpg',
     },
   },
   {
@@ -46,8 +46,8 @@ export const firstSweetBox = [
     enName: 'Snowberry Patisserie',
     desc: '滿佈糖粉的雪球外型，入口酥鬆輕盈。帶有淡雅草莓香氣，甜美而不膩。',
     img: {
-      mobile: './images/Theme_Detail/Feature/pic-snowball-mobile.jpg',
-      desktop: './images/Theme_Detail/Feature/pic-snowball-desktop.jpg',
+      mobile: './images/theme-detail/pic-snowball-mobile.jpg',
+      desktop: './images/theme-detail/pic-snowball-desktop.jpg',
     },
   },
   {
@@ -56,8 +56,8 @@ export const firstSweetBox = [
     enName: 'Heritage Pound Cake Co.',
     desc: '傳統比例製作，口感綿密紮實。濃厚奶油香氣，經典耐吃不退流行。',
     img: {
-      mobile: './images/Theme_Detail/Feature/pic-cake-mobile.jpg',
-      desktop: './images/Theme_Detail/Feature/pic-cake-desktop.jpg',
+      mobile: './images/theme-detail/pic-cake-mobile.jpg',
+      desktop: './images/theme-detail/pic-cake-desktop.jpg',
     },
   },
   {
@@ -66,8 +66,8 @@ export const firstSweetBox = [
     enName: 'Choco & Mood',
     desc: '手工蛋捲，層層酥香，每一口都保留傳統蛋香，清雅迷人，簡單卻令人回味無窮。',
     img: {
-      mobile: './images/Theme_Detail/Feature/pic-eggroll-mobile.jpg',
-      desktop: './images/Theme_Detail/Feature/pic-eggroll-desktop.jpg',
+      mobile: './images/theme-detail/pic-eggroll-mobile.jpg',
+      desktop: './images/theme-detail/pic-eggroll-desktop.jpg',
     },
   },
   {
@@ -76,8 +76,8 @@ export const firstSweetBox = [
     enName: 'Caramel & Nut Atelier',
     desc: '以焦糖拌炒多種堅果，填入香酥塔皮。層層堆疊的堅果香氣，口感豐富紮實。',
     img: {
-      mobile: './images/Theme_Detail/Feature/pic-tart-mobile.jpg',
-      desktop: './images/Theme_Detail/Feature/pic-tart-desktop.jpg',
+      mobile: './images/theme-detail/pic-tart-mobile.jpg',
+      desktop: './images/theme-detail/pic-tart-desktop.jpg',
     },
   },
   {
@@ -86,8 +86,8 @@ export const firstSweetBox = [
     enName: 'Mochi & Nut House',
     desc: '軟Q麻糬包裹綿密花生餡，香濃順口。經典台式甜點，軟糯與堅果香完美交織。',
     img: {
-      mobile: './images/Theme_Detail/Feature/pic-mochi-mobile.jpg',
-      desktop: './images/Theme_Detail/Feature/pic-mochi-desktop.jpg',
+      mobile: './images/theme-detail/pic-mochi-mobile.jpg',
+      desktop: './images/theme-detail/pic-mochi-desktop.jpg',
     },
   },
 ];

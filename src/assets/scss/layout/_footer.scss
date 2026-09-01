@@ -9,12 +9,12 @@
     top: -20px;
     width: 100%;
     height: 20px;
-    background: url('/images/Home_Page/deco-footer-wave-mobile.svg') center/cover no-repeat;
+    background: url('/images/home-page/deco-footer-wave-mobile.svg') center/cover no-repeat;
 
     @media (min-width: 375px) {
       height: 29px;
       top: -17px;
-      background-image: url('/images/Home_Page/deco-footer-wave-desktop.svg');
+      background-image: url('/images/home-page/deco-footer-wave-desktop.svg');
     }
   }
 

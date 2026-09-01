@@ -12,7 +12,7 @@ function HeroBanner() {
           <span className="visually-hidden">選擇障礙救星</span>
           <img
             className="title-hero mb-6 mb-sm-9"
-            src="./images/Home_Page/title-hero-mobile.svg"
+            src="./images/home-page/title-hero-mobile.svg"
             alt=""
           />
         </h1>

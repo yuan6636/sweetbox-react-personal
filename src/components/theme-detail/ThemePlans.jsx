@@ -305,7 +305,7 @@ function ThemePlans() {
                       <li key={tip.icon} className="fs-8 mb-2 d-flex align-items-center">
                         <img
                           className="me-3"
-                          src={`./images/Theme_Detail/Feature/${tip.icon}.svg`}
+                          src={`./images/theme-detail/${tip.icon}.svg`}
                           alt={tip.alt}
                         />
                         <p>{tip.text}</p>

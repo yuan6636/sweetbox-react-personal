@@ -150,7 +150,7 @@ function CartFinish() {
               {/* 感謝訂閱 */}
               <section className="cart-wrapper text-center mb-9 mb-lg-6">
                 <div className="mx-auto mb-6 mb-sm-8">
-                  <img src="./images/Cart_Page/pic-finish.svg" alt="空的購物車圖片" />
+                  <img src="./images/cart-page/pic-finish.svg" alt="空的購物車圖片" />
                 </div>
                 <h2 className="empty-cart-title mb-2">感謝您的訂閱</h2>
                 <p className="lh-base mb-3 mb-sm-2">

@@ -1,28 +1,28 @@
 const features = [
   {
     id: 'feature-deco-01',
-    img: { src: './images/Home_Page/icon-feature-01.svg' },
+    img: { src: './images/home-page/icon-feature-01.svg' },
     title: '每月驚喜主題盒',
     description: '每月依不同主題搭配 6 到 10 款不重複的甜點驚喜，讓你不再煩惱選擇。',
     delay: 0,
   },
   {
     id: 'book',
-    img: { src: './images/Home_Page/icon-feature-02.svg' },
+    img: { src: './images/home-page/icon-feature-02.svg' },
     title: '詳細介紹與保存指南',
     description: '每盒甜點附上詳細介紹與保存指南，讓你放心品嚐，輕鬆享受。',
     delay: 100,
   },
   {
     id: 'rating',
-    img: { src: './images/Home_Page/icon-feature-03.svg' },
+    img: { src: './images/home-page/icon-feature-03.svg' },
     title: '主流與小眾品牌混搭',
     description: '結合大品牌經典與小眾人氣店，帶來多樣化的口感體驗。',
     delay: 200,
   },
   {
     id: 'nuts',
-    img: { src: './images/Home_Page/icon-feature-04.svg' },
+    img: { src: './images/home-page/icon-feature-04.svg' },
     title: '限量新品與在地特色',
     description: '第一時間嚐到市場熱點新品與地方特色，讓你永遠走在甜點潮流前端。',
     delay: 300,
@@ -34,7 +34,7 @@ function BrandFeatures() {
     <section className="position-relative">
       <img
         className="position-absolute end-0 top-0 d-none d-lg-block z-n1"
-        src="./images/Home_Page/deco-01.png"
+        src="./images/home-page/deco-01.png"
         alt=""
         height="744"
         width="584"
@@ -48,10 +48,10 @@ function BrandFeatures() {
             <span className="visually-hidden">讓你的味蕾每個月都充滿期待</span>
             <picture>
               <source
-                srcSet="./images/Home_Page/title-feature-mobile.svg"
+                srcSet="./images/home-page/title-feature-mobile.svg"
                 media="(max-width: 992px)"
               />
-              <img src="./images/Home_Page/title-feature-desktop.svg" alt="" />
+              <img src="./images/home-page/title-feature-desktop.svg" alt="" />
             </picture>
           </h2>
         </div>

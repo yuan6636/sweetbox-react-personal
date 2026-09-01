@@ -13,11 +13,11 @@ function WhatInTheBox() {
               <source
                 media="(max-width: 992px)"
                 srcSet="
-              ./images/Theme_Detail/Feature/title-select-mobile.svg
+              ./images/theme-detail/title-select-mobile.svg
             "
               />
               <img
-                src="./images/Theme_Detail/Feature/title-select-desktop.svg"
+                src="./images/theme-detail/title-select-desktop.svg"
                 alt="精選甜點盒裡有甚麼"
               />
             </picture>
@@ -31,7 +31,7 @@ function WhatInTheBox() {
           {featureCards.map((feature) => (
             <div key={feature.icon} className="detail-feature-card">
               <div className="detail-feature-card-content">
-                <img src={`./images/Theme_Detail/Feature/${feature.icon}.svg`} alt={feature.alt} />
+                <img src={`./images/theme-detail/${feature.icon}.svg`} alt={feature.alt} />
                 <p className="text-primary-600 fw-bold fs-5">{feature.title}</p>
                 <p className="text-neutral-800 fs-8">{feature.description}</p>
               </div>

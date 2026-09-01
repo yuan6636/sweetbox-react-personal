@@ -120,10 +120,10 @@ function ThemeReviews() {
           <picture>
             <source
               media="(max-width: 992px)"
-              srcSet="./images/Theme_Detail/Feature/title-review-mobile.svg"
+              srcSet="./images/theme-detail/title-review-mobile.svg"
             />
             <img
-              src="./images/Theme_Detail/Feature/title-review-desktop.svg"
+              src="./images/theme-detail/title-review-desktop.svg"
               alt="title-review-desktop"
             />
           </picture>
