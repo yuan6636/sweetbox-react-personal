@@ -3,7 +3,7 @@ import HeroBanner from '../components/home/HeroBanner';
 import BrandFeatures from '../components/home/BrandFeatures';
 import ThemeSwiper from '../components/home/ThemeSwiper';
 import SubscriptionSteps from '../components/home/SubscriptionSteps';
-import SubBanner from '../components/home/SubBanner';
+import SecondaryBanner from '../components/home/SecondaryBanner';
 import FeedbackSwiper from '../components/home/FeedbackSwiper';
 import BrandsSwiper from '../components/home/BrandsSwiper';
 import FaqSection from '../components/home/FaqSection';
@@ -22,7 +22,7 @@ function Home() {
         {/* Subscription steps */}
         <SubscriptionSteps />
         {/* Sub banner */}
-        <SubBanner />
+        <SecondaryBanner />
         {/* Feedback */}
         <FeedbackSwiper />
         {/* Brands partner */}

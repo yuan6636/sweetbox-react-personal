@@ -1,5 +1,5 @@
 import { Icon } from '@iconify/react';
-import ShipDate from './ShipDate';
+import ShippingDate from './ShippingDate';
 import { useState, useEffect } from 'react';
 
 const SHIP_TEXT = {
@@ -22,7 +22,7 @@ function DesktopMenu({ onChange }) {
   );
 }
 
-function MobileMenu({ shippingStatus, onChange, currentShipStatus }) {
+function MobileMenu({ shippingStatus, onChange, currentShippingStatus }) {
   return (
     <div className="ship-menu-mobile">
       <div className="bottom-header d-flex flex-column align-items-center">
@@ -48,7 +48,7 @@ function MobileMenu({ shippingStatus, onChange, currentShipStatus }) {
         </div>
         <div
           className="bottom-text py-3 fs-8 text-center text-neutral-700"
-          onClick={() => onChange(currentShipStatus)}
+          onClick={() => onChange(currentShippingStatus)}
         >
           取消不變更
         </div>
@@ -60,7 +60,7 @@ function MobileMenu({ shippingStatus, onChange, currentShipStatus }) {
 function ShippingStatus({ record, isOpen, onToggle, onChange }) {
   const { shippingStatus, isArchived } = record;
   const currentPayment = record.paymentStatus;
-  const currentShipStatus = record.shippingStatus;
+  const currentShippingStatus = record.shippingStatus;
   const isPayFailed = currentPayment === 'failed';
   const isPaySuccess = currentPayment === 'paid';
   const hasData = shippingStatus !== null && shippingStatus !== undefined;
@@ -103,7 +103,7 @@ function ShippingStatus({ record, isOpen, onToggle, onChange }) {
           <MobileMenu
             shippingStatus={shippingStatus}
             onChange={onChange}
-            currentShipStatus={currentShipStatus}
+            currentShippingStatus={currentShippingStatus}
           />
         ) : (
           <DesktopMenu onChange={onChange} />

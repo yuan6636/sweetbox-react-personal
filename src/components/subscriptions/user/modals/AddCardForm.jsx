@@ -8,7 +8,7 @@ import { formatCardNumber, isCardExpired, getCardType } from '../../../../utils/
 import { creditCardMonths, creditCardYears } from '../../../../data/formOptions';
 
 // 元件區
-import Select from '../../../Select';
+import FormSelect from '../../../FormSelect';
 import FormError from '../../../FormError';
 
 // api
@@ -161,7 +161,7 @@ function AddCardForm({ subscription, onToggleAddCard, fetchPaymentData }) {
                     },
                   }}
                   render={({ field: { value, onChange } }) => (
-                    <Select
+                    <FormSelect
                       options={creditCardMonths}
                       value={value}
                       onChange={(val) => {
@@ -187,7 +187,7 @@ function AddCardForm({ subscription, onToggleAddCard, fetchPaymentData }) {
                     },
                   }}
                   render={({ field: { value, onChange } }) => (
-                    <Select
+                    <FormSelect
                       options={creditCardYears}
                       value={value}
                       onChange={(val) => {

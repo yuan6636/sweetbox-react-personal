@@ -12,7 +12,7 @@ import { Icon } from '@iconify/react';
 import { message } from 'antd';
 
 // 內部元件
-import SideMenuFloat from '../../components/SideMenuFloat';
+import FloatingSideMenu from './FloatingSideMenu';
 import Loading from '../../components/Loading';
 import ThemeDesktopSwiper from './ThemeDesktopSwiper';
 
@@ -130,7 +130,7 @@ function ThemePlans() {
           <div className="container py-lg-11">
             {/* 桌機 side-menu-float */}
             {/* scroll up才顯示  */}
-            <SideMenuFloat themes={themes} lastMenuItemRef={lastMenuItemRef} />
+            <FloatingSideMenu themes={themes} lastMenuItemRef={lastMenuItemRef} />
             <div className="row">
               {/* 左區塊：Menu + Swiper */}
               <div className="col-xl-8 col-lg-7">

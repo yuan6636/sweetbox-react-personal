@@ -1,4 +1,4 @@
-function SubBanner() {
+function SecondaryBanner() {
   return (
     <section className="py-0 py-lg-10">
       <div className="w100Banner"></div>
@@ -6,4 +6,4 @@ function SubBanner() {
   );
 }
 
-export default SubBanner;
+export default SecondaryBanner;

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { NavLink } from 'react-router-dom';
 
-function SideMenuFloat({ themes, lastMenuItemRef }) {
+function FloatingSideMenu({ themes, lastMenuItemRef }) {
   const [show, setShow] = useState(false);
   const [isHovering, setIsHovering] = useState(false);
 
@@ -74,4 +74,4 @@ function SideMenuFloat({ themes, lastMenuItemRef }) {
   );
 }
 
-export default SideMenuFloat;
+export default FloatingSideMenu;

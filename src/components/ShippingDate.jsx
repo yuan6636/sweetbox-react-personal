@@ -4,7 +4,7 @@ import dayjs from 'dayjs';
 
 const isMobile = window.innerWidth < 992;
 
-function ShippedDate({ record, isOpen, onToggle, onChange }) {
+function ShippingDate({ record, isOpen, onToggle, onChange }) {
   const { paymentStatus, shippingDate, isArchived } = record;
   const currentPayment = paymentStatus;
   const hasData = !(shippingDate === null);
@@ -65,4 +65,4 @@ function ShippedDate({ record, isOpen, onToggle, onChange }) {
     </div>
   );
 }
-export default ShippedDate;
+export default ShippingDate;

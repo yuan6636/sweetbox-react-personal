@@ -1,6 +1,6 @@
 import { STATUS } from '../constants/status';
 
-const StatusButton = ({ status, onClick, variant = 'desktop' }) => {
+const ProcessingStatusBadge = ({ status, onClick, variant = 'desktop' }) => {
   const isProcessed = status === STATUS.PROCESSED;
 
   if (variant === 'mobile') {
@@ -24,4 +24,4 @@ const StatusButton = ({ status, onClick, variant = 'desktop' }) => {
   );
 };
 
-export default StatusButton;
+export default ProcessingStatusBadge;

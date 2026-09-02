@@ -1,15 +1,15 @@
 import React from 'react';
 import AdminNav from '../../components/AdminNav';
 import CircleProgress from '../../components/CircleProgress';
-import PayStatusBadge from '../../components/PayStatusBadge';
-import ShippedDate from '../../components/ShipDate';
-import ShippingStatus from '../../components/ShipStatus';
+import PaymentStatusBadge from '../../components/PaymentStatusBadge';
+import ShippingDate from '../../components/ShippingDate';
+import ShippingStatus from '../../components/ShippingStatus';
 import { useState, useEffect, useRef } from 'react';
 import { Icon } from '@iconify/react';
 import { NavLink, useParams } from 'react-router-dom';
 import api from '../../api';
 
-function SubscribeDetail() {
+function SubscriptionDetail() {
   const { id } = useParams();
   // 原始資料
   const [allOrders, setAllOrders] = useState([]);
@@ -106,7 +106,7 @@ function SubscribeDetail() {
   // 出貨狀態按鈕管理
   const [openId, setOpenId] = useState(null); //管理哪個訂單的出貨狀態按鈕被打開
   // 修改資料的出貨狀態
-  const updateShipStatusChange = async (id, newStatus) => {
+  const updateShippingStatusChange = async (id, newStatus) => {
     try {
       // prev代表還沒更改前的 editedOrders
       setEditedOrders((prev) => {
@@ -126,7 +126,7 @@ function SubscribeDetail() {
   // 出貨日期按鈕管理
   const [openDateId, setOpenDateId] = useState(null);
   // 更新出貨日期的資料
-  const updateShipDateChange = async (id, newDate) => {
+  const updateShippingDateChange = async (id, newDate) => {
     try {
       setEditedOrders((prev) => {
         return prev.map((order) => {
@@ -398,7 +398,7 @@ function SubscribeDetail() {
                           <td className="text-center fw-normal">{item.amount}</td>
                           <td className="text-center fw-normal">{item.paymentDate}</td>
                           <td className="text-center fw-normal">
-                            <PayStatusBadge
+                            <PaymentStatusBadge
                               currentStatus={item.paymentStatus}
                               isArchived={item.isArchived}
                               isFailed={item.paymentStatus === 'failed'}
@@ -411,17 +411,17 @@ function SubscribeDetail() {
                               onToggle={() =>
                                 setOpenId(openId === item.orderNo ? null : item.orderNo)
                               }
-                              onChange={(status) => updateShipStatusChange(item.id, status)}
+                              onChange={(status) => updateShippingStatusChange(item.id, status)}
                             />
                           </td>
                           <td className="text-center fw-normal">
-                            <ShippedDate
+                            <ShippingDate
                               record={item}
                               isOpen={openDateId === item.orderNo}
                               onToggle={() => {
                                 setOpenDateId(openDateId === item.orderNo ? null : item.orderNo);
                               }}
-                              onChange={(date) => updateShipDateChange(item.id, date)}
+                              onChange={(date) => updateShippingDateChange(item.id, date)}
                             />
                           </td>
                           <td className="text-center fw-normal">
@@ -464,7 +464,7 @@ function SubscribeDetail() {
                               {item.orderNo}
                             </div>
                           </div>
-                          <PayStatusBadge
+                          <PaymentStatusBadge
                             currentStatus={item.paymentStatus}
                             isArchived={item.isArchived}
                             isFailed={item.paymentStatus === 'failed'}
@@ -504,20 +504,20 @@ function SubscribeDetail() {
                                 onToggle={() =>
                                   setOpenId(openId === item.orderNo ? null : item.orderNo)
                                 }
-                                onChange={(status) => updateShipStatusChange(item.id, status)}
+                                onChange={(status) => updateShippingStatusChange(item.id, status)}
                               />
                             </div>
                           </div>
                           <div className="ship-status d-flex justify-content-between align-items-center">
                             <div className="ship-text fs-8 text-neutral-600">預計出貨日</div>
                             <div className="ship-button">
-                              <ShippedDate
+                              <ShippingDate
                                 record={item}
                                 isOpen={openDateId === item.orderNo}
                                 onToggle={() =>
                                   setOpenDateId(openDateId === item.orderNo ? null : item.orderNo)
                                 }
-                                onChange={(date) => updateShipDateChange(item.id, date)}
+                                onChange={(date) => updateShippingDateChange(item.id, date)}
                               />
                             </div>
                           </div>
@@ -589,13 +589,13 @@ function SubscribeDetail() {
                           <ShippingStatus record={item} />
                         </td>
                         <td className="text-center fw-normal">
-                          <ShippedDate
+                          <ShippingDate
                             record={item}
                             isOpen={openDateId === item.orderNo}
                             onToggle={() =>
                               setOpenDateId(openDateId === item.orderNo ? null : item.orderNo)
                             }
-                            onChange={(date) => updateShipDateChange(item.id, date)}
+                            onChange={(date) => updateShippingDateChange(item.id, date)}
                           />
                         </td>
                       </tr>
@@ -621,7 +621,7 @@ function SubscribeDetail() {
                         <div className="order-id fs-5 fw-bold text-neutral-800">{item.orderNo}</div>
                       </div>
                       <div className="order-status d-flex justify-content-start gap-3 mb-3">
-                        <PayStatusBadge
+                        <PaymentStatusBadge
                           currentStatus={item.paymentStatus}
                           isArchived={item.isArchived}
                           isFailed={item.paymentStatus === 'failed'}
@@ -630,7 +630,7 @@ function SubscribeDetail() {
                           record={item}
                           isOpen={openId === item.orderNo}
                           onToggle={() => setOpenId(openId === item.orderNo ? null : item.orderNo)}
-                          onChange={(status) => updateShipStatusChange(item.id, status)}
+                              onChange={(status) => updateShippingStatusChange(item.id, status)}
                         />
                       </div>
                       <div className="order-mobile-divider"></div>
@@ -688,4 +688,4 @@ function SubscribeDetail() {
   );
 }
 
-export default SubscribeDetail;
+export default SubscriptionDetail;
