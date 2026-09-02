@@ -1,6 +1,5 @@
 .bg-login {
-  background-image:
-    url('/images/Cart_Page/cart_pattern02.svg'), url('/images/Cart_Page/cart_pattern03.svg');
+  background-image: url('/images/cart-page/deco-02.svg'), url('/images/cart-page/deco-03.svg');
   background-size: 70%, 70%;
   background-position:
     -70% bottom,
@@ -8,8 +7,8 @@
   background-repeat: no-repeat, no-repeat, no-repeat;
   @media (min-width: 576px) {
     background-image:
-      url('/images/Cart_Page/cart_pattern01.svg'), url('/images/Cart_Page/cart_pattern02.svg'),
-      url('/images/Cart_Page/cart_pattern03.svg'), url('/images/Cart_Page/cart_pattern04.svg');
+      url('/images/cart-page/deco-01.svg'), url('/images/cart-page/deco-02.svg'),
+      url('/images/cart-page/deco-03.svg'), url('/images/cart-page/deco-04.svg');
     background-size: 25%, 25%, 25%, 22%;
     background-position:
       left bottom,
@@ -30,8 +29,7 @@
 }
 
 .bg-pattern {
-  background-image: url('/images/Theme_Detail/Feature/BackgroundPattern.svg');
-  //background-image: url("/images/Cart_Page/cart_pattern01.svg");
+  background-image: url('/images/theme-detail/bg-grid-desktop.svg');
   background-size: cover;
   background-repeat: no-repeat;
   width: 100%;
@@ -48,7 +46,7 @@
 }
 
 .login-panel-bg {
-  background-image: url('/images/Login_Page/login_pic.webp');
+  background-image: url('/images/login-page/pic-login.webp');
   background-position: center;
   background-repeat: repeat;
   background-size: cover;

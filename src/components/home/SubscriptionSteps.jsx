@@ -7,21 +7,21 @@ import { DEFAULT_THEME_ID } from '../../constants/theme';
 const steps = [
   {
     id: 1,
-    image: './images/Home_Page/select.svg',
+    image: './images/home-page/icon-flow-01.svg',
     imageAlt: 'select 圖示',
     title: '1. 挑選你的主題',
     description: '無論你想和家人分享、或獨自探索甜味風景，我們都有適合你的那一盒甜。',
   },
   {
     id: 2,
-    image: './images/Home_Page/subscribe.svg',
+    image: './images/home-page/icon-flow-02.svg',
     imageAlt: 'subscribe 圖示',
     title: '2. 訂閱並等待驚喜',
     description: '選擇訂閱方式，每月都有盒甜點準時送達，像專屬你的節日驚喜。',
   },
   {
     id: 3,
-    image: './images/Home_Page/enjoy.svg',
+    image: './images/home-page/icon-flow-03.svg',
     imageAlt: 'enjoy 圖示',
     title: '3. 享受一盒甜',
     description: '嚴選甜點搭配保存小秘訣，美味與安心兼具。讓生活多一點甜。',
@@ -33,7 +33,7 @@ function SubscriptionSteps() {
     <section className="position-relative">
       <img
         className="position-absolute cakeroll-img z-0"
-        src="./images/Home_Page/bg_cakeroll.svg"
+        src="./images/home-page/deco-03.svg"
         alt="蛋糕捲圖示"
         height="612"
         width="880"
@@ -47,7 +47,7 @@ function SubscriptionSteps() {
             <span className="visually-hidden">訂閱流程</span>
             <img
               className="subscribe-img"
-              src="./images/Home_Page/title_section4.svg"
+              src="./images/home-page/title-flow.svg"
               alt="訂閱流程圖示"
               height="56"
               width="208"

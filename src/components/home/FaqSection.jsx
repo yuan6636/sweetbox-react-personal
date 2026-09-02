@@ -121,9 +121,9 @@ function FaqSection() {
                 <picture>
                   <source
                     media="(min-width: 576px)"
-                    srcSet="./images/Home_Page/title_section08.svg"
+                    srcSet="./images/home-page/title-faq.svg"
                   />
-                  <img src="./images/Home_Page/title_section08_mobile.png" alt="FAQ-img" />
+                  <img src="./images/home-page/title-faq-mobile.png" alt="FAQ-img" />
                 </picture>
               </h2>
             </div>

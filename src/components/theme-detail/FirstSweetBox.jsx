@@ -16,9 +16,12 @@ function FirstSweetBox() {
             <picture>
               <source
                 media="(max-width: 992px)"
-                srcSet="./images/Theme_Detail/Feature/Title_section03_mobile.svg"
+                srcSet="./images/theme-detail/title-first-box-mobile.svg"
               />
-              <img src="./images/Theme_Detail/Feature/Title_section03.svg" alt="你的第一盒甜" />
+              <img
+                src="./images/theme-detail/title-first-box-desktop.svg"
+                alt="你的第一盒甜"
+              />
             </picture>
           </div>
           <p className="text-neutral-800 first-sweet-box-desc">

@@ -91,7 +91,7 @@ function Login() {
           password: data.registerPassword,
           isAdmin: false,
           phone: null,
-          avatar: './images/Home_Page/avatar-default.jpg',
+          avatar: './images/home-page/avatar-default.jpg',
           carrier: '',
           address: {
             zipCode: '',

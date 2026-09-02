@@ -14,7 +14,7 @@ function Footer() {
         <NavLink to="/">
           <img
             className="footer-logo mb-3 mb-lg-0"
-            src="./images/Home_Page/sweetBox_logo.svg"
+            src="./images/home-page/logo.svg"
             alt="一盒甜logo"
           />
         </NavLink>

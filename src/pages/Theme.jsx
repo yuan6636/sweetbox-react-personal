@@ -35,16 +35,16 @@ function Theme() {
     <main className="main overflow-hidden">
       <section className="theme-banner bg-neutral-200">
         <picture>
-          <source media="(min-width: 767px)" srcSet="./images/Theme_Page/Banner.svg" />
+          <source media="(min-width: 767px)" srcSet="./images/theme-page/banner-desktop.svg" />
           <img
-            src="./images/Theme_Page/Banner_mobile.svg"
+            src="./images/theme-page/banner-mobile.svg"
             alt="theme-banner-img"
             className="theme-banner-img"
           />
         </picture>
 
         <div className="d-lg-none container text-center title-mobile">
-          <img src="./images/Theme_Page/Title_display_mobile.svg" alt="總有一盒剛好是你想吃的甜" />
+          <img src="./images/theme-page/title-banner.svg" alt="總有一盒剛好是你想吃的甜" />
         </div>
       </section>
       {/* 主題一覽 */}
@@ -54,10 +54,10 @@ function Theme() {
             <p className="mb-6 text-primary-600 en-font fw-bold ls-1">Theme</p>
             <picture>
               <source
-                srcSet="./images/Theme_Page/Title_section_mobile.svg"
+                srcSet="./images/theme-page/title-theme-mobile.svg"
                 media="(max-width: 992px)"
               />
-              <img src="./images/Theme_Page/Title_section.svg" alt="主題一覽" />
+              <img src="./images/theme-page/title-theme-desktop.svg" alt="主題一覽" />
             </picture>
           </div>
           <section className="container">
@@ -97,10 +97,10 @@ function Theme() {
           </section>
         </div>
         <picture>
-          <source media="(min-width: 992px)" srcSet="./images/Theme_Page/bg-cake-desktop.png" />
+          <source media="(min-width: 992px)" srcSet="./images/theme-page/bg-cake-desktop.png" />
           <img
             className="position-absolute theme-background z-n1"
-            src="./images/Theme_Page/bg-cake-mobile.png"
+            src="./images/theme-page/bg-cake-mobile.png"
             alt="蛋糕背景圖"
           />
         </picture>
