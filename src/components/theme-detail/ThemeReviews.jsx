@@ -13,7 +13,7 @@ import {
   ratingDistribution,
   desktopSortOptions,
   mobileSortOptions,
-} from '../../assets/utils/mockData';
+} from '../../data/mockData';
 
 // api
 import api from '../../api';

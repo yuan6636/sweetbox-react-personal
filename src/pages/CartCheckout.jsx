@@ -9,8 +9,8 @@ import utc from 'dayjs/plugin/utc';
 import timezone from 'dayjs/plugin/timezone';
 
 // utils
-import taiwanData from '../assets/utils/taiwanDistricts.json';
-import { creditCardYears, creditCardMonths } from '../assets/utils/formOptions';
+import taiwanData from '../data/taiwanDistricts.json';
+import { creditCardYears, creditCardMonths } from '../data/formOptions';
 import { formatCardNumber, getCardType } from '../utils/payment';
 import { calculateDisplayCart, allocateDiscountToItems } from '../utils/checkoutHelpers';
 

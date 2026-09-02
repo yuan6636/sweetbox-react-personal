@@ -5,7 +5,7 @@ import { message } from 'antd';
 
 // js 工具
 import { formatCardNumber, isCardExpired, getCardType } from '../../../../utils/payment';
-import { creditCardMonths, creditCardYears } from '../../../../assets/utils/formOptions';
+import { creditCardMonths, creditCardYears } from '../../../../data/formOptions';
 
 // 元件區
 import Select from '../../../Select';

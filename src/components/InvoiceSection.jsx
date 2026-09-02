@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { Controller } from 'react-hook-form';
 import { Icon } from '@iconify/react';
-import { invoiceOpts } from '../assets/utils/formOptions';
+import { invoiceOpts } from '../data/formOptions';
 import Input from './Input';
 import FormError from './FormError';
 
