@@ -4,9 +4,9 @@ import { Modal } from 'bootstrap';
 import { useState, useEffect, useRef } from 'react';
 
 // 元件區
-import PaymentModal from './modal/PaymentModal';
-import CancelReminderModal from './CancelReminderModal';
-import CancelConfirmModal from './CancelConfirmModal';
+import PaymentModal from './modals/PaymentModal';
+import CancelReminderModal from './modals/CancelReminderModal';
+import CancelConfirmModal from './modals/CancelConfirmModal';
 import AccordionItem from './AccordionItem';
 
 // 信用卡 icon 樣式
