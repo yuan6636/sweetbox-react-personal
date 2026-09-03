@@ -10,9 +10,9 @@ import api from '../../api';
 import { STATUS } from '../../constants/status';
 
 // components
-import ProcessingStatusBadge from '../../components/ProcessingStatusBadge';
-import Pagination from '../../components/Pagination';
-import Dropdown from '../../components/Dropdown';
+import ProcessingStatusBadge from '../../components/admin/ProcessingStatusBadge';
+import Pagination from '../../components/common/Pagination';
+import Dropdown from '../../components/common/Dropdown';
 
 const { RangePicker } = DatePicker;
 

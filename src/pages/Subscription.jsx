@@ -4,12 +4,12 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import api from '../api';
 
 // 元件區
-import Dropdown from '../components/Dropdown';
-import Pagination from '../components/Pagination';
+import Dropdown from '../components/common/Dropdown';
+import Pagination from '../components/common/Pagination';
 import Tab from '../components/subscriptions/user/Tab';
 import SubscriptionList from '../components/subscriptions/user/SubscriptionList';
 import EmptySubscription from '../components/subscriptions/user/EmptySubscription';
-import Loading from '../components/Loading';
+import Loading from '../components/common/Loading';
 
 // contexts
 import { useAuth } from '../contexts/auth';

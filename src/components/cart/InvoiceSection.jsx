@@ -1,9 +1,9 @@
 import { useState, useRef, useEffect } from 'react';
 import { Controller } from 'react-hook-form';
 import { Icon } from '@iconify/react';
-import { invoiceOpts } from '../data/formOptions';
-import FormInput from './FormInput';
-import FormError from './FormError';
+import { invoiceOpts } from '../../data/formOptions';
+import FormInput from '../common/FormInput';
+import FormError from '../common/FormError';
 
 const InvoiceSection = ({ register, control, errors, watch, setValue, clearErrors }) => {
   const currentInvoiceType = watch('type', 'default');

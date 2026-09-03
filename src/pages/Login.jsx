@@ -7,7 +7,7 @@ import { message } from 'antd';
 import api from '../api';
 
 // components
-import FormInput from '../components/FormInput';
+import FormInput from '../components/common/FormInput';
 import PasswordInput from '../components/login/PasswordInput';
 
 // contexts

@@ -2,9 +2,9 @@ import { Controller } from 'react-hook-form';
 import { Icon } from '@iconify/react';
 
 // components
-import FormInput from '../FormInput';
-import FormSelect from '../FormSelect';
-import FormError from '../FormError';
+import FormInput from '../common/FormInput';
+import FormSelect from '../common/FormSelect';
+import FormError from '../common/FormError';
 
 // utils
 import { stripNonDigits } from '../../utils/inputHelpers';

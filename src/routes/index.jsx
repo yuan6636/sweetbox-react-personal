@@ -10,7 +10,7 @@ import Subscriptions from '../pages/admin/Subscriptions';
 import SubscriptionDetail from '../pages/admin/SubscriptionDetail';
 import Login from '../pages/Login';
 import NotFound from '../pages/NotFound';
-import ProtectedRoute from '../components/ProtectedRoute';
+import ProtectedRoute from '../components/routing/ProtectedRoute';
 import ErrorPage from '../pages/ErrorPage';
 
 const routes = [

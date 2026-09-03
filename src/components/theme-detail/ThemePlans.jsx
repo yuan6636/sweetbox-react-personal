@@ -13,7 +13,7 @@ import { message } from 'antd';
 
 // 內部元件
 import FloatingSideMenu from './FloatingSideMenu';
-import Loading from '../../components/Loading';
+import Loading from '../../components/common/Loading';
 import ThemeDesktopSwiper from './ThemeDesktopSwiper';
 
 // hook

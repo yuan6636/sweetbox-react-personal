@@ -1,9 +1,9 @@
 import React from 'react';
-import AdminNav from '../../components/AdminNav';
-import CircleProgress from '../../components/CircleProgress';
-import PaymentStatusBadge from '../../components/PaymentStatusBadge';
-import ShippingDate from '../../components/ShippingDate';
-import ShippingStatus from '../../components/ShippingStatus';
+import AdminNav from '../../components/navigation/AdminNav';
+import CircleProgress from '../../components/admin/CircleProgress';
+import PaymentStatusBadge from '../../components/admin/PaymentStatusBadge';
+import ShippingDate from '../../components/admin/ShippingDate';
+import ShippingStatus from '../../components/admin/ShippingStatus';
 import { useState, useEffect, useRef } from 'react';
 import { Icon } from '@iconify/react';
 import { NavLink, useParams } from 'react-router-dom';

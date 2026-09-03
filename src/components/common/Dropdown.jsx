@@ -2,7 +2,7 @@ import { Icon } from '@iconify/react';
 import { useEffect, useState } from 'react';
 
 // hooks
-import { useClickOutside } from '../hooks/useClickOutside';
+import { useClickOutside } from '../../hooks/useClickOutside';
 
 function Dropdown({
   options,

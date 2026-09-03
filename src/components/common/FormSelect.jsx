@@ -2,7 +2,7 @@ import { Icon } from '@iconify/react';
 import { useState, useId } from 'react';
 
 // hooks
-import { useClickOutside } from '../hooks/useClickOutside';
+import { useClickOutside } from '../../hooks/useClickOutside';
 
 const FormSelect = ({
   //字尾(選用)

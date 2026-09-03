@@ -15,7 +15,7 @@ import { formatCardNumber, getCardType } from '../utils/payment';
 import { calculateDisplayCart, allocateDiscountToItems } from '../utils/checkoutHelpers';
 
 // components
-import InvoiceSection from '../components/InvoiceSection';
+import InvoiceSection from '../components/cart/InvoiceSection';
 import ReceiverSection from '../components/cart/ReceiverSection';
 import PaymentSection from '../components/cart/PaymentSection';
 import OrderSummary from '../components/cart/OrderSummary';

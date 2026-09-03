@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Icon } from '@iconify/react';
 
 // components
-import FormInput from '../../components/FormInput';
+import FormInput from '../../components/common/FormInput';
 
 function PasswordInput({ id, register, errors, labelText, placeholderText, ariaLabel, rules }) {
   const [isVisible, setIsVisible] = useState(false);

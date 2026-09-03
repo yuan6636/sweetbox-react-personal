@@ -1,4 +1,4 @@
-import { STATUS } from '../constants/status';
+import { STATUS } from '../../constants/status';
 
 const ProcessingStatusBadge = ({ status, onClick, variant = 'desktop' }) => {
   const isProcessed = status === STATUS.PROCESSED;

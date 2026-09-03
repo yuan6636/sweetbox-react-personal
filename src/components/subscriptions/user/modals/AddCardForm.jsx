@@ -8,8 +8,8 @@ import { formatCardNumber, isCardExpired, getCardType } from '../../../../utils/
 import { creditCardMonths, creditCardYears } from '../../../../data/formOptions';
 
 // 元件區
-import FormSelect from '../../../FormSelect';
-import FormError from '../../../FormError';
+import FormSelect from '../../../common/FormSelect';
+import FormError from '../../../common/FormError';
 
 // api
 import api from '../../../../api';
