@@ -1,9 +1,9 @@
 import { useState, useRef, useEffect } from 'react';
 import { Controller } from 'react-hook-form';
 import { Icon } from '@iconify/react';
-import { invoiceOpts } from '../assets/utils/formOptions';
-import Input from './Input';
-import FormError from './FormError';
+import { invoiceOpts } from '../../data/formOptions';
+import FormInput from '../common/FormInput';
+import FormError from '../common/FormError';
 
 const InvoiceSection = ({ register, control, errors, watch, setValue, clearErrors }) => {
   const currentInvoiceType = watch('type', 'default');
@@ -98,7 +98,7 @@ const InvoiceSection = ({ register, control, errors, watch, setValue, clearError
       {/* 手機條碼 */}
       {currentInvoiceType === 'mobile' && (
         <div className="mt-4">
-          <Input
+          <FormInput
             id="carrier"
             register={register}
             errors={errors}
@@ -127,7 +127,7 @@ const InvoiceSection = ({ register, control, errors, watch, setValue, clearError
       {/* 捐贈發票 */}
       {currentInvoiceType === 'donation' && (
         <div className="mt-4">
-          <Input
+          <FormInput
             id="donateCode"
             register={register}
             errors={errors}
@@ -160,7 +160,7 @@ const InvoiceSection = ({ register, control, errors, watch, setValue, clearError
       {/* 公司戶發票 */}
       {currentInvoiceType === 'business' && (
         <div className="mt-4 d-flex flex-column gap-4">
-          <Input
+          <FormInput
             id="companyName"
             register={register}
             errors={errors}
@@ -171,7 +171,7 @@ const InvoiceSection = ({ register, control, errors, watch, setValue, clearError
             iconName="fluent:building-multiple-16-regular"
             rules={{ required: '請輸入公司名稱' }}
           />
-          <Input
+          <FormInput
             id="taxId"
             register={register}
             errors={errors}
@@ -193,7 +193,7 @@ const InvoiceSection = ({ register, control, errors, watch, setValue, clearError
               e.target.value = e.target.value.replace(/\D/g, '');
             }}
           />
-          <Input
+          <FormInput
             id="companyEmail"
             register={register}
             errors={errors}

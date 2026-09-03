@@ -1,7 +1,7 @@
 import { Icon } from '@iconify/react';
 
 // helpers
-import { calculatePenalty } from '../../../utils/subscriptionHelpers';
+import { calculatePenalty } from '../../../../utils/subscriptionHelpers';
 
 function CancelReminderModal({
   cancelReminderModalRef,

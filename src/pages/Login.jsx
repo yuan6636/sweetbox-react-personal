@@ -7,7 +7,7 @@ import { message } from 'antd';
 import api from '../api';
 
 // components
-import Input from '../components/Input';
+import FormInput from '../components/common/FormInput';
 import PasswordInput from '../components/login/PasswordInput';
 
 // contexts
@@ -149,7 +149,7 @@ function Login() {
               <form onSubmit={handleSubmit(onSubmit)}>
                 {authMode === 'login' ? (
                   <>
-                    <Input
+                    <FormInput
                       id="email"
                       register={register}
                       errors={errors}
@@ -182,7 +182,7 @@ function Login() {
                   </>
                 ) : (
                   <>
-                    <Input
+                    <FormInput
                       id="registerName"
                       register={register}
                       errors={errors}
@@ -203,7 +203,7 @@ function Login() {
                         setValueAs: (v) => v.trim(),
                       }}
                     />
-                    <Input
+                    <FormInput
                       id="registerEmail"
                       register={register}
                       errors={errors}

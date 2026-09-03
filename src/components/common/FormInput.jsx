@@ -1,7 +1,7 @@
 import { Icon } from '@iconify/react';
 import FormError from './FormError';
 
-const Input = ({
+const FormInput = ({
   id,
   register,
   errors = {},
@@ -49,4 +49,4 @@ const Input = ({
   );
 };
 
-export default Input;
+export default FormInput;

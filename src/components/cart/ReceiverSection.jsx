@@ -1,9 +1,9 @@
 import { Controller } from 'react-hook-form';
 
 // components
-import Input from '../Input';
-import Select from '../Select';
-import FormError from '../FormError';
+import FormInput from '../common/FormInput';
+import FormSelect from '../common/FormSelect';
+import FormError from '../common/FormError';
 
 // utils
 import { stripNonDigits } from '../../utils/inputHelpers';
@@ -22,7 +22,7 @@ function ReceiverSection({
   return (
     <section className="cart-panel p-4 p-lg-6 mb-2 mb-lg-6">
       <h2 className="cart-section-title mb-6">收件資料</h2>
-      <Input
+      <FormInput
         id="name"
         register={register}
         errors={errors}
@@ -53,7 +53,7 @@ function ReceiverSection({
           </div>
         }
       />
-      <Input
+      <FormInput
         id="phone"
         register={register}
         errors={errors}
@@ -86,7 +86,7 @@ function ReceiverSection({
               control={control}
               rules={{ required: '請選擇城市' }}
               render={({ field: { onChange, value }, fieldState: { error } }) => (
-                <Select
+                <FormSelect
                   id="city"
                   placeholderText="城市"
                   options={cities}
@@ -108,7 +108,7 @@ function ReceiverSection({
               control={control}
               rules={{ required: '請選擇鄉鎮市區' }}
               render={({ field: { onChange, value }, fieldState: { error } }) => (
-                <Select
+                <FormSelect
                   id="district"
                   placeholderText="鄉鎮市區"
                   options={districts}
@@ -125,7 +125,7 @@ function ReceiverSection({
             <FormError message={errors?.district?.message} />
           </div>
         </div>
-        <Input
+        <FormInput
           id="street"
           register={register}
           errors={errors}

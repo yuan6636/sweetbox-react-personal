@@ -2,10 +2,10 @@ import { Icon } from '@iconify/react';
 import { message } from 'antd';
 
 // api
-import api from '../../../api';
+import api from '../../../../api';
 
 // helpers
-import { calculatePenalty } from '../../../utils/subscriptionHelpers';
+import { calculatePenalty } from '../../../../utils/subscriptionHelpers';
 
 // 信用卡 icon 樣式
 const cardIcons = {

@@ -6,11 +6,11 @@ import Home from '../pages/Home';
 import Subscription from '../pages/Subscription';
 import Theme from '../pages/Theme';
 import ThemeDetail from '../pages/ThemeDetail';
-import Subscribe from '../pages/admin/Subscribe';
-import SubscribeDetail from '../pages/admin/SubscribeDetail';
+import Subscriptions from '../pages/admin/Subscriptions';
+import SubscriptionDetail from '../pages/admin/SubscriptionDetail';
 import Login from '../pages/Login';
 import NotFound from '../pages/NotFound';
-import ProtectedRoute from '../components/ProtectedRoute';
+import ProtectedRoute from '../components/routing/ProtectedRoute';
 import ErrorPage from '../pages/ErrorPage';
 
 const routes = [
@@ -63,11 +63,11 @@ const routes = [
         children: [
           {
             path: 'admin/subscribe',
-            element: <Subscribe />,
+            element: <Subscriptions />,
           },
           {
             path: 'admin/subscribeDetail/:id',
-            element: <SubscribeDetail />,
+            element: <SubscriptionDetail />,
           },
         ],
       },

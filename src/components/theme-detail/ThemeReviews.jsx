@@ -3,17 +3,17 @@ import { useState, Fragment, useEffect, useMemo, useRef } from 'react';
 import { Icon } from '@iconify/react';
 
 // 內部元件
-import Pagination from '../../components/Pagination';
-import Dropdown from '../../components/Dropdown';
+import Pagination from '../../components/common/Pagination';
+import Dropdown from '../../components/common/Dropdown';
 import ReviewItem from '../../components/theme-detail/ReviewItem';
-import Loading from '../../components/Loading';
+import Loading from '../../components/common/Loading';
 
 // data
 import {
   ratingDistribution,
   desktopSortOptions,
   mobileSortOptions,
-} from '../../assets/utils/mockData';
+} from '../../data/mockData';
 
 // api
 import api from '../../api';

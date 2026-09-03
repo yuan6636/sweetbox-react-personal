@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 
 import api from '../api';
 
-import Loading from '../components/Loading';
+import Loading from '../components/common/Loading';
 
 function Theme() {
   const [themes, setThemes] = useState([]);

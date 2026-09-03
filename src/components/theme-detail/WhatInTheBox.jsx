@@ -1,4 +1,4 @@
-import { featureCards } from '../../assets/utils/mockData';
+import { featureCards } from '../../data/mockData';
 
 function WhatInTheBox() {
   return (

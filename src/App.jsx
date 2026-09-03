@@ -5,7 +5,7 @@ import AOS from 'aos';
 // components
 import Footer from './layouts/Footer';
 import Header from './layouts/Header';
-import ScrollToTop from './components/ScrollToTop';
+import ScrollToTop from './components/common/ScrollToTop';
 
 // contexts
 import { CartProvider } from './contexts/cart';

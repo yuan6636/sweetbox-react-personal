@@ -4,7 +4,7 @@ const PAYSTATUS = {
   pending: '即將付款',
 };
 
-function PayStatusBadge({ currentStatus }) {
+function PaymentStatusBadge({ currentStatus }) {
   const isFailed = currentStatus === 'failed';
   return (
     <button type="button" className={`payStatusBadge ${isFailed ? 'failed' : ''}`}>
@@ -13,4 +13,4 @@ function PayStatusBadge({ currentStatus }) {
   );
 }
 
-export default PayStatusBadge;
+export default PaymentStatusBadge;

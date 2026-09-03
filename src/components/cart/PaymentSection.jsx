@@ -2,9 +2,9 @@ import { Controller } from 'react-hook-form';
 import { Icon } from '@iconify/react';
 
 // components
-import Input from '../Input';
-import Select from '../Select';
-import FormError from '../FormError';
+import FormInput from '../common/FormInput';
+import FormSelect from '../common/FormSelect';
+import FormError from '../common/FormError';
 
 // utils
 import { stripNonDigits } from '../../utils/inputHelpers';
@@ -24,7 +24,7 @@ function PaymentSection({
   return (
     <section className="cart-panel p-4 p-lg-6 mb-2 mb-lg-6">
       <h2 className="cart-section-title mb-6">付款資料</h2>
-      <Input
+      <FormInput
         id="cardNumber"
         register={register}
         errors={errors}
@@ -54,7 +54,7 @@ function PaymentSection({
         maxLength={19}
         onInput={stripNonDigits}
       />
-      <Input
+      <FormInput
         id="cardOwner"
         register={register}
         errors={errors}
@@ -95,7 +95,7 @@ function PaymentSection({
                     },
                   }}
                   render={({ field: { onChange, value }, fieldState: { error } }) => (
-                    <Select
+                    <FormSelect
                       id="expiryMonth"
                       placeholderText="月份"
                       options={creditCardMonths}
@@ -122,7 +122,7 @@ function PaymentSection({
                     },
                   }}
                   render={({ field: { onChange, value }, fieldState: { error } }) => (
-                    <Select
+                    <FormSelect
                       id="expiryYear"
                       placeholderText="年份"
                       options={creditCardYears}
@@ -142,7 +142,7 @@ function PaymentSection({
           </div>
 
           <div className="col-lg-6">
-            <Input
+            <FormInput
               id="card-cvv"
               register={register}
               errors={errors}

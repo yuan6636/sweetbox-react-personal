@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { Icon } from '@iconify/react';
 
-import NavIcon from '../components/NavIcon';
+import NavIcon from '../components/common/NavIcon';
 import useTooltip from '../hooks/useTooltip';
 import { useCart } from '../contexts/cart';
 import { useAuth } from '../contexts/auth';

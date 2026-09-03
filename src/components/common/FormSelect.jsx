@@ -2,9 +2,9 @@ import { Icon } from '@iconify/react';
 import { useState, useId } from 'react';
 
 // hooks
-import { useClickOutside } from '../hooks/useClickOutside';
+import { useClickOutside } from '../../hooks/useClickOutside';
 
-const Select = ({
+const FormSelect = ({
   //字尾(選用)
   options,
   value,
@@ -75,4 +75,4 @@ const Select = ({
   );
 };
 
-export default Select;
+export default FormSelect;

@@ -10,13 +10,13 @@ import api from '../../api';
 import { STATUS } from '../../constants/status';
 
 // components
-import StatusButton from '../../components/StatusButton';
-import Pagination from '../../components/Pagination';
-import Dropdown from '../../components/Dropdown';
+import ProcessingStatusBadge from '../../components/admin/ProcessingStatusBadge';
+import Pagination from '../../components/common/Pagination';
+import Dropdown from '../../components/common/Dropdown';
 
 const { RangePicker } = DatePicker;
 
-function Subscribe() {
+function Subscriptions() {
   const tabs = [
     { label: '主題管理', to: '/topics' },
     { label: '訂閱管理', to: '/admin/subscribe' },
@@ -289,7 +289,7 @@ function Subscribe() {
                           </div>
                         </td>
                         <td className="text-center">
-                          <StatusButton
+                          <ProcessingStatusBadge
                             status={item.isProcessed ? STATUS.PROCESSED : STATUS.UNPROCESSED}
                             variant="desktop"
                           />
@@ -507,7 +507,7 @@ function Subscribe() {
                           </NavLink>
                         </div>
                       </div>
-                      <StatusButton
+                      <ProcessingStatusBadge
                         status={item.isProcessed ? STATUS.PROCESSED : STATUS.UNPROCESSED}
                         variant="mobile"
                       />
@@ -591,4 +591,4 @@ function Subscribe() {
   );
 }
 
-export default Subscribe;
+export default Subscriptions;
