@@ -101,6 +101,7 @@ function Login() {
           },
         });
         message.success('註冊成功');
+        reset({ email: data.registerEmail });
         setAuthMode('login');
       } catch (error) {
         console.error(error);
