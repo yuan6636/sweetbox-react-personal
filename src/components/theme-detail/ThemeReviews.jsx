@@ -224,23 +224,33 @@ function ThemeReviews() {
             </div>
             {/* 評論區 */}
             <div className="d-flex flex-column mb-lg-17 mb-15 position-relative z-1">
-              {pagedReviews.map((review, index) => (
-                <Fragment key={review.id}>
-                  <ReviewItem review={review} renderStars={renderStars} />
-                  {index !== pagedReviews.length - 1 && (
-                    <hr className="border-neutral-500 border-1 my-lg-4 my-3" />
-                  )}
-                </Fragment>
-              ))}
-            </div>
-            {/* 分頁 */}
-            <div className="d-flex justify-content-center">
-              <Pagination
-                currentPage={currentPage}
-                totalItems={filteredAndSortedReviews.length} // 評論總數
-                itemsPerPage={5} // 每頁顯示幾筆
-                onChangePage={handlePageChange}
-              />
+              {pagedReviews.length > 0 ? (
+                <>
+                  <div className="d-flex flex-column mb-lg-17 mb-15 position-relative z-1">
+                    {pagedReviews.map((review, index) => (
+                      <Fragment key={review.id}>
+                        <ReviewItem review={review} renderStars={renderStars} />
+                        {index !== pagedReviews.length - 1 && (
+                          <hr className="border-neutral-500 border-1 my-lg-4 my-3" />
+                        )}
+                      </Fragment>
+                    ))}
+                  </div>
+                  {/* 分頁 */}
+                  <div className="d-flex justify-content-center">
+                    <Pagination
+                      currentPage={currentPage}
+                      totalItems={filteredAndSortedReviews.length} // 評論總數
+                      itemsPerPage={5} // 每頁顯示幾筆
+                      onChangePage={handlePageChange}
+                    />
+                  </div>
+                </>
+              ) : (
+                <div className="d-flex justify-content-center align-items-center empty-review">
+                  <p className="text-center h3">目前沒有符合條件的評論</p>
+                </div>
+              )}
             </div>
           </>
         )}
