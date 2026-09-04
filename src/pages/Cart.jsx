@@ -15,7 +15,7 @@ import { useCart } from '../contexts/cart';
 import { useAppliedCoupon } from '../hooks/useAppliedCoupon';
 
 // constants
-import { MAX_QUANTITY } from '../constants/cart';
+import { MAX_QUANTITY } from '../constants/quantity';
 
 // 台灣時間
 dayjs.extend(utc);
