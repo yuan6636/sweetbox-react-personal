@@ -9,11 +9,7 @@ import ReviewItem from '../../components/theme-detail/ReviewItem';
 import Loading from '../../components/common/Loading';
 
 // data
-import {
-  ratingDistribution,
-  desktopSortOptions,
-  mobileSortOptions,
-} from '../../data/mockData';
+import { ratingDistribution, desktopSortOptions, mobileSortOptions } from '../../data/mockData';
 
 // api
 import api from '../../api';
@@ -122,10 +118,7 @@ function ThemeReviews() {
               media="(max-width: 992px)"
               srcSet="./images/theme-detail/title-review-mobile.svg"
             />
-            <img
-              src="./images/theme-detail/title-review-desktop.svg"
-              alt="title-review-desktop"
-            />
+            <img src="./images/theme-detail/title-review-desktop.svg" alt="title-review-desktop" />
           </picture>
         </div>
         {/* 主題評分區 */}
