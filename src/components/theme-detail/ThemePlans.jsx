@@ -27,6 +27,9 @@ import { usageTips } from '../../data/mockData';
 // utils
 import { calculateDiscount } from '../../utils/priceHelpers';
 
+// constants
+import { MAX_QUANTITY } from '../../constants/quantity';
+
 function ThemePlans() {
   const { id } = useParams();
   const [activePlan, setActivePlan] = useState(null);
@@ -232,6 +235,7 @@ function ThemePlans() {
                       {/* spinner 顯示數量 */}
                       <input
                         className="spinner mx-3 fs-7 fw-bold ls-1 border-0 bg-transparent text-center"
+                        name="quantity"
                         type="text"
                         role="spinbutton"
                         aria-live="assertive"
@@ -246,6 +250,7 @@ function ThemePlans() {
                         type="button"
                         aria-label="Increase"
                         onClick={() => setQuantity((prev) => prev + 1)}
+                        disabled={quantity >= MAX_QUANTITY}
                       >
                         <Icon className="sub" icon="ic:round-plus" width="24" height="24" />
                       </button>

@@ -39,7 +39,7 @@
   padding: 2px;
 
   .spinner {
-    width: 2ch;
+    width: 3ch;
     text-align: center;
   }
 }
@@ -204,15 +204,30 @@
   }
 }
 
-// SECTION-3:波浪3
 .theme-content {
   background-image:
     linear-gradient(rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.5)),
-    url('/images/theme-detail/bg-grid-desktop.svg');
+    url('/images/theme-detail/bg-grid-mobile.svg');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
 
+  @media (min-width: 992px) {
+    background-image:
+      linear-gradient(rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.5)),
+      url('/images/theme-detail/bg-grid-desktop.svg');
+  }
+
+  .container {
+    padding-top: 68px;
+    padding-bottom: 68px;
+    @media (min-width: 576px) {
+      padding-top: 160px;
+      padding-bottom: 160px;
+    }
+  }
+
+  // SECTION-3:波浪3
   &::after {
     content: '';
     width: 100%;
@@ -227,17 +242,6 @@
     @media (min-width: 576px) {
       height: 80px;
       bottom: 0px;
-    }
-  }
-}
-
-.theme-content {
-  .container {
-    padding-top: 68px;
-    padding-bottom: 68px;
-    @media (min-width: 576px) {
-      padding-top: 160px;
-      padding-bottom: 160px;
     }
   }
 }
@@ -532,15 +536,14 @@
 
   @media (min-width: 992px) {
     background-image:
-      url('/images/theme-detail/deco-02.svg'),
-      url('/images/theme-detail/deco-03.svg'),
+      url('/images/theme-detail/deco-02.svg'), url('/images/theme-detail/deco-03.svg'),
       url('/images/theme-detail/deco-04.svg');
 
     background-repeat: no-repeat;
 
     background-position:
-      right 0 top 768px,
-      left 0 top 1240px,
+      right 0 top 40%,
+      left 0 top 65%,
       right 0 bottom 0;
 
     background-size:
@@ -948,4 +951,8 @@
       line-height: 24px;
     }
   }
+}
+
+.empty-review {
+  min-height: 400px;
 }
