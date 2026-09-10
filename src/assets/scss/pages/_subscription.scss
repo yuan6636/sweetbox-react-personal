@@ -211,7 +211,12 @@
 }
 
 .cancel-modal {
-  height: 616px;
+  min-height: 100vh;
+  overflow-y: auto;
+  @media (min-width: 992px) {
+    min-height: unset;
+    height: 616px;
+  }
 }
 
 .cancel-modal-title {
