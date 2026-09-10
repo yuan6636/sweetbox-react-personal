@@ -143,10 +143,14 @@
 .credit-card {
   &-image {
     max-width: 400px;
-    height: 254px;
+    height: 208px;
     padding: 24px;
     border-radius: 16px;
     background: linear-gradient(#322d26, #48423b);
+
+    @media (min-width: 376px) {
+      height: 254px;
+    }
   }
 
   &-list {
