@@ -121,7 +121,7 @@ function CancelConfirmModal({
       role="dialog"
       ref={cancelConfirmModalRef}
     >
-      <div className="modal-dialog modal-fullscreen-sm-down modal-wide mx-auto px-sm-2">
+      <div className="modal-dialog modal-fullscreen-lg-down modal-wide mx-auto">
         <div className="modal-content bg-transparent">
           <div className="d-flex flex-column flex-sm-row cancel-modal">
             {/* 取消訂閱確認 Modal 左側 */}
