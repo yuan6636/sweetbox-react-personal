@@ -48,31 +48,6 @@ function SubscriptionList({ subscriptions, fetchSubscriptions }) {
   const cancelReminderModalRef = useRef(null);
   const cancelConfirmModalRef = useRef(null);
 
-  // Modal 初始化
-  useEffect(() => {
-    const modalRefs = [paymentModalRef, cancelReminderModalRef, cancelConfirmModalRef];
-
-    const handleHide = () => {
-      if (document.activeElement instanceof HTMLElement) {
-        document.activeElement.blur(); // 防止關閉 modal時，focus 停在 modal 內，影響螢幕閱讀器判讀
-      }
-    };
-
-    modalRefs.forEach((ref) => {
-      if (!ref.current) {
-        return;
-      }
-      Modal.getOrCreateInstance(ref.current, { keyboard: false });
-      ref.current?.addEventListener('hide.bs.modal', handleHide);
-    });
-
-    return () => {
-      modalRefs.forEach((ref) => {
-        ref.current?.removeEventListener('hide.bs.modal', handleHide);
-      });
-    };
-  }, []);
-
   // 切換 accordion
   const handleToggleAccordion = (id) => {
     setExpandedIds((prev) =>
@@ -105,11 +80,26 @@ function SubscriptionList({ subscriptions, fetchSubscriptions }) {
       cancelConfirm: cancelConfirmModalRef,
     };
 
+    const handleHide = () => {
+      if (document.activeElement instanceof HTMLElement) {
+        document.activeElement.blur(); // 防止關閉 modal時，focus 停在 modal 內，影響螢幕閱讀器判讀
+      }
+    };
+
+    const currentModalRef = modalRefs[modalState.type];
+
+    Modal.getOrCreateInstance(currentModalRef.current, { keyboard: false });
+    currentModalRef.current?.addEventListener('hide.bs.modal', handleHide);
+
     const handleOpenModal = (ref) => {
       Modal.getOrCreateInstance(ref.current)?.show();
     };
 
     handleOpenModal(modalRefs[modalState.type]);
+
+    return () => {
+      currentModalRef.current?.removeEventListener('hide.bs.modal', handleHide);
+    };
   }, [modalState]);
 
   return (

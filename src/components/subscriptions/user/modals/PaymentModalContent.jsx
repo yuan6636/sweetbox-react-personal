@@ -182,15 +182,15 @@ function PaymentModalContent({
               {activeCards.map((card) => (
                 <li
                   key={card.id}
-                  className="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center rounded-4 bg-neutral-100 p-4"
+                  className="d-flex flex-wrap justify-content-between align-items-center rounded-4 bg-neutral-100 p-4"
                 >
-                  <div className="d-flex justify-content-start justify-content-sm-between gap-3 mb-4 mb-sm-0">
+                  <div className="d-flex gap-3">
                     <div className="credit-card-logo align-self-center">
                       <Icon icon={cardIcons[card.cardBrand]} width="24" height="16" />
                     </div>
                     <div className="small">
-                      <p className="mb-1 d-flex flex-column flex-sm-row">
-                        <span className="mb-1 mb-sm-0">{card.cardBrand.toUpperCase()}</span>
+                      <p className="mb-1 d-flex">
+                        <span>{card.cardBrand.toUpperCase()}</span>
                         <span>{`• • • • ${card.lastFour}`}</span>
                       </p>
                       <p className="text-neutral-600">
@@ -199,45 +199,20 @@ function PaymentModalContent({
                     </div>
                   </div>
                   {/* 編輯和使用這張卡按鈕 */}
-                  <div className="d-none d-sm-block">
-                    {card.id === subscription.paymentMethodId ? (
-                      <span className="badge-completed">使用中</span>
-                    ) : (
-                      <>
-                        <button
-                          type="button"
-                          className="btn p-3 fs-8 border-0"
-                          onClick={() => handleSelectPaymentMethod(card, subscription.id)}
-                        >
-                          使用
-                        </button>
-                        <button
-                          type="button"
-                          className="btn p-3 fs-8 border-0 text-semantic-error"
-                          onClick={() => openRemoveConfirm(card)}
-                        >
-                          移除
-                        </button>
-                      </>
-                    )}
-                  </div>
-                  {/* 編輯和使用這張卡按鈕-mobile */}
                   {card.id === subscription.paymentMethodId ? (
-                    <span className="badge-completed d-block d-sm-none text-center align-self-center">
-                      使用中
-                    </span>
+                    <span className="badge-completed ms-auto">使用中</span>
                   ) : (
-                    <div className="d-sm-none d-flex w-100 gap-2">
+                    <div className="ms-auto">
                       <button
                         type="button"
-                        className="btn btn-neutral-300 rounded-pill flex-fill py-2 py-sm-3 px-3 px-sm-6 fs-9"
+                        className="btn p-3 fs-8 border-0"
                         onClick={() => handleSelectPaymentMethod(card, subscription.id)}
                       >
                         使用
                       </button>
                       <button
                         type="button"
-                        className="btn btn-semantic-error rounded-pill flex-fill py-2 py-sm-3 px-3 px-sm-6 fs-9"
+                        className="btn p-3 fs-8 border-0 text-semantic-error"
                         onClick={() => openRemoveConfirm(card)}
                       >
                         移除

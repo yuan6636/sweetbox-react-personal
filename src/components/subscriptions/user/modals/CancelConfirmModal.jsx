@@ -121,11 +121,11 @@ function CancelConfirmModal({
       role="dialog"
       ref={cancelConfirmModalRef}
     >
-      <div className="modal-dialog modal-fullscreen-sm-down modal-wide mx-auto px-sm-2">
+      <div className="modal-dialog modal-fullscreen-lg-down modal-wide mx-auto">
         <div className="modal-content bg-transparent">
-          <div className="d-flex flex-column flex-sm-row cancel-modal">
+          <div className="d-flex flex-column flex-lg-row cancel-modal">
             {/* 取消訂閱確認 Modal 左側 */}
-            <div className="cancel-modal-left bg-neutral-100 d-none d-sm-block">
+            <div className="cancel-modal-left bg-neutral-100 d-none d-lg-block">
               <div className="cancel-modal-left-content h-100 d-flex flex-column justify-content-between">
                 {/* 結算明細 */}
                 <div>
@@ -186,7 +186,7 @@ function CancelConfirmModal({
             <div className="cancel-modal-right bg-neutral-200">
               <div className="cancel-modal-confirm-content">
                 {/* 關閉按鈕 */}
-                <div className="d-none d-sm-block text-end">
+                <div className="d-none d-lg-block text-end">
                   <button
                     type="button"
                     className="btn-close btn-close-md"
@@ -236,7 +236,7 @@ function CancelConfirmModal({
                     </div>
                   </div>
                   {/* 取消訂閱確認 Modal 桌面版按鈕 */}
-                  <div className="d-none d-sm-flex flex-column gap-3">
+                  <div className="d-none d-lg-flex flex-column gap-3">
                     <button
                       type="button"
                       className="btn btn-semantic-error rounded-pill px-6 py-3 ls-1 lh-sm"
@@ -268,7 +268,7 @@ function CancelConfirmModal({
                     </button>
                   </div>
                   {/* 行動版扣款方式 */}
-                  <div className="rounded-4 p-4 bg-neutral-100 d-sm-none">
+                  <div className="rounded-4 p-4 bg-neutral-100 d-lg-none">
                     <p className="text-label mb-3">扣款方式</p>
                     <div className="d-flex align-items-center gap-2">
                       <div className="py-1 px-2">
@@ -282,7 +282,7 @@ function CancelConfirmModal({
                     </div>
                   </div>
                   {/* 行動版訂閱編號卡片 */}
-                  <div className="rounded-3 p-4 border border-neutral-400 d-sm-none">
+                  <div className="rounded-3 p-4 border border-neutral-400 d-lg-none">
                     {/* 訂閱編號 */}
                     <div className="d-flex gap-4 mb-4">
                       <img
@@ -318,7 +318,7 @@ function CancelConfirmModal({
                 </div>
               </div>
               {/* 取消訂閱確認 Modal 行動版下方按鈕 */}
-              <div className="payment-button-container d-flex gap-3 d-sm-none">
+              <div className="payment-button-container d-flex gap-3 d-lg-none">
                 <button
                   className="btn w-100 border-0 py-3 fs-8 text-neutral-700"
                   onClick={() => {
