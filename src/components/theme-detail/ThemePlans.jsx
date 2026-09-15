@@ -1,11 +1,9 @@
 // 外部工具
 import { Swiper, SwiperSlide } from 'swiper/react';
-import { Thumbs, Autoplay, FreeMode } from 'swiper/modules';
+import { Autoplay } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
-import 'swiper/css/free-mode';
-import 'swiper/css/thumbs';
 import { useEffect, useState, useRef } from 'react';
 import { useParams, NavLink, useNavigate } from 'react-router-dom';
 import { Icon } from '@iconify/react';
@@ -72,9 +70,9 @@ function ThemePlans() {
     // 主題切換後，重製 Swiper 到第一張(speed = 0 表示瞬間跳轉，不播放滑動動畫)
     if (mainSwiperRef.current && thumbsSwiperRef.current) {
       // 主題詳細大圖
-      mainSwiperRef.current.slideToLoop(0, 0);
+      mainSwiperRef.current.slideTo(0, 0);
       // 主題詳細小圖
-      thumbsSwiperRef.current.slideToLoop(0, 0);
+      thumbsSwiperRef.current.slideTo(0, 0);
     }
 
     // 手機版
