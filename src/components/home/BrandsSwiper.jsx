@@ -1,9 +1,4 @@
-import { Swiper, SwiperSlide } from 'swiper/react';
-import { Autoplay } from 'swiper/modules';
-
-// 載入 swiper 樣式
-import 'swiper/css';
-import 'swiper/css/navigation';
+import { useRef, useEffect } from 'react';
 
 // Desktop
 const desktopBrands = [
@@ -54,6 +49,47 @@ const mobileBrandsRow3 = [
   './images/home-page/brand-mobile/brand-mobile-08.png',
 ];
 
+// 跑馬燈速度
+const MARQUEE_SPEED = 60;
+
+function MarqueeRow({ images, reverse = false }) {
+  const trackRef = useRef(null);
+
+  useEffect(() => {
+    const track = trackRef.current;
+    if (!track) return;
+
+    const updateDuration = () => {
+      const singleSetWidth = track.scrollWidth / 2;
+      const duration = singleSetWidth / MARQUEE_SPEED;
+
+      track.style.setProperty('--marquee-duration', `${duration}s`);
+    };
+
+    updateDuration();
+
+    const observer = new ResizeObserver(() => {
+      updateDuration();
+    });
+
+    observer.observe(track);
+
+    return () => observer.disconnect();
+  }, [images]);
+
+  return (
+    <div className="marquee-row">
+      <div className="marquee-track" ref={trackRef} data-reverse={reverse}>
+        {[...images, ...images].map((img, index) => (
+          <div className="flex-shrink-0" key={index}>
+            <img src={img} alt={`合作品牌 Logo`} className="align-bottom" />
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 function BrandsSwiper() {
   return (
     <section className="bg-neutral-200 position-relative" data-aos="fade-up">
@@ -76,101 +112,15 @@ function BrandsSwiper() {
         </div>
         {/* 下半部-品牌 swiper */}
         {/* desktop */}
-        <div className="d-none d-lg-block">
-          <Swiper
-            className="brands-swiper mb-5"
-            modules={[Autoplay]}
-            slidesPerView={'auto'}
-            spaceBetween={4}
-            autoplay={true}
-            loop
-            speed={800}
-            breakpoints={{
-              576: { spaceBetween: 20 },
-            }}
-            grabCursor={true}
-          >
-            {desktopBrandsRow1.map((img, index) => (
-              <SwiperSlide key={index} className="swiper-slide">
-                <img src={img} alt={`合作品牌 Logo`} className="align-bottom" />
-              </SwiperSlide>
-            ))}
-          </Swiper>
-          <Swiper
-            className="brands-swiper"
-            dir="rtl"
-            modules={[Autoplay]}
-            slidesPerView={'auto'}
-            spaceBetween={4}
-            autoplay={true}
-            loop
-            speed={800}
-            breakpoints={{
-              576: { spaceBetween: 20 },
-            }}
-            grabCursor={true}
-          >
-            {desktopBrandsRow2.map((img, index) => (
-              <SwiperSlide key={index} className="swiper-slide">
-                <img src={img} alt={`合作品牌 Logo`} className="align-bottom" />
-              </SwiperSlide>
-            ))}
-          </Swiper>
+        <div className="d-none d-lg-flex flex-column row-gap-5">
+          <MarqueeRow images={desktopBrandsRow1} />
+          <MarqueeRow images={desktopBrandsRow2} reverse />
         </div>
         {/* mobile */}
-        <div className="d-block d-lg-none">
-          {/* mobile-1 */}
-          <Swiper
-            className="brands-swiper"
-            modules={[Autoplay]}
-            slidesPerView={'auto'}
-            spaceBetween={4}
-            autoplay={true}
-            loop
-            speed={800}
-            grabCursor={true}
-          >
-            {mobileBrandsRow1.map((img, index) => (
-              <SwiperSlide key={index} className="swiper-slide">
-                <img src={img} alt={`合作品牌 Logo`} className="align-bottom" />
-              </SwiperSlide>
-            ))}
-          </Swiper>
-          {/* mobile-2 */}
-          <Swiper
-            className="brands-swiper"
-            dir="rtl"
-            modules={[Autoplay]}
-            slidesPerView={'auto'}
-            spaceBetween={4}
-            autoplay={true}
-            loop
-            speed={800}
-            grabCursor={true}
-          >
-            {mobileBrandsRow2.map((img, index) => (
-              <SwiperSlide key={index} className="swiper-slide">
-                <img src={img} alt={`合作品牌 Logo`} className="align-bottom" />
-              </SwiperSlide>
-            ))}
-          </Swiper>
-          {/* mobile-3 */}
-          <Swiper
-            className="brands-swiper"
-            modules={[Autoplay]}
-            slidesPerView={'auto'}
-            spaceBetween={4}
-            autoplay={true}
-            loop
-            speed={800}
-            grabCursor={true}
-          >
-            {mobileBrandsRow3.map((img, index) => (
-              <SwiperSlide key={index} className="swiper-slide">
-                <img src={img} alt={`合作品牌 Logo`} className="align-bottom" />
-              </SwiperSlide>
-            ))}
-          </Swiper>
+        <div className="d-flex d-lg-none flex-column row-gap-1">
+          <MarqueeRow images={mobileBrandsRow1} />
+          <MarqueeRow images={mobileBrandsRow2} reverse />
+          <MarqueeRow images={mobileBrandsRow3} />
         </div>
       </div>
     </section>
