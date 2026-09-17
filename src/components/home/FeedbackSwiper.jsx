@@ -73,15 +73,26 @@ function FeedbackSwiper() {
         <Swiper
           className="feedback-swiper"
           modules={[Autoplay]}
-          slidesPerView={'auto'}
+          slidesPerView={1}
           spaceBetween={24}
           autoplay={true}
           loop
           speed={800}
           grabCursor={true}
+          breakpoints={{
+            576: {
+              slidesPerView: 2,
+            },
+            768: {
+              slidesPerView: 3,
+            },
+            1200: {
+              slidesPerView: 4,
+            },
+          }}
         >
           {feedbackData.map((feedback, index) => (
-            <SwiperSlide key={index} className="swiper-slide" style={{ width: '300px' }}>
+            <SwiperSlide key={index} className="swiper-slide">
               <div className="card bg border-light bg-neutral-200 feedback-card w-100">
                 <img
                   src={feedback.img}
