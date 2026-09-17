@@ -138,7 +138,7 @@ function CartCheckout() {
   const onSubmit = async (formData) => {
     if (!enrichedCartItems || enrichedCartItems.length === 0) {
       message.warning('您的購物車裡還沒有甜點呢！');
-      navigate('/cartEmpty');
+      navigate('/cart');
       return;
     }
     // 若優惠券失效，中斷結帳
