@@ -286,7 +286,7 @@ function Cart() {
         ...(appliedCoupon && { couponId: appliedCoupon.id }),
         updatedAt: dayjs().format('YYYY-MM-DDTHH:mm:ss.SSSZ'),
       });
-      navigate('/cartCheckout');
+      navigate('/cart/checkout');
     } catch (err) {
       console.error('更新購物車總金額失敗', err);
     }
@@ -331,7 +331,7 @@ function Cart() {
               <h1 className="empty-cart-title mb-2">購物車裡還沒有甜點呢</h1>
               <p className="lh-base mb-6 mb-sm-8">快來挑選一盒，讓生活多一點甜</p>
 
-              <Link to="/themedetail/1" className="btn-primary-icon fw-bold px-lg-8">
+              <Link to="/theme-detail/1" className="btn-primary-icon fw-bold px-lg-8">
                 帶我去挑甜點
                 <svg
                   className="ms-2"
@@ -373,7 +373,7 @@ function Cart() {
             <div className="d-flex justify-content-between align-items-center mb-2 mb-lg-6">
               <h1 className="cart-title p-3 py-lg-2 px-lg-4">購物車</h1>
               <NavLink
-                to={`/themedetail/1`}
+                to={`/theme-detail/1`}
                 className="btn py-3 px-4 px-lg-8 border-0 btn-shopping"
               >
                 繼續購物

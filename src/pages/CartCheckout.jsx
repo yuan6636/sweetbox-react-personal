@@ -250,7 +250,7 @@ function CartCheckout() {
 
       hasCheckoutRef.current = true;
       clearCart();
-      navigate(`/cartFinish?sub_ids=${subIds}`, { replace: true, state: { showSuccess: true } });
+      navigate(`/cart/finish?sub_ids=${subIds}`, { replace: true, state: { showSuccess: true } });
     } catch (error) {
       console.error('結帳失敗:', error);
       message.error({

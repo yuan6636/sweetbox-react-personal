@@ -60,7 +60,7 @@ function FloatingSideMenu({ themes, lastMenuItemRef }) {
         {themes.map((theme) => (
           <li key={theme.id} className="nav-item">
             <NavLink
-              to={`/themeDetail/${theme.id}`}
+              to={`/theme-detail/${theme.id}`}
               className={({ isActive }) =>
                 'nav-link d-flex align-items-center' + (isActive ? ' active' : '')
               }

@@ -96,7 +96,7 @@ function ThemePlans() {
                 return (
                   <li key={id} className="nav-item">
                     <NavLink
-                      to={`/themeDetail/${id}`}
+                      to={`/theme-detail/${id}`}
                       className={({ isActive }) => 'nav-link' + (isActive ? ' active' : '')}
                     >
                       {title}
@@ -149,7 +149,7 @@ function ThemePlans() {
                             ref={index === themes.length - 1 ? lastMenuItemRef : null}
                           >
                             <NavLink
-                              to={`/themeDetail/${id}`}
+                              to={`/theme-detail/${id}`}
                               className={({ isActive }) =>
                                 'nav-link d-flex align-items-center' + (isActive ? ' active' : '')
                               }
