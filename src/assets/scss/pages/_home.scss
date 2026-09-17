@@ -160,25 +160,43 @@
   }
 }
 
-.brands-swiper {
-  display: flex;
-  text-align: center;
-
-  .swiper-wrapper {
-    align-items: center;
-  }
-
-  .swiper-slide {
-    width: auto;
-  }
-}
-
 .brands-partner {
   padding-top: 60px;
   padding-bottom: 80px;
   @media (min-width: 992px) {
     padding-top: 120px;
     padding-bottom: 180px;
+  }
+}
+
+.marquee {
+  &-row {
+    overflow: hidden;
+  }
+
+  &-track {
+    display: flex;
+    gap: 4px;
+    width: max-content;
+    animation: marquee var(--marquee-duration, 30s) linear infinite;
+
+    @media (min-width: 992px) {
+      gap: 20px;
+    }
+
+    &[data-reverse='true'] {
+      animation-direction: reverse;
+    }
+  }
+}
+
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(-50%);
   }
 }
 

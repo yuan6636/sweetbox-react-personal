@@ -20,7 +20,7 @@ function ThemeDesktopSwiper({ currentTheme, mainSwiperRef, thumbsSwiperRef }) {
           swiper: thumbsSwiper && !thumbsSwiper.destroyed ? thumbsSwiper : null,
         }}
         grabCursor={true}
-        loop
+        resistanceRatio={0}
         onSwiper={(swiper) => {
           // Swiper instance 賦值到 mainSwiperRef，才可用slideToLoop 方法
           mainSwiperRef.current = swiper;
