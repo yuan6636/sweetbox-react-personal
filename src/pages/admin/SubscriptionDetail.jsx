@@ -201,7 +201,7 @@ function SubscriptionDetail() {
           {/* 訂單編號 - mobile */}
           <div className={`order-mobile d-flex align-items-center subscribeDetail-underline  `}>
             <div className="icon me-2">
-              <NavLink to={'/admin/subscribe'}>
+              <NavLink to={'/admin/subscriptions'}>
                 <Icon icon={'material-symbols:chevron-left'} width={'22px'} />
               </NavLink>
             </div>
@@ -229,7 +229,7 @@ function SubscriptionDetail() {
           <section className="mb-8 d-none d-lg-block">
             <div className="d-flex align-items-center p-3">
               <Icon icon={'material-symbols:chevron-left'} className="me-1" />
-              <NavLink to={'/admin/subscribe'}>
+                <NavLink to={'/admin/subscriptions'}>
                 <p className="backList neutral-800 fs-8">返回列表</p>
               </NavLink>
             </div>

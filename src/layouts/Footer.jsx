@@ -25,7 +25,7 @@ function Footer() {
           {
             user?.isAdmin ? (
               <li className="footer-nav-item">
-                <NavLink to="/admin/subscribe">後台管理</NavLink>
+                <NavLink to="/admin/subscriptions">後台管理</NavLink>
               </li>
             ) : user ? (
               // 一般會員會顯示訂閱管理

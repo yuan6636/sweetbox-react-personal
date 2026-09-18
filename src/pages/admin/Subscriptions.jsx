@@ -19,7 +19,7 @@ const { RangePicker } = DatePicker;
 function Subscriptions() {
   const tabs = [
     { label: '主題管理', to: '/topics' },
-    { label: '訂閱管理', to: '/admin/subscribe' },
+    { label: '訂閱管理', to: '/admin/subscriptions' },
     { label: '訂單管理', to: '/orders' },
     { label: '評論管理', to: '/reviews' },
     { label: '客服管理', to: '/support' },
@@ -260,7 +260,7 @@ function Subscriptions() {
                     return (
                       <tr key={item.id}>
                         <td className="text-start text-semantic-link">
-                          <NavLink to={`/admin/subscribeDetail/${item.subscriptionNumber}`}>
+                          <NavLink to={`/admin/subscriptions/${item.subscriptionNumber}`}>
                             <span className="order-id">{item.subscriptionNumber}</span>
                           </NavLink>
                         </td>
@@ -500,7 +500,7 @@ function Subscriptions() {
                       <div className="flex-fill">
                         <h3 className="text-neutral-600 fw-bold fs-9 mb-1">訂閱編號</h3>
                         <div className="text-start text-semantic-link">
-                          <NavLink to={`/admin/subscribeDetail/${item.subscriptionNumber}`}>
+                          <NavLink to={`/admin/subscriptions/${item.subscriptionNumber}`}>
                             <span className="text-neutral-800 fw-bold fs-5 ls-1">
                               {item.subscriptionNumber}
                             </span>

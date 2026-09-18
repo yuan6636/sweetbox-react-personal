@@ -107,7 +107,7 @@ function ThemeSwiper() {
                             <p className="fs-6 fs-5">{theme.description}</p>
                           </div>
                           <NavLink
-                            to={`/themedetail/${theme.id}`}
+                            to={`/theme-detail/${theme.id}`}
                             className="btn-primary-icon ls-1 lh-sm fs-6 fw-bold d-flex align-items-center"
                           >
                             了解更多
@@ -157,7 +157,7 @@ function ThemeSwiper() {
                     </h4>
                     <p className="card-text mb-6">{theme.description}</p>
                     <NavLink
-                      to={`/themedetail/${theme.id}`}
+                      to={`/theme-detail/${theme.id}`}
                       className="btn-primary-icon ls-1 lh-sm fs-6 fw-bold d-inline-flex align-items-center mx-auto"
                     >
                       了解更多

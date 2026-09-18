@@ -83,7 +83,7 @@ function Theme() {
                         <h5 className="card-title fw-bold mb-3">{theme.subtitle}</h5>
                         <p className="card-text mb-6 mb-lg-8">{theme.description}</p>
                         <NavLink
-                          to={`/themedetail/${theme.id}`}
+                          to={`/theme-detail/${theme.id}`}
                           className="btn-theme-card border stretched-link"
                         >
                           了解更多

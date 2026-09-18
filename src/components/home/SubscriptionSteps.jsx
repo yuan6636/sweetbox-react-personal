@@ -78,7 +78,7 @@ function SubscriptionSteps() {
         </ul>
         <div className="d-lg-flex d-none justify-content-center">
           <NavLink
-            to={`/themedetail/${DEFAULT_THEME_ID}`}
+            to={`/theme-detail/${DEFAULT_THEME_ID}`}
             className="btn-primary-icon ls-1 lh-sm fs-6 fw-bold d-flex align-items-center"
             data-aos="zoom-in"
           >

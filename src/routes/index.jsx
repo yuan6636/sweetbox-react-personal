@@ -32,7 +32,7 @@ const routes = [
         element: <Theme />,
       },
       {
-        path: 'themeDetail/:id',
+        path: 'theme-detail/:id',
         element: <ThemeDetail />,
       },
       // 需要登入的路由，用 ProtectedRoute 先驗證
@@ -44,11 +44,11 @@ const routes = [
             element: <Cart />,
           },
           {
-            path: 'cartCheckout',
+            path: 'cart/checkout',
             element: <CartCheckout />,
           },
           {
-            path: 'cartFinish',
+            path: 'cart/finish',
             element: <CartFinish />,
           },
           {
@@ -62,11 +62,11 @@ const routes = [
         element: <ProtectedRoute requireAdmin />,
         children: [
           {
-            path: 'admin/subscribe',
+            path: 'admin/subscriptions',
             element: <Subscriptions />,
           },
           {
-            path: 'admin/subscribeDetail/:id',
+            path: 'admin/subscriptions/:id',
             element: <SubscriptionDetail />,
           },
         ],
