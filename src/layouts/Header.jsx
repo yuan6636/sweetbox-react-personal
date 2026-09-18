@@ -99,7 +99,7 @@ function Header() {
                 <ul className="dropdown-menu dropdown-menu-avatar" data-bs-popper="static">
                   {user?.isAdmin ? (
                     <li>
-                      <NavLink className="dropdown-item d-block" to="/admin/subscribe">
+                      <NavLink className="dropdown-item d-block" to="/admin/subscriptions">
                         後台管理
                       </NavLink>
                     </li>
@@ -150,7 +150,7 @@ function Header() {
             {user?.isAdmin ? (
               // 管理者顯示
               <li className="dropdown-item-wrapper">
-                <NavLink className="dropdown-item" to="/admin/subscribe">
+                <NavLink className="dropdown-item" to="/admin/subscriptions">
                   後台管理
                 </NavLink>
               </li>

@@ -62,11 +62,11 @@ const routes = [
         element: <ProtectedRoute requireAdmin />,
         children: [
           {
-            path: 'admin/subscribe',
+            path: 'admin/subscriptions',
             element: <Subscriptions />,
           },
           {
-            path: 'admin/subscribeDetail/:id',
+            path: 'admin/subscriptions/:id',
             element: <SubscriptionDetail />,
           },
         ],
