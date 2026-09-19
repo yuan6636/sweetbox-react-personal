@@ -1,12 +1,12 @@
 import { createRoot } from 'react-dom/client';
-import { createHashRouter, RouterProvider } from 'react-router-dom';
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import './assets/scss/all.scss';
 import 'aos/dist/aos.css';
 import 'bootstrap';
 
 import routes from './routes/index.jsx';
 
-const router = createHashRouter(routes);
+const router = createBrowserRouter(routes);
 
 createRoot(document.getElementById('root')).render(
   <RouterProvider
