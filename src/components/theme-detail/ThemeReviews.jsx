@@ -116,9 +116,9 @@ function ThemeReviews() {
           <picture>
             <source
               media="(max-width: 992px)"
-              srcSet="./images/theme-detail/title-review-mobile.svg"
+              srcSet="/images/theme-detail/title-review-mobile.svg"
             />
-            <img src="./images/theme-detail/title-review-desktop.svg" alt="title-review-desktop" />
+            <img src="/images/theme-detail/title-review-desktop.svg" alt="title-review-desktop" />
           </picture>
         </div>
         {/* 主題評分區 */}
