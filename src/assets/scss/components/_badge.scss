@@ -1,5 +1,5 @@
 @mixin badge-base($text-color, $bg-color) {
-  width: 68px;
+  min-width: 68px;
   height: 24px;
   border-radius: 100px;
   padding: 3px 16px;

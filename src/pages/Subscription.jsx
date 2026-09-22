@@ -2,23 +2,26 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import api from '../api';
-import { BeatLoader } from 'react-spinners';
 
 // 元件區
-import Dropdown from "../components/Dropdown";
-import Pagination from "../components/Pagination";
-import Tab from "../components/subscriptions/user/Tab";
-import SubscriptionList from "../components/subscriptions/user/SubscriptionList";
+import Dropdown from '../components/common/Dropdown';
+import Pagination from '../components/common/Pagination';
+import Tab from '../components/subscriptions/user/Tab';
+import SubscriptionList from '../components/subscriptions/user/SubscriptionList';
 import EmptySubscription from '../components/subscriptions/user/EmptySubscription';
+import Loading from '../components/common/Loading';
+
+// contexts
+import { useAuth } from '../contexts/auth';
 
 const themeOptions = [
-  { label: '全部主題', value: '' },
-  { label: '精選甜點', value: 't0000001' },
-  { label: '季節限定', value: 't0000002' },
-  { label: '在地甜點', value: 't0000003' },
-  { label: '異國風味', value: 't0000004' },
-  { label: '無負擔甜點', value: 't0000005' },
-  { label: '素食甜點', value: 't0000006' },
+  { label: '全部主題', value: null },
+  { label: '精選甜點', value: 1 },
+  { label: '季節限定', value: 2 },
+  { label: '在地甜點', value: 3 },
+  { label: '異國風味', value: 4 },
+  { label: '無負擔甜點', value: 5 },
+  { label: '素食甜點', value: 6 },
 ];
 
 const statusOptions = [
@@ -37,18 +40,20 @@ function Subscription() {
 
   const navigate = useNavigate();
 
+  const { user } = useAuth();
+
   const currentPage = Number(searchParams.get('page')) || 1;
 
   const fetchSubscriptions = useCallback(async () => {
     try {
       setIsLoading(true);
 
-      const user = JSON.parse(localStorage.getItem('user'));
-      const userId = user.id;
+      const userId = user?.id;
+      if (!userId) return;
       // 取得篩選條件
       const themeId = searchParams.get('themeId');
       const status = searchParams.get('status');
-      const page = Number(searchParams.get('page')) || 1; 
+      const page = Number(searchParams.get('page')) || 1;
 
       // 組合 subscriptions
       let url = `/subscriptions?userId=${userId}&_expand=plan&_expand=theme&_sort=createdAt&_order=desc&_page=${page}&_limit=5`;
@@ -61,10 +66,18 @@ function Subscription() {
         url += `&status=${status}`;
       }
 
-      const [itemsRes, ordersRes] = await Promise.all([
-        api.get(url),
-        api.get('/orders?_sort=createdAt&_order=desc'),
-      ]);
+      // 取得訂閱
+      const itemsRes = await api.get(url);
+      const totalCount = Number(itemsRes.headers.get('x-Total-Count'));
+
+      // 取得當前頁數所有訂閱的訂單
+      const subscriptionIds = itemsRes.data.map((item) => item.id);
+
+      let ordersRes = { data: [] };
+      if (subscriptionIds.length) {
+        const ordersQuery = subscriptionIds.map((id) => `subscriptionId=${id}`).join('&');
+        ordersRes = await api.get(`/orders?${ordersQuery}&_sort=createdAt&_order=desc`);
+      }
 
       // 訂單的資料預處理
       const groupByOrders = (map, order) => {
@@ -76,15 +89,14 @@ function Subscription() {
         return map;
       };
       // 取得所有訂閱
-      const totalCount = Number(itemsRes.headers.get('x-Total-Count'));
 
       const ordersMap = ordersRes.data.reduce(groupByOrders, new Map());
-      
+
       const items = itemsRes.data.map((item) => ({
         ...item,
         orders: ordersMap.get(item.id) ?? [],
       }));
-      
+
       setTotalItems(totalCount);
       setSubscriptions(items);
     } catch (error) {
@@ -98,35 +110,25 @@ function Subscription() {
         setIsLoading(false);
       }, 300);
     }
-  }, [navigate, searchParams]);
-  
+  }, [navigate, searchParams, user?.id]);
+
   // 組合訂閱列表和主題資料
   useEffect(() => {
     fetchSubscriptions();
   }, [fetchSubscriptions]);
 
   // api error, 顯示錯誤訊息
-  if (error) { return <h1 className='d-flex justify-content-center align-items-center vh-100'>{error}</h1> }
+  if (error) {
+    return <h1 className="d-flex justify-content-center align-items-center vh-100">{error}</h1>;
+  }
 
-  const handelThemeChange = (value) => {
+  const handleParamChange = (key, value) => {
     const params = new URLSearchParams(searchParams);
 
     if (value) {
-      params.set('themeId', value);
+      params.set(key, value);
     } else {
-      params.delete('themeId');
-    }
-    params.set('page', 1);
-    setSearchParams(params);
-  }
-
-  const handelStatusChange = (value) => {
-    const params = new URLSearchParams(searchParams.toString());
-
-    if (value) {
-      params.set('status', value);
-    } else {
-      params.delete('status');
+      params.delete(key);
     }
     params.set('page', 1);
     setSearchParams(params);
@@ -139,7 +141,7 @@ function Subscription() {
 
     params.set('page', page);
     setSearchParams(params);
-  }
+  };
 
   return (
     <div className="py-sm-11 pt-20 pb-5 bg-neutral-300">
@@ -154,13 +156,13 @@ function Subscription() {
               <Dropdown
                 options={themeOptions}
                 width="108px"
-                onChange={handelThemeChange}
+                onChange={(value) => handleParamChange('themeId', value)}
                 value={searchParams.get('themeId') || ''}
               />
               <Dropdown
                 options={statusOptions}
                 width="136px"
-                onChange={handelStatusChange}
+                onChange={(value) => handleParamChange('status', value)}
                 value={searchParams.get('status') || ''}
               />
             </div>
@@ -168,31 +170,31 @@ function Subscription() {
         </div>
         {/* 訂閱列表 */}
         {isLoading ? (
-          <div className="d-flex justify-content-center gap-2 vh-100">
-            <BeatLoader size={20} />
-            <p className="text-center">載入訂閱中...</p>
-          </div>
+          <Loading text="載入訂閱中..." className="py-10" />
         ) : subscriptions.length ? (
-          <SubscriptionList
-            subscriptions={subscriptions}
-            fetchSubscriptions={fetchSubscriptions}
-          />
+          <>
+            <SubscriptionList
+              subscriptions={subscriptions}
+              fetchSubscriptions={fetchSubscriptions}
+            />
+            {/* 分頁 */}
+            {totalItems > 0 && (
+              <div className="d-flex justify-content-center">
+                <Pagination
+                  currentPage={currentPage}
+                  totalItems={totalItems}
+                  itemsPerPage={5}
+                  onChangePage={handlePageChange}
+                />
+              </div>
+            )}
+          </>
         ) : hasFilters ? (
-          <p className="h3 text-center">目前篩選條件下沒有訂閱紀錄</p>
+          <div className="empty-subscription d-flex justify-content-center align-items-center">
+            <p className="h3 text-center">目前篩選條件下沒有訂閱紀錄</p>
+          </div>
         ) : (
           <EmptySubscription />
-        )}
-
-        {/* 分頁 */}
-        {totalItems > 0 && (
-          <div className="d-flex justify-content-center">
-            <Pagination
-              currentPage={currentPage}
-              totalItems={totalItems}
-              itemsPerPage={5}
-              onChangePage={handlePageChange}
-            />
-          </div>
         )}
       </main>
     </div>

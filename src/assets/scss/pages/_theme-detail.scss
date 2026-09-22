@@ -1,0 +1,958 @@
+// SECTION-1 ---------------------------------------
+// theme-menu
+.pie-bg {
+  background-image: none;
+
+  @media (min-width: 992px) {
+    background-image: url('/images/theme-detail/deco-01.svg');
+    background-size: 576px auto;
+    background-repeat: no-repeat;
+    background-position: left bottom;
+  }
+}
+
+.theme-menu {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  background-color: $neutral-200;
+  padding-top: 68px;
+  z-index: 3;
+
+  @media (min-width: 992px) {
+    display: none;
+  }
+}
+
+//  plan-opts
+.plan-opts {
+  // 992px 以上 //桌機
+  @media (min-width: 992px) {
+    overflow: auto;
+    scrollbar-width: none;
+    max-height: 648px;
+  }
+}
+
+.quantity {
+  padding: 2px;
+
+  .spinner {
+    width: 3ch;
+    text-align: center;
+  }
+}
+
+// swiper：desktop
+.theme-detail-pics.d-lg-block {
+  //lg以上
+  width: calc(66.666% - 120px - 24px);
+
+  //lg以下
+  @media (max-width: 992px) {
+    width: calc(58.333% - 120px - 24px);
+  }
+
+  .swiper-slide {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-size: cover;
+    background-position: center;
+
+    img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  }
+
+  // 大圖尺寸
+  .swiperThemeDetail {
+    width: 100%;
+    height: 480px;
+
+    img {
+      border-radius: 40px;
+    }
+  }
+
+  .swiperThemeDetail2 {
+    .swiper-slide {
+      width: 100%;
+      height: 100%;
+      opacity: 0.6;
+
+      &-thumb-active {
+        opacity: 1;
+      }
+    }
+  }
+
+  // 小圖尺寸
+  .swiperThemeDetail2 {
+    width: 100%;
+    height: 156px;
+    margin-left: auto;
+    margin-right: auto;
+
+    .swiper-slide {
+      cursor: pointer;
+    }
+    img {
+      border-radius: 24px;
+      object-fit: cover;
+    }
+  }
+}
+
+// SECTION-1:mobile 滿版swiper
+.theme-detail-pics-sm {
+  width: 100%;
+  height: 452px;
+
+  .swiper-slide {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    img {
+      display: block;
+      width: 100vw;
+      height: 100%;
+      object-fit: cover;
+    }
+  }
+}
+
+// SECTION-1:訂閱按鈕 //fixed
+.subscribe-fixed-bar {
+  //992px 以下 //手機
+  @media (max-width: 992px) {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    z-index: 10;
+    width: 100%;
+    padding: 12px 12px 8px 12px;
+    background-color: $neutral-200;
+    box-shadow: 0 -0.125rem 0.24rem rgba($black, 0.06);
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
+
+    .btn-primary-icon {
+      padding: 12px 24px;
+    }
+  }
+}
+
+.container-1076 {
+  max-width: 351px;
+  margin: 0 auto;
+  padding-left: 12px;
+  padding-right: 12px;
+  @media (min-width: 576px) {
+    max-width: 540px;
+  }
+  @media (min-width: 992px) {
+    max-width: 1076px;
+  }
+}
+
+// SECTION-2 ---------------------------------------
+.theme-feature {
+  //波浪1
+  &::before {
+    content: '';
+    width: 100%;
+    height: 20px;
+    background-image: url('/images/theme-detail/deco-wave-mobile.svg');
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    position: absolute;
+    top: -20px;
+
+    @media (min-width: 376px) {
+      height: 80px;
+      top: -80px;
+      background-image: url('/images/theme-detail/deco-wave-desktop.svg');
+    }
+  }
+
+  // 波浪2
+  &::after {
+    content: '';
+    width: 100%;
+    height: 20px;
+    background-image: url('/images/theme-detail/deco-wave-mobile.svg');
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    position: absolute;
+    bottom: -20px;
+    transform: scaleY(-1);
+
+    @media (min-width: 376px) {
+      height: 80px;
+      bottom: -80px;
+      background-image: url('/images/theme-detail/deco-wave-desktop.svg');
+      transform: scaleY(-1);
+    }
+  }
+}
+
+.theme-content {
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.5)),
+    url('/images/theme-detail/bg-grid-mobile.svg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+
+  @media (min-width: 992px) {
+    background-image:
+      linear-gradient(rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.5)),
+      url('/images/theme-detail/bg-grid-desktop.svg');
+  }
+
+  .container {
+    padding-top: 68px;
+    padding-bottom: 68px;
+    @media (min-width: 576px) {
+      padding-top: 160px;
+      padding-bottom: 160px;
+    }
+  }
+
+  // SECTION-3:波浪3
+  &::after {
+    content: '';
+    width: 100%;
+    height: 20px;
+    background-image: url('/images/theme-detail/deco-wave-desktop.svg');
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    position: absolute;
+    bottom: 0px;
+
+    @media (min-width: 576px) {
+      height: 80px;
+      bottom: 0px;
+    }
+  }
+}
+
+.detail-feature-card {
+  height: 312px;
+  flex: 1 1 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  background-image: url('/images/theme-detail/bg-grid-card.svg');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 100% 100%; /* 背景圖完全撐滿容器，不管比例 */
+
+  &-content {
+    max-width: 240px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    padding-bottom: 12px;
+  }
+}
+
+.first-sweet-box-title {
+  max-width: 848px;
+  margin: 0 auto;
+  padding-left: 12px;
+  padding-right: 12px;
+  margin-bottom: 36px;
+  @media (min-width: 576px) {
+    margin-bottom: 100px;
+  }
+}
+.first-sweet-box-desc {
+  max-width: 582px;
+  margin: 0 auto;
+}
+.first-sweet-box-content {
+  position: relative; /* 讓 overlay 可以對齊 */
+  overflow: hidden; /* 把超出容器邊界的部分裁掉 */
+  .overlay {
+    position: absolute; /* 讓 overlay 能脫離排版 */
+    inset: 0; /* 縮寫，等於 top:0; right:0; bottom:0; left:0; → 讓 overlay 蓋滿整個容器 */
+    background: rgba(0, 0, 0, 0.6); /* 半透明黑色背景 */
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 0 60px;
+    border-radius: 24px;
+    opacity: 0; /* 預設透明（隱藏） */
+    transition: opacity 0.5s ease; /* overlay 從透明到完全顯現的總時間 */
+  }
+}
+.first-sweet-box-content:hover .overlay {
+  opacity: 1;
+}
+// 收合按鈕
+.moreCards {
+  border: 1.5px solid $neutral-400;
+  border-radius: 100px;
+  padding: 12px 24px;
+  color: $neutral-700;
+  background-color: $neutral-200;
+  font-weight: bold;
+  font-style: 14px;
+  font-size: 14px;
+}
+
+/* 手機版：收合時顯示漸層 */
+.card-mask {
+  width: 100%;
+  padding-top: 100px;
+  background: linear-gradient(
+    to bottom,
+    rgba($neutral-200, 0),
+    /*漸層起點*/ rgba($neutral-200, 0.8),
+    rgba($neutral-200, 1) /*漸層終點*/
+  );
+}
+
+.rate-left {
+  width: 100%;
+  @media (min-width: 992px) {
+    width: 354px;
+  }
+}
+
+.rating-divider {
+  width: 1px;
+  height: 160px;
+  background-color: $neutral-400;
+  margin: 20px 24px;
+}
+
+.progress {
+  height: 12px;
+}
+
+.star {
+  width: 22px;
+  height: 22px;
+}
+
+.rating-counts {
+  width: 100px;
+}
+
+.btn-tag {
+  padding: 12px 16px;
+  color: $neutral-800;
+  font-size: 14px;
+  border-color: #e3ddd7;
+  border-radius: 100px;
+  background-color: transparent;
+  border: 1px solid $neutral-500;
+
+  &:hover {
+    background-color: $neutral-300;
+  }
+
+  &:focus {
+    color: $neutral-100;
+    background-color: $neutral-800;
+    border-color: $neutral-800;
+  }
+
+  &:active {
+    color: $neutral-100;
+    background-color: $neutral-800;
+    border-color: $neutral-800;
+  }
+
+  &.active {
+    color: $neutral-100;
+    background-color: $neutral-800;
+    border-color: $neutral-800;
+  }
+}
+
+.text-truncate-box {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 5;
+  line-clamp: 5;
+  /* 限制顯示行數 */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: 0.3s ease;
+}
+
+.text-expanded {
+  -webkit-line-clamp: unset;
+  line-clamp: unset;
+  /* 取消行數限制 */
+  max-height: none;
+  /* 高度不限 */
+}
+
+.custom-page-item {
+  background-color: transparent;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 6px;
+  border-radius: 10px;
+  width: 36px;
+  height: 36px;
+  color: $neutral-900;
+
+  &.active {
+    background-color: $neutral-800;
+  }
+
+  &:hover {
+    // hover 時套用跟 active 一樣
+    background-color: $neutral-800;
+
+    .custom-page-link {
+      color: $neutral-100; // 文字也變白
+    }
+  }
+
+  &.disabled {
+    cursor: default;
+    pointer-events: none;
+    background-color: transparent !important;
+  }
+}
+
+.custom-page-item.active .custom-page-link {
+  color: $neutral-100; // active 狀態文字顏色
+}
+
+.custom-page-link {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: $neutral-900;
+  font-size: 14px;
+  line-height: 1;
+  width: 100%;
+  height: 100%;
+}
+
+.custom-page-dropmenu {
+  background-color: transparent;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 6px;
+  border-radius: 10px;
+  width: 36px;
+  height: 36px;
+  border: 1px solid $neutral-400;
+  color: $neutral-900;
+
+  &:hover {
+    background-color: $neutral-800;
+  }
+
+  &:hover .custom-page-dropmenu-btn {
+    color: $neutral-100;
+  }
+}
+
+.custom-page-dropmenu-btn {
+  background-color: transparent;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: $neutral-900;
+  font-size: 14px;
+  line-height: 1;
+  border: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* 下拉面板 */
+.custom-page-dropmenu-panel {
+  width: 320px;
+  border-radius: 24px;
+  background-color: $neutral-100;
+  opacity: 0.7;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.06);
+  border: none;
+  padding: 0; // 移除多餘 padding
+  margin: 0;
+
+  li {
+    margin: 0;
+
+    .dropdown-item {
+      font-size: 16px;
+      color: $neutral-800;
+      padding: 12px;
+      border-radius: 6px;
+      line-height: 1.5;
+      border-bottom: 1px solid $neutral-400;
+
+      &:hover {
+        color: $primary-600;
+      }
+    }
+
+    &:first-child {
+      .dropdown-item {
+        padding-top: 24px;
+        padding-bottom: 16px;
+        border: 1px solid $neutral-400;
+        border-radius: 8px;
+        pointer-events: none;
+
+        &:hover {
+          background-color: transparent !important;
+          color: inherit !important;
+          cursor: default;
+        }
+      }
+    }
+  }
+}
+
+.review-section {
+  background-image: none;
+
+  @media (min-width: 992px) {
+    background-image:
+      url('/images/theme-detail/deco-02.svg'), url('/images/theme-detail/deco-03.svg'),
+      url('/images/theme-detail/deco-04.svg');
+
+    background-repeat: no-repeat;
+
+    background-position:
+      right 0 top 40%,
+      left 0 top 65%,
+      right 0 bottom 0;
+
+    background-size:
+      212px 332px,
+      252px 288px,
+      468px 268px;
+  }
+}
+
+.brand {
+  top: 1240px;
+}
+
+.cake {
+  top: 768px;
+}
+
+.sortOption-divider {
+  width: 1px;
+  height: 24px;
+  background-color: $neutral-500;
+}
+
+.vote-box {
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  transition: color 0.2s ease;
+}
+
+.vote-box.active {
+  color: $primary-600;
+  /* 點擊後顏色 */
+}
+
+@media (max-width: 992px) {
+  .rate svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  .progress {
+    height: 6px;
+  }
+
+  .star {
+    width: 12px;
+    height: 12px;
+  }
+
+  .rating-counts {
+    width: 80px;
+  }
+}
+
+@mixin stepper-bar {
+  content: '';
+  position: absolute;
+  top: 16px;
+  height: 2px;
+  background-color: $neutral-400;
+  z-index: -1;
+}
+
+// Cart body
+.cart-body footer {
+  padding-bottom: 75px;
+  @media (min-width: 576px) {
+    padding-bottom: 40px;
+  }
+}
+
+// Stepper
+.stepper {
+  max-width: 816px;
+  margin-bottom: 36px;
+  list-style: none;
+  @media (min-width: 992px) {
+    margin-bottom: 60px;
+  }
+}
+
+.step {
+  width: 32px;
+  height: 32px;
+  border: 2px solid $neutral-400;
+  border-radius: 100px;
+  font-size: 14px;
+  line-height: 17px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  letter-spacing: 0;
+
+  &-intro {
+    line-height: 19px;
+  }
+}
+
+.step-item {
+  position: relative;
+  flex: 1;
+  font-weight: bold;
+  letter-spacing: 0.1rem;
+  color: $neutral-600;
+
+  &:not(:first-child)::before {
+    @include stepper-bar;
+    left: 0;
+    right: calc(50% + 16px);
+  }
+
+  &:not(:last-child)::after {
+    @include stepper-bar;
+    left: calc(50% + 16px);
+    right: 0;
+  }
+
+  &.active {
+    &:not(:first-child)::before {
+      background-color: $neutral-800;
+    }
+    .step {
+      border-width: 0;
+      background-color: $neutral-800;
+      color: $neutral-200;
+    }
+    .step-intro {
+      color: $neutral-800;
+    }
+  }
+  &.done {
+    &:not(:last-child)::after {
+      background-color: $neutral-800;
+    }
+  }
+}
+
+// Cart content
+.cart {
+  &-main {
+    padding-top: 108px;
+    padding-bottom: 36px;
+    @media (min-width: 992px) {
+      padding-top: 160px;
+      padding-bottom: 90px;
+    }
+  }
+  &-title {
+    font-weight: bold;
+    letter-spacing: 0.1rem;
+    font-size: 20px;
+    line-height: 24px;
+    @media (min-width: 992px) {
+      font-size: 32px;
+      line-height: 38px;
+    }
+  }
+  &-panel {
+    border-radius: 12px;
+    background-color: $neutral-200;
+    @media (min-width: 992px) {
+      border-radius: 24px;
+    }
+  }
+  &-intro {
+    flex-grow: 1;
+    min-width: 0;
+  }
+  &-list {
+    height: auto;
+    overflow-y: hidden;
+    @media (min-width: 992px) {
+      height: 1050px;
+      overflow-y: auto;
+      scrollbar-width: none;
+    }
+  }
+  &-item {
+    padding: 12px 12px 24px;
+    @media (min-width: 992px) {
+      padding: 16px 16px 32px;
+    }
+  }
+  &-item:not(:last-child) {
+    position: relative;
+    border-bottom: 1px solid $neutral-400;
+    margin-bottom: 16px;
+  }
+  &-notice {
+    color: $neutral-700;
+    h3 {
+      font-size: 14px;
+      line-height: 16.8px;
+      font-weight: bold;
+      letter-spacing: 0.1rem;
+    }
+    ol {
+      padding-left: 1rem;
+      font-size: 14px;
+      line-height: 21px;
+    }
+  }
+  &-empty {
+    display: none;
+    @media (min-width: 576px) {
+      display: block;
+      margin-bottom: 28px;
+    }
+  }
+}
+
+// Remove button
+.btn.btn-remove {
+  font-size: 14px;
+  line-height: 21px;
+  color: $semantic-link;
+}
+
+// Theme list
+.theme-img {
+  width: 60px;
+  align-self: flex-start;
+  @media (min-width: 576px) {
+    width: 80px;
+  }
+  @media (min-width: 768px) {
+    width: 120px;
+  }
+  @media (min-width: 992px) {
+    width: 156px;
+  }
+}
+
+.theme-price {
+  font-size: 14px;
+  line-height: 21px;
+  color: $neutral-600;
+}
+
+.theme-total-price {
+  padding: 4px 8px;
+  font-weight: bold;
+  line-height: 19.2px;
+  letter-spacing: 0.1rem;
+  align-self: center;
+  @media (min-width: 576px) {
+    align-self: flex-end;
+  }
+}
+
+// Cart right section
+.cart-right-title {
+  font-weight: bold;
+  font-size: 18px;
+  line-height: 21.6px;
+  letter-spacing: 0.1rem;
+  @media (min-width: 992px) {
+    font-size: 20px;
+    line-height: 24px;
+  }
+}
+
+.input-discount {
+  border-radius: 100px;
+  border: 1px solid $neutral-400;
+  &.active {
+    background-color: $neutral-100;
+  }
+  &.success {
+    .form-control {
+      color: $CTA-200;
+    }
+  }
+  &.error {
+    margin-bottom: 8px;
+    border: 1px solid $semantic-error;
+    background-color: $neutral-100;
+    & + .error-message {
+      display: flex;
+      align-items: center;
+    }
+  }
+  &.disabled {
+    border: 1px solid $neutral-400;
+    color: $neutral-500;
+    .input-group-text {
+      color: $neutral-500;
+    }
+    .form-control {
+      &::placeholder {
+        color: $neutral-500;
+      }
+    }
+    .btn {
+      background-color: $neutral-300;
+      color: $neutral-500;
+    }
+  }
+  .input-group-text {
+    padding: 2px 8px;
+    border: 0;
+    background-color: transparent;
+  }
+  .form-control {
+    margin-right: 8px;
+    border: 0;
+    background-color: transparent;
+    &::placeholder {
+      font-size: 14px;
+      line-height: 21px;
+    }
+    &:focus {
+      box-shadow: none;
+    }
+  }
+  .btn {
+    padding: 12px 24px;
+    background-color: $neutral-400;
+    border-radius: 0 100px 100px 0;
+    font-size: 14px;
+    line-height: 21px;
+  }
+}
+
+// Subscription
+.subscription-list {
+  font-size: 14px;
+  line-height: 21px;
+  color: $neutral-600;
+}
+
+.checkout-btn {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  padding: 16px 12px;
+  background-color: $neutral-200;
+  box-shadow: 0 -2px 4px 0 rgba(#000, 0.06);
+  z-index: 2;
+  display: block;
+  @media (min-width: 376px) {
+    display: none;
+  }
+}
+
+// Others
+.error-message {
+  display: none;
+  font-size: 14px;
+  line-height: 21px;
+}
+
+.bg-empty-cart {
+  background-image: none;
+  @media (min-width: 576px) {
+    background-image:
+      url('/images/cart-page/deco-01.svg'), url('/images/cart-page/deco-02.svg'),
+      url('/images/cart-page/deco-03.svg'), url('/images/cart-page/deco-04.svg');
+    background-size: 25%, 25%, 25%, 22%;
+    background-position:
+      left bottom,
+      35% bottom,
+      71% bottom,
+      right bottom;
+    background-repeat: no-repeat, no-repeat, no-repeat, no-repeat;
+  }
+}
+
+//Empty cart
+.empty-cart {
+  &-main {
+    padding-top: 68px;
+    @media (min-width: 576px) {
+      padding-top: 160px;
+      padding-bottom: 90px;
+    }
+  }
+  &-wrapper {
+    padding: 100px 12px;
+    border: 0;
+    background-color: transparent;
+    @media (min-width: 576px) {
+      padding-top: 90px;
+      padding-bottom: 90px;
+      background-color: rgba($neutral-200, 0.7);
+      backdrop-filter: blur(12px);
+      border: 1px solid $neutral-200;
+      border-radius: 40px;
+    }
+  }
+  &-img {
+    width: 120px;
+    @media (min-width: 576px) {
+      width: 160px;
+    }
+  }
+  &-title {
+    font-size: 16px;
+    line-height: 19.2px;
+    letter-spacing: 0.1rem;
+    font-weight: bold;
+    @media (min-width: 576px) {
+      font-size: 20px;
+      line-height: 24px;
+    }
+  }
+}
+
+.empty-review {
+  min-height: 400px;
+}

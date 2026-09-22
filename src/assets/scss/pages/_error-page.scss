@@ -1,0 +1,65 @@
+.error-page {
+  min-height: 100vh;
+  padding: 24px;
+  background-color: $neutral-200;
+}
+
+.error-card {
+  width: 100%;
+  max-width: 480px;
+  padding: 40px 24px;
+  border-radius: 16px;
+  background-color: $white;
+  box-shadow: 0 12px 32px rgba($neutral-900, 0.06);
+
+  .title {
+    margin-bottom: 12px;
+    font-size: 20px;
+    font-weight: 700;
+    color: $neutral-900;
+  }
+
+  .description {
+    margin-bottom: 32px;
+    font-size: 14px;
+    color: $neutral-600;
+  }
+
+  .actions {
+    gap: 12px;
+    margin-bottom: 40px;
+    flex-direction: column;
+  }
+
+  .code {
+    margin: 0;
+    padding-top: 20px;
+    border-top: 1px solid rgba($neutral-900, 0.06);
+    font-size: 12px;
+    letter-spacing: 0.05rem;
+    color: rgba($neutral-600, 0.8);
+  }
+}
+
+// media 576px 以上
+@include media-breakpoint-up(sm) {
+  .error-card {
+    max-width: 420px;
+    padding: 48px 40px;
+
+    .actions {
+      flex-direction: row;
+    }
+  }
+}
+
+// media 768px 以上
+@include media-breakpoint-up(md) {
+  .error-card {
+    max-width: 480px;
+
+    .title {
+      font-size: 24px;
+    }
+  }
+}

@@ -1,14 +1,13 @@
 $utilities: map-merge(
   $utilities,
   (
-    "font-size":
-      map-merge(
-        map-get($utilities, "font-size"),
+    'font-size': map-merge(
+        map-get($utilities, 'font-size'),
         (
           responsive: true,
         )
       ),
-    "rounded": (
+    'rounded': (
       property: border-radius,
       class: rounded,
       values: (
@@ -33,7 +32,7 @@ $utilities: map-merge(
         pill: var(--#{$prefix}border-radius-pill),
       ),
     ),
-    "opacity": (
+    'opacity': (
       property: opacity,
       values: (
         0: 0,
@@ -50,4 +49,19 @@ $utilities: map-merge(
 
 .ls-1 {
   letter-spacing: 0.1rem;
+}
+
+.flex-equal {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+.text-prewrap {
+  white-space: pre-wrap;
+}
+
+.disabled {
+  opacity: 0.5;
+  pointer-events: none;
+  cursor: not-allowed;
 }
