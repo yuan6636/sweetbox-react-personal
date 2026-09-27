@@ -142,7 +142,7 @@ function Subscriptions() {
   return (
     <>
       {/* 桌面板 */}
-      <main className="bg-neutral-300 overflow-hidden d-lg-block d-none pb-9">
+      <main className="bg-neutral-300 d-lg-block d-none pb-9">
         <div className="container mt-11">
           <ul className="nav py-2 mb-sm-6 mb-0 nav-subscription gap-2 gap-sm-0">
             {tabs.map((tab, index) => (
@@ -237,67 +237,77 @@ function Subscriptions() {
                 </tr>
               </thead>
               <tbody>
-                {paginatedData.map((item) => {
-                  // 計算 subscription_orders 裡相同 orderNo 的數量
-                  const orderCount = subscriptionOrders.filter(
-                    (order) => order.subscriptionId === item.id,
-                  ).length;
+                {paginatedData.length === 0 ? (
+                  <tr>
+                    <td colSpan="7" className="text-center py-8 text-neutral-600">
+                      目前沒有符合篩選條件的訂閱資料
+                    </td>
+                  </tr>
+                ) : (
+                  paginatedData.map((item) => {
+                    // 計算 subscription_orders 裡相同 orderNo 的數量
+                    const orderCount = subscriptionOrders.filter(
+                      (order) => order.subscriptionId === item.id,
+                    ).length;
 
-                  // 計算進度百分比
-                  const progressPercent = Math.round((orderCount / item.durationMonths) * 100);
+                    // 計算進度百分比
+                    const progressPercent = Math.round((orderCount / item.durationMonths) * 100);
 
-                  return (
-                    <tr key={item.id}>
-                      <td className="text-start text-semantic-link">
-                        <NavLink to={`/admin/subscriptions/${item.subscriptionNumber}`}>
-                          <span className="order-id">{item.subscriptionNumber}</span>
-                        </NavLink>
-                      </td>
-                      <td>{item.email}</td>
-                      <td className="text-center">{item.durationMonths}個月</td>
-                      <td className="text-center">{item.themeTitle}</td>
-                      <td className="text-center">
-                        <div className="d-flex flex-column justify-content-center align-items-center">
-                          <div
-                            className="progress sub-progress bg-neutral-400 mb-1"
-                            style={{ width: '120px' }}
-                            role="progressbar"
-                            aria-label="Basic example"
-                            aria-valuenow={progressPercent}
-                            aria-valuemin="0"
-                            aria-valuemax="100"
-                          >
+                    return (
+                      <tr key={item.id}>
+                        <td className="text-start text-semantic-link">
+                          <NavLink to={`/admin/subscriptions/${item.subscriptionNumber}`}>
+                            <span className="order-id">{item.subscriptionNumber}</span>
+                          </NavLink>
+                        </td>
+                        <td>{item.email}</td>
+                        <td className="text-center">{item.durationMonths}個月</td>
+                        <td className="text-center">{item.themeTitle}</td>
+                        <td className="text-center">
+                          <div className="d-flex flex-column justify-content-center align-items-center">
                             <div
-                              className="progress-bar"
-                              style={{ width: `${progressPercent}%` }}
-                            ></div>
+                              className="progress sub-progress bg-neutral-400 mb-1"
+                              style={{ width: '120px' }}
+                              role="progressbar"
+                              aria-label="Basic example"
+                              aria-valuenow={progressPercent}
+                              aria-valuemin="0"
+                              aria-valuemax="100"
+                            >
+                              <div
+                                className="progress-bar"
+                                style={{ width: `${progressPercent}%` }}
+                              ></div>
+                            </div>
+                            <span className="fs-8 fw-medium">
+                              {orderCount}/{item.durationMonths}
+                            </span>
                           </div>
-                          <span className="fs-8 fw-medium">
-                            {orderCount}/{item.durationMonths}
-                          </span>
-                        </div>
-                      </td>
-                      <td className="text-center">
-                        <ProcessingStatusBadge
-                          status={item.isProcessed ? STATUS.PROCESSED : STATUS.UNPROCESSED}
-                          variant="desktop"
-                        />
-                      </td>
-                      <td className="text-center">{item.startDate}</td>
-                    </tr>
-                  );
-                })}
+                        </td>
+                        <td className="text-center">
+                          <ProcessingStatusBadge
+                            status={item.isProcessed ? STATUS.PROCESSED : STATUS.UNPROCESSED}
+                            variant="desktop"
+                          />
+                        </td>
+                        <td className="text-center">{item.startDate}</td>
+                      </tr>
+                    );
+                  })
+                )}
               </tbody>
             </table>
           </div>
-          <div className="d-flex justify-content-center mb-11">
-            <Pagination
-              currentPage={currentPage}
-              totalItems={filteredData.length} // db.json subscriptions 筆數
-              itemsPerPage={itemsPerPage} // 每頁顯示幾筆
-              onChangePage={setCurrentPage}
-            />
-          </div>
+          {paginatedData.length > 0 && (
+            <div className="d-flex justify-content-center mb-11">
+              <Pagination
+                currentPage={currentPage}
+                totalItems={filteredData.length} // db.json subscriptions 筆數
+                itemsPerPage={itemsPerPage} // 每頁顯示幾筆
+                onChangePage={setCurrentPage}
+              />
+            </div>
+          )}
         </div>
       </main>
 
@@ -439,110 +449,116 @@ function Subscriptions() {
           )}
 
           <div className="d-flex flex-column gap-4">
-            {paginatedData.map((item) => {
-              // 計算 subscription_orders 裡相同 orderNo 的數量
-              const orderCount = subscriptionOrders.filter(
-                (order) => order.subscriptionId === item.id,
-              ).length;
+            {paginatedData.length === 0 ? (
+              <p className="text-center py-8 text-neutral-600">目前沒有符合篩選條件的訂閱資料</p>
+            ) : (
+              paginatedData.map((item) => {
+                // 計算 subscription_orders 裡相同 orderNo 的數量
+                const orderCount = subscriptionOrders.filter(
+                  (order) => order.subscriptionId === item.id,
+                ).length;
 
-              // 計算進度百分比
-              const progressPercent = Math.round((orderCount / item.durationMonths) * 100);
+                // 計算進度百分比
+                const progressPercent = Math.round((orderCount / item.durationMonths) * 100);
 
-              return (
-                <div className="p-6 bg-neutral-200 rounded-5" key={item.id}>
-                  <div className="d-flex mb-6">
-                    {mode === 'export_mode' && (
-                      <div className="custom-checkbox d-flex align-items-center me-4">
-                        <input
-                          className="form-check-input mt-0"
-                          type="checkbox"
-                          id={'order_' + item.id}
-                          checked={selectedIds.includes(item.id)}
-                          onChange={(e) => {
-                            if (e.target.checked) {
-                              setSelectedIds((prev) => [...prev, item.id]);
-                            } else {
-                              setSelectedIds((prev) => prev.filter((id) => id !== item.id));
-                            }
-                          }}
-                        />
+                return (
+                  <div className="p-6 bg-neutral-200 rounded-5" key={item.id}>
+                    <div className="d-flex mb-6">
+                      {mode === 'export_mode' && (
+                        <div className="custom-checkbox d-flex align-items-center me-4">
+                          <input
+                            className="form-check-input mt-0"
+                            type="checkbox"
+                            id={'order_' + item.id}
+                            checked={selectedIds.includes(item.id)}
+                            onChange={(e) => {
+                              if (e.target.checked) {
+                                setSelectedIds((prev) => [...prev, item.id]);
+                              } else {
+                                setSelectedIds((prev) => prev.filter((id) => id !== item.id));
+                              }
+                            }}
+                          />
+                        </div>
+                      )}
+                      <div className="flex-fill">
+                        <h3 className="text-neutral-600 fw-bold fs-9 mb-1">訂閱編號</h3>
+                        <div className="text-start text-semantic-link">
+                          <NavLink to={`/admin/subscriptions/${item.subscriptionNumber}`}>
+                            <span className="text-neutral-800 fw-bold fs-5 ls-1">
+                              {item.subscriptionNumber}
+                            </span>
+                          </NavLink>
+                        </div>
                       </div>
-                    )}
-                    <div className="flex-fill">
-                      <h3 className="text-neutral-600 fw-bold fs-9 mb-1">訂閱編號</h3>
-                      <div className="text-start text-semantic-link">
-                        <NavLink to={`/admin/subscriptions/${item.subscriptionNumber}`}>
-                          <span className="text-neutral-800 fw-bold fs-5 ls-1">
-                            {item.subscriptionNumber}
-                          </span>
-                        </NavLink>
+                      <ProcessingStatusBadge
+                        status={item.isProcessed ? STATUS.PROCESSED : STATUS.UNPROCESSED}
+                        variant="mobile"
+                      />
+                    </div>
+                    {/* 線條 */}
+                    <div className="divider mb-3"></div>
+                    <div className="row mb-3">
+                      <div className="col-6">
+                        <p className="fs-8 text-neutral-600 mb-1">訂閱主題</p>
+                        <p className="fs-8 text-neutral-800">{item.themeTitle}</p>
+                      </div>
+                      <div className="col-6">
+                        <p className="fs-8 text-neutral-600 mb-1">期數</p>
+                        <p className="fs-8 text-neutral-800">{item.durationMonths}個月</p>
                       </div>
                     </div>
-                    <ProcessingStatusBadge
-                      status={item.isProcessed ? STATUS.PROCESSED : STATUS.UNPROCESSED}
-                      variant="mobile"
-                    />
-                  </div>
-                  {/* 線條 */}
-                  <div className="divider mb-3"></div>
-                  <div className="row mb-3">
-                    <div className="col-6">
-                      <p className="fs-8 text-neutral-600 mb-1">訂閱主題</p>
-                      <p className="fs-8 text-neutral-800">{item.themeTitle}</p>
-                    </div>
-                    <div className="col-6">
-                      <p className="fs-8 text-neutral-600 mb-1">期數</p>
-                      <p className="fs-8 text-neutral-800">{item.durationMonths}個月</p>
-                    </div>
-                  </div>
-                  <div className="row mb-6">
-                    <div className="col-6">
-                      <p className="fs-8 text-neutral-600 mb-1">開始日期</p>
-                      <p className="fs-8 text-neutral-800">{item.startDate}</p>
-                    </div>
-                    <div className="col-6">
-                      <p className="fs-8 text-neutral-600 mb-1">Email</p>
-                      <p className="fs-8 text-neutral-800 text-truncate">{item.email}</p>
-                    </div>
-                  </div>
-                  <div className="px-6 py-4 bg-neutral-300 rounded-5">
-                    <div className="d-flex flex-column">
-                      <div className="d-flex justify-content-between align-items-center mb-2">
-                        <p className="text-neutral-600 fs-9 fw-medium">服務進度</p>
-                        <p className="text-neutral-800 fs-9 fw-medium">
-                          {orderCount}/{item.durationMonths}
-                        </p>
+                    <div className="row mb-6">
+                      <div className="col-6">
+                        <p className="fs-8 text-neutral-600 mb-1">開始日期</p>
+                        <p className="fs-8 text-neutral-800">{item.startDate}</p>
                       </div>
-                      <div>
-                        <div
-                          className="progress sub-progress bg-neutral-400 mb-1 w-100"
-                          role="progressbar"
-                          aria-label="Basic example"
-                          aria-valuenow={progressPercent}
-                          aria-valuemin="0"
-                          aria-valuemax="100"
-                        >
+                      <div className="col-6">
+                        <p className="fs-8 text-neutral-600 mb-1">Email</p>
+                        <p className="fs-8 text-neutral-800 text-truncate">{item.email}</p>
+                      </div>
+                    </div>
+                    <div className="px-6 py-4 bg-neutral-300 rounded-5">
+                      <div className="d-flex flex-column">
+                        <div className="d-flex justify-content-between align-items-center mb-2">
+                          <p className="text-neutral-600 fs-9 fw-medium">服務進度</p>
+                          <p className="text-neutral-800 fs-9 fw-medium">
+                            {orderCount}/{item.durationMonths}
+                          </p>
+                        </div>
+                        <div>
                           <div
-                            className="progress-bar"
-                            style={{ width: `${progressPercent}%` }}
-                          ></div>
+                            className="progress sub-progress bg-neutral-400 mb-1 w-100"
+                            role="progressbar"
+                            aria-label="Basic example"
+                            aria-valuenow={progressPercent}
+                            aria-valuemin="0"
+                            aria-valuemax="100"
+                          >
+                            <div
+                              className="progress-bar"
+                              style={{ width: `${progressPercent}%` }}
+                            ></div>
+                          </div>
                         </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              );
-            })}
+                );
+              })
+            )}
           </div>
         </div>
-        <div className="d-flex justify-content-center">
-          <Pagination
-            currentPage={currentPage}
-            totalItems={filteredData.length} // subscriptions 筆數
-            itemsPerPage={itemsPerPage} // 每頁顯示幾筆
-            onChangePage={setCurrentPage}
-          />
-        </div>
+        {paginatedData.length > 0 && (
+          <div className="d-flex justify-content-center">
+            <Pagination
+              currentPage={currentPage}
+              totalItems={filteredData.length} // subscriptions 筆數
+              itemsPerPage={itemsPerPage} // 每頁顯示幾筆
+              onChangePage={setCurrentPage}
+            />
+          </div>
+        )}
       </main>
       {mode === 'export_mode' && selectedCount > 0 && (
         <div className="d-flex justify-content-between align-items-center mobile-button-bar p-6">
