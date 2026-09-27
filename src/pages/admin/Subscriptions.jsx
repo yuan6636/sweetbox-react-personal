@@ -180,11 +180,6 @@ function Subscriptions() {
                 placeholder={['開始日期', '結束日期']}
                 value={dateRange}
                 onChange={(values) => setDateRange(values || [])}
-                renderExtraFooter={() => (
-                  <div className="d-flex justify-content-end my-2">
-                    <Button className="bg-primary-600 text-white fs-8 px-2 rounded-1">OK</Button>
-                  </div>
-                )}
                 variant="filled"
                 className="custom-range-picker"
               />
@@ -368,11 +363,6 @@ function Subscriptions() {
                   placeholder={['開始日期', '結束日期']}
                   value={dateRange}
                   onChange={(values) => setDateRange(values || [])}
-                  renderExtraFooter={() => (
-                    <div className="d-flex justify-content-end my-2">
-                      <Button className="bg-primary-600 text-white fs-8 px-2 rounded-1">OK</Button>
-                    </div>
-                  )}
                   variant="filled"
                   className="custom-range-picker"
                 />
