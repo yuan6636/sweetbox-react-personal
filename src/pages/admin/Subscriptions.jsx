@@ -59,7 +59,7 @@ function Subscriptions() {
     Promise.all([
       api.get('/users'),
       api.get('/themes'),
-      api.get('/subscriptions'),
+      api.get('/subscriptions?_sort=startDate&_order=desc'),
       api.get('/orders'), // 注意：db.json 裡是 orders，不是 subscription_orders
     ])
       .then(([usersRes, themesRes, subsRes, ordersRes]) => {
@@ -92,6 +92,13 @@ function Subscriptions() {
       })
       .catch((err) => console.error('error:', err));
   }, []);
+
+  useEffect(() => {
+    const resetPage = () => {
+      setCurrentPage(1);
+    };
+    resetPage();
+  }, [searchText, filterTheme, filterStatus, filterPlan, dateRange]);
 
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
@@ -135,7 +142,7 @@ function Subscriptions() {
   return (
     <>
       {/* 桌面板 */}
-      <main className="bg-neutral-300 overflow-hidden d-lg-block d-none pb-9">
+      <main className="bg-neutral-300 d-lg-block d-none pb-9">
         <div className="container mt-11">
           <ul className="nav py-2 mb-sm-6 mb-0 nav-subscription gap-2 gap-sm-0">
             {tabs.map((tab, index) => (
@@ -173,11 +180,6 @@ function Subscriptions() {
                 placeholder={['開始日期', '結束日期']}
                 value={dateRange}
                 onChange={(values) => setDateRange(values || [])}
-                renderExtraFooter={() => (
-                  <div className="d-flex justify-content-end my-2">
-                    <Button className="bg-primary-600 text-white fs-8 px-2 rounded-1">OK</Button>
-                  </div>
-                )}
                 variant="filled"
                 className="custom-range-picker"
               />
@@ -235,20 +237,14 @@ function Subscriptions() {
                 </tr>
               </thead>
               <tbody>
-                {paginatedData
-                  .filter(
-                    (item) =>
-                      (filterTheme === 'theme_all' || item.themeTitle === filterTheme) &&
-                      (filterStatus === 'status_all' || item.isProcessed === filterStatus) &&
-                      (filterPlan === 'plan_all' || item.durationMonths === filterPlan) &&
-                      (searchText === '' ||
-                        item.subscriptionNumber?.toString().includes(searchText) ||
-                        item.email?.toLowerCase().includes(searchText.toLowerCase())) &&
-                      (dateRange.length === 0 ||
-                        (new Date(item.startDate) >= dateRange[0].toDate() &&
-                          new Date(item.startDate) <= dateRange[1].toDate())),
-                  )
-                  .map((item) => {
+                {paginatedData.length === 0 ? (
+                  <tr>
+                    <td colSpan="7" className="text-center py-8 text-neutral-600">
+                      目前沒有符合篩選條件的訂閱資料
+                    </td>
+                  </tr>
+                ) : (
+                  paginatedData.map((item) => {
                     // 計算 subscription_orders 裡相同 orderNo 的數量
                     const orderCount = subscriptionOrders.filter(
                       (order) => order.subscriptionId === item.id,
@@ -297,18 +293,21 @@ function Subscriptions() {
                         <td className="text-center">{item.startDate}</td>
                       </tr>
                     );
-                  })}
+                  })
+                )}
               </tbody>
             </table>
           </div>
-          <div className="d-flex justify-content-center mb-11">
-            <Pagination
-              currentPage={currentPage}
-              totalItems={filteredData.length} // db.json subscriptions 筆數
-              itemsPerPage={itemsPerPage} // 每頁顯示幾筆
-              onChangePage={setCurrentPage}
-            />
-          </div>
+          {paginatedData.length > 0 && (
+            <div className="d-flex justify-content-center mb-11">
+              <Pagination
+                currentPage={currentPage}
+                totalItems={filteredData.length} // db.json subscriptions 筆數
+                itemsPerPage={itemsPerPage} // 每頁顯示幾筆
+                onChangePage={setCurrentPage}
+              />
+            </div>
+          )}
         </div>
       </main>
 
@@ -374,11 +373,6 @@ function Subscriptions() {
                   placeholder={['開始日期', '結束日期']}
                   value={dateRange}
                   onChange={(values) => setDateRange(values || [])}
-                  renderExtraFooter={() => (
-                    <div className="d-flex justify-content-end my-2">
-                      <Button className="bg-primary-600 text-white fs-8 px-2 rounded-1">OK</Button>
-                    </div>
-                  )}
                   variant="filled"
                   className="custom-range-picker"
                 />
@@ -455,20 +449,10 @@ function Subscriptions() {
           )}
 
           <div className="d-flex flex-column gap-4">
-            {paginatedData
-              .filter(
-                (item) =>
-                  (filterTheme === 'theme_all' || item.themeTitle === filterTheme) &&
-                  (filterStatus === 'status_all' || item.isProcessed === filterStatus) &&
-                  (filterPlan === 'plan_all' || item.durationMonths === filterPlan) &&
-                  (searchText === '' ||
-                    item.subscriptionNumber?.toString().includes(searchText) ||
-                    item.email?.toLowerCase().includes(searchText.toLowerCase())) &&
-                  (dateRange.length === 0 ||
-                    (new Date(item.startDate) >= dateRange[0].toDate() &&
-                      new Date(item.startDate) <= dateRange[1].toDate())),
-              )
-              .map((item) => {
+            {paginatedData.length === 0 ? (
+              <p className="text-center py-8 text-neutral-600">目前沒有符合篩選條件的訂閱資料</p>
+            ) : (
+              paginatedData.map((item) => {
                 // 計算 subscription_orders 裡相同 orderNo 的數量
                 const orderCount = subscriptionOrders.filter(
                   (order) => order.subscriptionId === item.id,
@@ -561,17 +545,20 @@ function Subscriptions() {
                     </div>
                   </div>
                 );
-              })}
+              })
+            )}
           </div>
         </div>
-        <div className="d-flex justify-content-center">
-          <Pagination
-            currentPage={currentPage}
-            totalItems={filteredData.length} // subscriptions 筆數
-            itemsPerPage={itemsPerPage} // 每頁顯示幾筆
-            onChangePage={setCurrentPage}
-          />
-        </div>
+        {paginatedData.length > 0 && (
+          <div className="d-flex justify-content-center">
+            <Pagination
+              currentPage={currentPage}
+              totalItems={filteredData.length} // subscriptions 筆數
+              itemsPerPage={itemsPerPage} // 每頁顯示幾筆
+              onChangePage={setCurrentPage}
+            />
+          </div>
+        )}
       </main>
       {mode === 'export_mode' && selectedCount > 0 && (
         <div className="d-flex justify-content-between align-items-center mobile-button-bar p-6">
