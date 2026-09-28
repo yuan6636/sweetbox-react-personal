@@ -59,7 +59,7 @@ function Subscriptions() {
     Promise.all([
       api.get('/users'),
       api.get('/themes'),
-      api.get('/subscriptions'),
+      api.get('/subscriptions?_sort=startDate&_order=desc'),
       api.get('/orders'), // 注意：db.json 裡是 orders，不是 subscription_orders
     ])
       .then(([usersRes, themesRes, subsRes, ordersRes]) => {
