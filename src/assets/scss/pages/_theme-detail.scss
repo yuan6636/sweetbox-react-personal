@@ -567,18 +567,6 @@
   background-color: $neutral-500;
 }
 
-.vote-box {
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  transition: color 0.2s ease;
-}
-
-.vote-box.active {
-  color: $primary-600;
-  /* 點擊後顏色 */
-}
-
 @media (max-width: 992px) {
   .rate svg {
     width: 20px;
