@@ -2,10 +2,6 @@ import { useEffect, useState, useRef } from 'react';
 import { Icon } from '@iconify/react';
 
 function ReviewItem({ review, renderStars }) {
-  // 是否要按讚的狀態
-  const [isLiked, setIsLiked] = useState(false);
-  // 評論按讚數
-  const [likeCounts, setLikeCounts] = useState(review.initialLikeCount);
   const [isExpanded, setIsExpanded] = useState(false);
   const [isOverflowing, setIsOverflowing] = useState(false);
   const reviewRef = useRef(null);
@@ -17,14 +13,6 @@ function ReviewItem({ review, renderStars }) {
       setIsOverflowing(el.scrollHeight > el.clientHeight);
     }
   }, []);
-
-  const handleLikes = () => {
-    const nextIsLiked = !isLiked;
-    setIsLiked(nextIsLiked);
-    setLikeCounts((prev) => {
-      return nextIsLiked ? prev + 1 : Math.max(prev - 1, 0);
-    });
-  };
 
   // 切換展開/收合評論內容
   const toggleExpand = () => {
@@ -145,23 +133,6 @@ function ReviewItem({ review, renderStars }) {
         {review.images?.length > 0 && (
           <div className="d-flex align-items-center gap-2 flex-wrap">{renderImage()}</div>
         )}
-      </div>
-      {/* 按讚數 */}
-      <div className="align-self-lg-start align-self-end flex-grow-1" style={{ width: '200px' }}>
-        <div
-          className="d-flex justify-content-end align-items-center p-3 me-lg-5 me-0 vote-box"
-          onClick={handleLikes}
-        >
-          <Icon
-            className="icon-swap me-1"
-            icon={isLiked ? 'mdi:thumbs-up' : 'mdi:thumbs-up-outline'}
-            width="20"
-            height="20"
-          ></Icon>
-          <p className="fs-8 text-nowrap noto_sans">
-            {likeCounts < 1 ? '此評論有幫助' : `${likeCounts} 人認為此評論有幫助`}
-          </p>
-        </div>
       </div>
     </div>
   );
